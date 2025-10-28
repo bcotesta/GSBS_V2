@@ -60,6 +60,32 @@ void Authenticator::setValidInfo(const std::string& username, const std::string&
 	std::cout << "[DEBUG]   Password loaded: " << (!validPassword_.empty() ? "Yes" : "No") << std::endl;
 }
 
+bool Authenticator::verifyCredentials(const std::string& username, const std::string& password) {
+	// Safety check
+	if (username.empty() || password.empty()) {
+		std::cerr << "Username or password cannot be empty" << std::endl;
+		return false;
+	}
+
+	// First, load the user info from database
+	setValidInfo(username, password);
+
+	// Check if user was found and password matches
+	if (validUserID_.empty()) {
+		std::cerr << "User not found" << std::endl;
+		return false;
+	}
+
+	// Verify the password matches
+	if (validPassword_ == password) {
+		std::cout << "Credentials verified successfully for user: " << validUsername_ << std::endl;
+		return true;
+	}
+
+	std::cerr << "Invalid password for user: " << username << std::endl;
+	return false;
+}
+
 // Destructor implementation
 Authenticator::~Authenticator() {
 	// Cleanup if necessary
