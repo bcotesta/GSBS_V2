@@ -7,177 +7,15 @@
 #include "UIManager.h"
 #include "PageManager.h"
 #include "BankingOperationsManager.h"
-#include "LoginPage.h"
-#include "RegistrationPage.h"
+#include "MainWindow.h"
 #include "User.h"
 
 #include <QApplication>
-#include <QMainWindow>
-#include <QStackedWidget>
-#include <QMenuBar>
-#include <QMenu>
-#include <QAction>
+#include <QFont>
 #include <vector>
 #include <iostream>
 
 using namespace std;
-
-// Forward declarations
-class MainWindow;
-
-// ==================== QT WINDOW SETUP ====================
-
-class MainWindow : public QMainWindow {
-public:
-    MainWindow(PageManager* pageManager, QWidget* parent = nullptr)
-        : QMainWindow(parent), pageManager_(pageManager), currentUser_(nullptr)
-    {
-        setupUI();
-        setupPages();
-        setupMenuBar();
-    }
-
-    ~MainWindow() {
-        if (currentUser_) {
-            delete currentUser_;
-            currentUser_ = nullptr;
-        }
-    }
-
-    void setCurrentUser(User* user) {
-        if (currentUser_) {
-            delete currentUser_;
-        }
-        currentUser_ = user;
-    }
-
-private:
-    PageManager* pageManager_;
-    QStackedWidget* stackedWidget_;
-    User* currentUser_;
-
-    void setupUI() {
-        setWindowTitle("GSBS Banking System");
-        
-        // Mobile-like dimensions (portrait orientation)
-        setFixedSize(450, 800);
-        
-        // Create central stacked widget to hold pages
-        stackedWidget_ = new QStackedWidget(this);
-        setCentralWidget(stackedWidget_);
-        
-        // Set stylesheet for mobile app feel
-        setStyleSheet(
-            "QMainWindow {"
-            "   background-color: #f5f5f5;"
-            "}"
-        );
-    }
-
-    void setupMenuBar() {
-        QMenuBar* menuBar = new QMenuBar(this);
-        setMenuBar(menuBar);
-
-        // File menu
-        QMenu* fileMenu = menuBar->addMenu("&File");
-        
-        QAction* logoutAction = new QAction("&Logout", this);
-        QAction* exitAction = new QAction("E&xit", this);
-        
-        fileMenu->addAction(logoutAction);
-        fileMenu->addSeparator();
-        fileMenu->addAction(exitAction);
-
-        // Connect actions
-        connect(exitAction, &QAction::triggered, this, &QMainWindow::close);
-        connect(logoutAction, &QAction::triggered, [this]() {
-            if (currentUser_) {
-                delete currentUser_;
-                currentUser_ = nullptr;
-            }
-            pageManager_->openPage("login");
-            updateStackedWidget();
-        });
-
-        // Navigation menu
-        QMenu* navMenu = menuBar->addMenu("&Navigation");
-        
-        QAction* backAction = new QAction("&Back", this);
-        backAction->setShortcut(QKeySequence("Alt+Left"));
-        navMenu->addAction(backAction);
-
-        connect(backAction, &QAction::triggered, [this]() {
-            if (pageManager_->canGoBack()) {
-                pageManager_->goBack();
-                updateStackedWidget();
-            }
-        });
-    }
-
-    void setupPages() {
-        // Create and add the login page
-        LoginPage* loginPage = new LoginPage();
-        
-        // Create and add the registration page
-        RegistrationPage* registrationPage = new RegistrationPage();
-        
-        // Set login success callback
-        loginPage->setLoginSuccessCallback([this](User* user) {
-            this->setCurrentUser(user);
-            cout << "User logged in: " << user->email() << endl;
-            
-            // TODO: Navigate to dashboard page
-            // For now, just show a message
-            cout << "Login successful! Dashboard page not yet implemented." << endl;
-        });
-        
-        // Set register callback to navigate to registration page
-        loginPage->setRegisterCallback([this]() {
-            pageManager_->openPage("register");
-            updateStackedWidget();
-        });
-        
-        // Set registration success callback
-        registrationPage->setRegistrationSuccessCallback([this](User* user) {
-            this->setCurrentUser(user);
-            cout << "User registered: " << user->email() << endl;
-            
-            // TODO: Navigate to dashboard page
-            // For now, just show a message
-            cout << "Registration successful! Dashboard page not yet implemented." << endl;
-        });
-        
-        // Set back to login callback
-        registrationPage->setBackToLoginCallback([this]() {
-            pageManager_->openPage("login");
-            updateStackedWidget();
-        });
-        
-        // Add pages to page manager
-        pageManager_->addPage("login", loginPage);
-        pageManager_->addPage("register", registrationPage);
-
-        // Add page widgets to stacked widget
-        if (Page* page = pageManager_->getPage("login")) {
-            stackedWidget_->addWidget(page->getWidget());
-        }
-        if (Page* page = pageManager_->getPage("register")) {
-            stackedWidget_->addWidget(page->getWidget());
-        }
-
-        // TODO: Add more pages here (e.g., DashboardPage, AccountsPage, etc.)
-        
-        // Open the login page initially
-        pageManager_->openPage("login");
-        updateStackedWidget();
-    }
-    
-    void updateStackedWidget() {
-        if (Page* currentPage = pageManager_->getCurrentPage()) {
-            stackedWidget_->setCurrentWidget(currentPage->getWidget());
-        }
-    }
-};
 
 // ==================== QT WINDOW INITIALIZATION ====================
 
@@ -337,7 +175,7 @@ int main(int argc, char *argv[]) {
         initializeQtWindow(argc, argv);
     } else {
         // Launch console app
-        QApplication app(argc, argv); // Still needed for Qt initialization
+        QApplication app(argc, argv); 
         UIManager::displayWelcome();
         runBankingApp();
     }

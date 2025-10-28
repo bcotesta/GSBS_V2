@@ -74,6 +74,7 @@
     <ClCompile Include="AccountManager.cpp" />
     <ClCompile Include="Authenticator.cpp" />
     <ClCompile Include="BankingOperationsManager.cpp" />
+    <ClCompile Include="DashboardPage.cpp" />
     <ClCompile Include="DatabaseManager.cpp" />
     <ClCompile Include="LoginPage.cpp" />
     <ClCompile Include="main.cpp" />
@@ -91,6 +92,7 @@
     <ClInclude Include="AccountManager.h" />
     <ClInclude Include="Authenticator.h" />
     <ClInclude Include="BankingOperationsManager.h" />
+    <ClInclude Include="DashboardPage.h" />
     <ClInclude Include="DatabaseManager.h" />
     <ClInclude Include="LoginPage.h" />
     <ClInclude Include="Page.h" />

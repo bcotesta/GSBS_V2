@@ -83,7 +83,7 @@ void RegistrationPage::buildUI() {
     
     nameInput_ = new QLineEdit(containerWidget_);
     nameInput_->setPlaceholderText("Enter your full name");
-    nameInput_->setMinimumHeight(45);
+    nameInput_->setMinimumHeight(48);
     nameInput_->setStyleSheet(
         "QLineEdit {"
         "   padding: 12px 15px;"
@@ -110,7 +110,7 @@ void RegistrationPage::buildUI() {
     
     emailInput_ = new QLineEdit(containerWidget_);
     emailInput_->setPlaceholderText("Enter your email");
-    emailInput_->setMinimumHeight(45);
+    emailInput_->setMinimumHeight(48);
     emailInput_->setStyleSheet(
         "QLineEdit {"
         "   padding: 12px 15px;"
@@ -137,7 +137,7 @@ void RegistrationPage::buildUI() {
     
     phoneInput_ = new QLineEdit(containerWidget_);
     phoneInput_->setPlaceholderText("Enter your phone number");
-    phoneInput_->setMinimumHeight(45);
+    phoneInput_->setMinimumHeight(48);
     phoneInput_->setStyleSheet(
         "QLineEdit {"
         "   padding: 12px 15px;"
@@ -165,7 +165,7 @@ void RegistrationPage::buildUI() {
     passwordInput_ = new QLineEdit(containerWidget_);
     passwordInput_->setPlaceholderText("Enter your password");
     passwordInput_->setEchoMode(QLineEdit::Password);
-    passwordInput_->setMinimumHeight(45);
+    passwordInput_->setMinimumHeight(48);
     passwordInput_->setStyleSheet(
         "QLineEdit {"
         "   padding: 12px 15px;"
@@ -193,7 +193,7 @@ void RegistrationPage::buildUI() {
     confirmPasswordInput_ = new QLineEdit(containerWidget_);
     confirmPasswordInput_->setPlaceholderText("Re-enter your password");
     confirmPasswordInput_->setEchoMode(QLineEdit::Password);
-    confirmPasswordInput_->setMinimumHeight(45);
+    confirmPasswordInput_->setMinimumHeight(48);
     confirmPasswordInput_->setStyleSheet(
         "QLineEdit {"
         "   padding: 12px 15px;"
@@ -225,10 +225,10 @@ void RegistrationPage::buildUI() {
         "   border: 2px solid #d0d0d0;"
         "   border-radius: 4px;"
         "   background-color: white;"
-        "} "
+        "}"
         "QCheckBox::indicator:hover {"
         "   border: 2px solid #3498db;"
-        "} "
+        "}"
         "QCheckBox::indicator:checked {"
         "   background-color: #3498db;"
         "   border: 2px solid #3498db;"
