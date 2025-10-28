@@ -119,3 +119,17 @@ void Account::saveToDatabase(string uname) {
         std::cerr << "Error saving account to database: " << e.what() << std::endl;
     }
 }
+
+void Account::setBalance(double balance) {
+    balance_ = balance;
+}
+
+void Account::updateBalanceInDatabase(const std::string& tableName) {
+    DatabaseManager& db = DatabaseManager::getInstance();
+    
+    // Update balance in database
+    std::string setClause = "balance = " + std::to_string(balance_);
+    std::string whereClause = "accountNumber = '" + accountNumber_ + "'";
+    
+    db.updateTable(tableName, setClause, whereClause);
+}

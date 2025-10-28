@@ -90,8 +90,8 @@ vector<Account> AccountManager::loadUserAccounts() {
             // Create Account object
             Account acc(accNumber, accType);
             
-            // TODO: Set balance if setter is added to Account class
-            // acc.setBalance(std::stod(balanceStr));
+            // Set balance from database
+            acc.setBalance(std::stod(balanceStr));
             
             accounts.push_back(acc);
             
@@ -147,6 +147,135 @@ void AccountManager::displayAccountSummary(const vector<Account>& accounts) {
         cout << i+1 << ". Account #" << accounts[i].accountNumber() 
              << " - Balance: $" << accounts[i].getBalance() << endl;
     }
+}
+
+bool AccountManager::deposit(Account& account, double amount) {
+    if (amount <= 0) {
+        cerr << "Deposit amount must be positive." << endl;
+        return false;
+    }
+    
+    // 1. Perform deposit on account object (updates in-memory balance)
+    account.deposit(amount);
+    
+    // 2. Sync updated balance to database
+    syncAccountToDatabase(account);
+    
+    // 3. Record transaction in transactions table
+    recordTransaction(account, amount, TransactionType::DEPOSIT, 
+                     "Deposit to account " + account.accountNumber());
+    
+    cout << "[SUCCESS] Deposited $" << amount << " to account " 
+         << account.accountNumber() << endl;
+    cout << "New balance: $" << account.getBalance() << endl;
+    
+    return true;
+}
+
+bool AccountManager::withdraw(Account& account, double amount) {
+    if (amount <= 0) {
+        cerr << "Withdrawal amount must be positive." << endl;
+        return false;
+    }
+    
+    if (amount > account.getBalance()) {
+        cerr << "Insufficient funds. Current balance: $" 
+             << account.getBalance() << endl;
+        return false;
+    }
+    
+    // 1. Perform withdrawal on account object
+    account.withdraw(amount);
+    
+    // 2. Sync updated balance to database
+    syncAccountToDatabase(account);
+    
+    // 3. Record transaction
+    recordTransaction(account, amount, TransactionType::WITHDRAWAL,
+                     "Withdrawal from account " + account.accountNumber());
+    
+    cout << "[SUCCESS] Withdrew $" << amount << " from account " 
+         << account.accountNumber() << endl;
+    cout << "New balance: $" << account.getBalance() << endl;
+    
+    return true;
+}
+
+bool AccountManager::transfer(Account& fromAccount, Account& toAccount, double amount) {
+    if (amount <= 0) {
+        cerr << "Transfer amount must be positive." << endl;
+        return false;
+    }
+    
+    if (amount > fromAccount.getBalance()) {
+        cerr << "Insufficient funds for transfer. Current balance: $" 
+             << fromAccount.getBalance() << endl;
+        return false;
+    }
+    
+    // 1. Withdraw from source account
+    fromAccount.withdraw(amount);
+    
+    // 2. Deposit to destination account
+    toAccount.deposit(amount);
+    
+    // 3. Sync both accounts to database
+    syncAccountToDatabase(fromAccount);
+    syncAccountToDatabase(toAccount);
+    
+    // 4. Record transactions for both accounts
+    recordTransaction(fromAccount, amount, TransactionType::TRANSFER,
+                     "Transfer to account " + toAccount.accountNumber());
+    recordTransaction(toAccount, amount, TransactionType::TRANSFER,
+                     "Transfer from account " + fromAccount.accountNumber());
+    
+    cout << "[SUCCESS] Transferred $" << amount 
+         << " from account " << fromAccount.accountNumber()
+         << " to account " << toAccount.accountNumber() << endl;
+    cout << "Source account new balance: $" << fromAccount.getBalance() << endl;
+    cout << "Destination account new balance: $" << toAccount.getBalance() << endl;
+    
+    return true;
+}
+
+void AccountManager::syncAccountToDatabase(Account& account) {
+    // Update the balance in the accounts table
+    account.updateBalanceInDatabase(accountsTableName_);
+}
+
+void AccountManager::recordTransaction(const Account& account, double amount,
+                                      TransactionType type, const std::string& description) {
+    DatabaseManager& db = DatabaseManager::getInstance();
+    
+    // Convert transaction type to string
+    string typeStr;
+    switch (type) {
+        case TransactionType::DEPOSIT:
+            typeStr = "DEPOSIT";
+            break;
+        case TransactionType::WITHDRAWAL:
+            typeStr = "WITHDRAWAL";
+            break;
+        case TransactionType::TRANSFER:
+            typeStr = "TRANSFER";
+            break;
+        case TransactionType::PAYMENT:
+            typeStr = "PAYMENT";
+            break;
+    }
+    
+    // Format: (accountNumber, transactionType, amount, description, balanceAfter)
+    // transactionDate will be auto-populated by DEFAULT CURRENT_TIMESTAMP
+    string columns = "(accountNumber, transactionType, amount, description, balanceAfter)";
+    string values = "('" + account.accountNumber() + "', '" +
+                   typeStr + "', " +
+                   to_string(amount) + ", '" +
+                   description + "', " +
+                   to_string(account.getBalance()) + ")";
+    
+    db.addtoTable(transactionsTableName_ + " " + columns, values);
+    
+    cout << "[INFO] Transaction recorded in database" << endl;
 }
 
 string AccountManager::getAccountsTableName() const {

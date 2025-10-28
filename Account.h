@@ -14,13 +14,21 @@ public:
 	std::string accountNumber() const;
 	AccountType accountType() const;
 
+	// Balance operations
+	double getBalance() const;
+	void setBalance(double balance);
+
 	// Expose references if external code must inspect/append history
 	std::list<Transaction>& transactionHistory();
 	const std::list<Transaction>& transactionHistory() const;
+	
+	// Core banking operations
 	void deposit(double amount);
 	void withdraw(double amount);
-	double getBalance() const;
-	void saveToDatabase(string uname);
+	
+	// Database operations
+	void saveToDatabase(std::string uname);
+	void updateBalanceInDatabase(const std::string& tableName); 
 
 private:
 	std::string accountNumber_;

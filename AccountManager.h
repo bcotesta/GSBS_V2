@@ -15,6 +15,16 @@ public:
     void saveAccount(const Account& account);
     void displayAccountSummary(const std::vector<Account>& accounts);
     
+    // Banking operations
+    bool deposit(Account& account, double amount);
+    bool withdraw(Account& account, double amount);
+    bool transfer(Account& fromAccount, Account& toAccount, double amount);
+    
+    // Database sync operations
+    void syncAccountToDatabase(Account& account);
+    void recordTransaction(const Account& account, double amount, 
+                          TransactionType type, const std::string& description);
+    
     // Utility
     std::string getAccountsTableName() const;
     std::string getTransactionsTableName() const;

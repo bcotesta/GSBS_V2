@@ -7,10 +7,128 @@
 #include "UIManager.h"
 #include <QtCore/QCoreApplication>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
-// ==================== BANKING APP RUN FUNCTION ====================
+// ==================== HELPER FUNCTION ====================
+
+// Helper to select an account from the list
+static Account* selectAccount(vector<Account>& accounts) {
+    if (accounts.empty()) {
+        UIManager::showError("No accounts available.");
+        return nullptr;
+    }
+    
+    cout << "\n=== Select an Account ===" << endl;
+    for (size_t i = 0; i < accounts.size(); ++i) {
+        cout << (i + 1) << ". Account #" << accounts[i].accountNumber()
+             << " - Balance: $" << accounts[i].getBalance() << endl;
+    }
+    cout << "Enter account number (1-" << accounts.size() << "): ";
+    
+    int choice;
+    cin >> choice;
+    cin.ignore();
+    
+    if (choice < 1 || choice > static_cast<int>(accounts.size())) {
+        UIManager::showError("Invalid account selection.");
+        return nullptr;
+    }
+    
+    return &accounts[choice - 1];
+}
+
+// ==================== BANKING OPERATIONS ====================
+
+static void handleDeposit(AccountManager& accountMgr, vector<Account>& accounts) {
+    Account* account = selectAccount(accounts);
+    if (!account) return;
+    
+    cout << "Enter deposit amount: $";
+    double amount;
+    cin >> amount;
+    cin.ignore();
+    
+    if (accountMgr.deposit(*account, amount)) {
+        UIManager::showSuccess("Deposit completed successfully!");
+    } else {
+        UIManager::showError("Deposit failed.");
+    }
+}
+
+static void handleWithdraw(AccountManager& accountMgr, vector<Account>& accounts) {
+    Account* account = selectAccount(accounts);
+    if (!account) return;
+    
+    cout << "Current balance: $" << account->getBalance() << endl;
+    cout << "Enter withdrawal amount: $";
+    double amount;
+    cin >> amount;
+    cin.ignore();
+    
+    if (accountMgr.withdraw(*account, amount)) {
+        UIManager::showSuccess("Withdrawal completed successfully!");
+    } else {
+        UIManager::showError("Withdrawal failed.");
+    }
+}
+
+static void handleTransfer(AccountManager& accountMgr, vector<Account>& accounts) {
+    if (accounts.size() < 2) {
+        UIManager::showError("You need at least 2 accounts to transfer funds.");
+        return;
+    }
+    
+    cout << "\n--- Select SOURCE account ---" << endl;
+    Account* fromAccount = selectAccount(accounts);
+    if (!fromAccount) return;
+    
+    cout << "\n--- Select DESTINATION account ---" << endl;
+    Account* toAccount = selectAccount(accounts);
+    if (!toAccount) return;
+    
+    if (fromAccount == toAccount) {
+        UIManager::showError("Cannot transfer to the same account.");
+        return;
+    }
+    
+    cout << "Source account balance: $" << fromAccount->getBalance() << endl;
+    cout << "Enter transfer amount: $";
+    double amount;
+    cin >> amount;
+    cin.ignore();
+    
+    if (accountMgr.transfer(*fromAccount, *toAccount, amount)) {
+        UIManager::showSuccess("Transfer completed successfully!");
+    } else {
+        UIManager::showError("Transfer failed.");
+    }
+}
+
+static void handleCreateAccount(AccountManager& accountMgr, vector<Account>& accounts) {
+    AccountType type = UIManager::promptAccountType();
+    Account newAccount = accountMgr.createAccount(type);
+    accounts.push_back(newAccount);
+    UIManager::showSuccess("Account created successfully!");
+}
+
+// ==================== MAIN MENU ====================
+
+static void displayMainMenu() {
+    cout << "\n========================================" << endl;
+    cout << "           BANKING MAIN MENU" << endl;
+    cout << "========================================" << endl;
+    cout << "1. View All Accounts" << endl;
+    cout << "2. Deposit Funds" << endl;
+    cout << "3. Withdraw Funds" << endl;
+    cout << "4. Transfer Funds" << endl;
+    cout << "5. Create New Account" << endl;
+    cout << "6. View Account Summary" << endl;
+    cout << "7. Logout" << endl;
+    cout << "========================================" << endl;
+    cout << "Enter choice: ";
+}
 
 static void runBankingApp() {
     // Step 1: Handle login
@@ -28,18 +146,54 @@ static void runBankingApp() {
     
     // Step 3: Load existing accounts
     vector<Account> accounts = accountMgr.loadUserAccounts();
-    UIManager::displayAccountList(accounts);
     
-    // Step 4: Create new account if desired
-    if (UIManager::promptYesNo("Would you like to create a new account?")) {
-        AccountType type = UIManager::promptAccountType();
-        Account newAccount = accountMgr.createAccount(type);
-        accounts.push_back(newAccount);
-        UIManager::showSuccess("Account created successfully!");
+    // Main menu loop
+    bool running = true;
+    while (running) {
+        displayMainMenu();
+        
+        int choice;
+        cin >> choice;
+        cin.ignore(); // Clear newline from buffer
+        
+        switch (choice) {
+            case 1: // View All Accounts
+                UIManager::displayAccountList(accounts);
+                break;
+                
+            case 2: // Deposit
+                handleDeposit(accountMgr, accounts);
+                break;
+                
+            case 3: // Withdraw
+                handleWithdraw(accountMgr, accounts);
+                break;
+                
+            case 4: // Transfer
+                handleTransfer(accountMgr, accounts);
+                break;
+                
+            case 5: // Create Account
+                handleCreateAccount(accountMgr, accounts);
+                break;
+                
+            case 6: // View Summary
+                accountMgr.displayAccountSummary(accounts);
+                break;
+                
+            case 7: // Logout
+                UIManager::showInfo("Logging out...");
+                session.logout();
+                running = false;
+                break;
+                
+            default:
+                UIManager::showError("Invalid choice. Please try again.");
+                break;
+        }
     }
     
-    // Step 5: Display final summary
-    accountMgr.displayAccountSummary(accounts);
+    UIManager::showSuccess("Thank you for using GSBS Banking System!");
 }
 
 // ==================== MAIN ENTRY POINT ====================
