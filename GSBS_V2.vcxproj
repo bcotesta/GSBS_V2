@@ -79,6 +79,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PageManager.cpp" />
+    <ClCompile Include="RegistrationPage.cpp" />
     <ClCompile Include="SessionManager.cpp" />
     <ClCompile Include="Transaction.cpp" />
     <ClCompile Include="Types.cpp" />
@@ -94,6 +95,7 @@
     <ClInclude Include="LoginPage.h" />
     <ClInclude Include="Page.h" />
     <ClInclude Include="PageManager.h" />
+    <ClInclude Include="RegistrationPage.h" />
     <ClInclude Include="SessionManager.h" />
     <ClInclude Include="Transaction.h" />
     <ClInclude Include="Types.h" />

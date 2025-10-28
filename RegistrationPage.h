@@ -9,18 +9,18 @@
 #include <functional>
 #include <memory>
 
-class LoginPage : public Page
+class RegistrationPage : public Page
 {
 public:
-    LoginPage();
-    ~LoginPage() override;
+    RegistrationPage();
+    ~RegistrationPage() override;
     
     // Lifecycle hooks
     void onShow() override;
     
     // Callbacks for navigation
-    void setLoginSuccessCallback(std::function<void(User*)> callback);
-    void setRegisterCallback(std::function<void()> callback);
+    void setRegistrationSuccessCallback(std::function<void(User*)> callback);
+    void setBackToLoginCallback(std::function<void()> callback);
     
 protected:
     void buildUI() override;
@@ -28,27 +28,32 @@ protected:
 private:
     // UI Components
     QWidget* containerWidget_;
-    QLineEdit* usernameInput_;
+    QLineEdit* nameInput_;
+    QLineEdit* emailInput_;
+    QLineEdit* phoneInput_;
     QLineEdit* passwordInput_;
-    QPushButton* loginButton_;
+    QLineEdit* confirmPasswordInput_;
     QPushButton* registerButton_;
+    QPushButton* cancelButton_;
+    QPushButton* backToLoginButton_;
     QLabel* statusLabel_;
     QLabel* titleLabel_;
     QCheckBox* showPasswordCheckbox_;
     
     // Callbacks
-    std::function<void(User*)> onLoginSuccess_;
-    std::function<void()> onRegisterClick_;
+    std::function<void(User*)> onRegistrationSuccess_;
+    std::function<void()> onBackToLoginClick_;
     
     // Backend
     Authenticator& auth_;
     
     // Handlers
-    void handleLogin();
     void handleRegister();
+    void handleBackToLogin();
     void handleShowPasswordToggle(bool checked);
     
     // Helper
     void showError(const QString& message);
     void showSuccess(const QString& message);
+    bool validateInputs();
 };

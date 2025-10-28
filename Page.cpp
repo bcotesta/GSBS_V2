@@ -9,6 +9,10 @@ Page::Page(const string& title)
 
 Page::~Page() {
     if (widget_) {
+        // If widget has a parent (Qt ownership), remove from parent first
+        if (widget_->parent()) {
+            widget_->setParent(nullptr);
+        }
         delete widget_;
         widget_ = nullptr;
     }
