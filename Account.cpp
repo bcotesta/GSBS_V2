@@ -30,17 +30,10 @@ void Account::deposit(double amount)
         cerr << "Deposit amount must be positive." << endl;
         return;
     }
+    
+    // Simply update the balance
+    // Transaction recording will be handled by AccountManager
     balance_ += amount;
-
-    // Use a more robust ID generation
-    static int nextId = 1;
-    int newId = nextId++;
-    DateTime now = std::chrono::system_clock::now();
-    Transaction depositTransaction(newId, now, amount, TransactionType::DEPOSIT, "Deposit - " + to_string(newId));
-    transactionHistory_.push_back(depositTransaction);
-    depositTransaction.process();
-
-    cout << "Deposited: $" << amount << ", New Balance: $" << balance_ << endl;
 }
 
 // Withdraw from the account
@@ -54,17 +47,10 @@ void Account::withdraw(double amount)
         cerr << "Insufficient funds for withdrawal." << endl;
         return;
     }
+    
+    // Simply update the balance
+    // Transaction recording will be handled by AccountManager
     balance_ -= amount;
-
-    // Use a more robust ID generation
-    static int nextId = 1;
-    int newId = nextId++;
-    DateTime now = std::chrono::system_clock::now();
-    Transaction withdrawalTransaction(newId, now, amount, TransactionType::WITHDRAWAL, "Withdrawal - " + to_string(newId));
-    transactionHistory_.push_back(withdrawalTransaction);
-    withdrawalTransaction.process();
-
-    cout << "Withdrew: $" << amount << ", New Balance: $" << balance_ << endl;
 }
 
 double Account::getBalance() const { return balance_; }
