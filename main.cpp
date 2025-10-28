@@ -3,24 +3,23 @@
 // but ready to get it done. Blue Jays are down 1-0 >:(.
 
 #include "DatabaseManager.h"
-
+#include "Authenticator.h"
 
 #include <QtCore/QCoreApplication>
 
+using namespace std;
+
 // function to test DatabaseManager singleton connection
 // gets all columns from userinfo table
-static void DEBUG_connectDB() {
-    DatabaseManager& dbManager = DatabaseManager::getInstance();
-
-	// grab multiple columns from userinfo table for a specific userID
-    std::string selectCols = "userID, name, email, phone, password";
-	auto results = dbManager.retrieveTable("userinfo", "");
-    for (const auto& row : results) {
-        std::cout << "User Record:" << std::endl;
-        for (const auto& [colName, value] : row) {
-            std::cout << "  " << colName << ": " << static_cast<std::string>(value) << std::endl;
-        }
-	}
+static void DEBUG() {
+    // Test authenticator
+	Authenticator& auth = Authenticator::getInstance();
+	string testUsername, testPassword;
+	cout << "Enter username (email): ";
+	getline(cin, testUsername);
+	cout << "Enter password: ";
+	getline(cin, testPassword);
+	auth.setValidInfo(testUsername, testPassword);
 }
 
 
@@ -28,7 +27,7 @@ static void DEBUG_connectDB() {
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-	DEBUG_connectDB();
+	DEBUG();
     return app.exec();
 }
 
