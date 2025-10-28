@@ -10,6 +10,7 @@ public:
     
     // Session operations
     bool login();
+    bool registerUser();
     void logout();
     bool isLoggedIn() const;
     
@@ -23,4 +24,6 @@ private:
     bool loggedIn_;
     
     bool promptCredentials(std::string& username, std::string& password);
+    bool promptRegistrationInfo(std::string& name, std::string& email,
+                                std::string& phone, std::string& password);
 };

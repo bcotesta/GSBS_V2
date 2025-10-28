@@ -86,6 +86,57 @@ bool Authenticator::verifyCredentials(const std::string& username, const std::st
 	return false;
 }
 
+bool Authenticator::registerNewUser(const std::string& name, const std::string& email, 
+                                    const std::string& phone, const std::string& password) {
+    // Safety checks
+    if (name.empty() || email.empty() || password.empty()) {
+        std::cerr << "Name, email, and password are required fields" << std::endl;
+        return false;
+    }
+    
+    // Check if user already exists
+    DatabaseManager& dbManager = DatabaseManager::getInstance();
+    std::string whereClause = "email = '" + email + "'";
+    std::string existingUserID = static_cast<std::string>(
+        dbManager.retStringW("userID", "userinfo", whereClause, "userID")
+    );
+    
+    if (!existingUserID.empty()) {
+        std::cerr << "User with email " << email << " already exists" << std::endl;
+        return false;
+    }
+    
+    // Get the next available userID
+    auto allUsers = dbManager.retrieveTable("userinfo", "");
+    int nextUserID = allUsers.size() + 1;  // Simple increment (you may want a better approach)
+    
+    // Insert new user into database
+    std::string columns = "(userID, name, email, phone, password)";
+    std::string values = "('" + std::to_string(nextUserID) + "', '" +
+                        name + "', '" +
+                        email + "', '" +
+                        phone + "', '" +
+                        password + "')";
+    
+    try {
+        dbManager.addtoTable("userinfo " + columns, values);
+        std::cout << "User registered successfully! UserID: " << nextUserID << std::endl;
+        
+        // Set valid info for immediate login
+        validUserID_ = std::to_string(nextUserID);
+        validName_ = name;
+        validUsername_ = email;
+        validPhone_ = phone;
+        validPassword_ = password;
+        
+        return true;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error registering user: " << e.what() << std::endl;
+        return false;
+    }
+}
+
 // Destructor implementation
 Authenticator::~Authenticator() {
 	// Cleanup if necessary

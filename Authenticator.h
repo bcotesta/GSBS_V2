@@ -18,6 +18,8 @@ public:
 	// Member functions
 	bool verifyCredentials(const std::string& username, const std::string& password);
 	void setValidInfo(const std::string& username, const std::string& password);
+	bool registerNewUser(const std::string& name, const std::string& email, 
+	                     const std::string& phone, const std::string& password);  // ADD THIS
 	std::string getUserID() const { return validUserID_; }
 	std::string getUsername() const { return validUsername_; }
 private:

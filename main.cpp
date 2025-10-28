@@ -131,10 +131,38 @@ static void displayMainMenu() {
 }
 
 static void runBankingApp() {
-    // Step 1: Handle login
     SessionManager session;
-    if (!session.login()) {
-        UIManager::showError("Login failed. Exiting...");
+    
+    // Offer login or registration
+    cout << "\n=== Welcome to GSBS Banking System ===" << endl;
+    cout << "1. Login" << endl;
+    cout << "2. Register New Account" << endl;
+    cout << "Enter choice (1-2): ";
+    
+    int choice;
+    cin >> choice;
+    cin.ignore(); // Clear newline from buffer
+    
+    bool success = false;
+    
+    if (choice == 1) {
+        // Existing login
+        success = session.login();
+        if (!success) {
+            UIManager::showError("Login failed. Exiting...");
+            return;
+        }
+    }
+    else if (choice == 2) {
+        // New registration
+        success = session.registerUser();
+        if (!success) {
+            UIManager::showError("Registration failed. Exiting...");
+            return;
+        }
+    }
+    else {
+        UIManager::showError("Invalid choice. Exiting...");
         return;
     }
     
@@ -152,11 +180,11 @@ static void runBankingApp() {
     while (running) {
         displayMainMenu();
         
-        int choice;
-        cin >> choice;
+        int menuChoice;
+        cin >> menuChoice;
         cin.ignore(); // Clear newline from buffer
         
-        switch (choice) {
+        switch (menuChoice) {
             case 1: // View All Accounts
                 UIManager::displayAccountList(accounts);
                 break;
