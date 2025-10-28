@@ -8,8 +8,19 @@
 #include <QtCore/QCoreApplication>
 
 // function to test DatabaseManager singleton connection
+// gets all columns from userinfo table
 static void DEBUG_connectDB() {
     DatabaseManager& dbManager = DatabaseManager::getInstance();
+
+	// grab multiple columns from userinfo table for a specific userID
+    std::string selectCols = "userID, name, email, phone, password";
+	auto results = dbManager.retrieveTable("userinfo", "");
+    for (const auto& row : results) {
+        std::cout << "User Record:" << std::endl;
+        for (const auto& [colName, value] : row) {
+            std::cout << "  " << colName << ": " << static_cast<std::string>(value) << std::endl;
+        }
+	}
 }
 
 

@@ -80,6 +80,56 @@ void DatabaseManager::ensureConnection() {
     }
 }
 
+
+// Retrieve all rows from a table with optional WHERE clause
+// Returns a vector of maps, where each map represents a row with column names as keys
+std::vector<std::map<std::string, sql::SQLString>> DatabaseManager::retrieveTable(
+    std::string tab,
+    std::string whereClause)
+{
+    std::vector<std::map<std::string, sql::SQLString>> results;
+    sql::ResultSet* res = nullptr;
+    
+    try {
+        ensureConnection();
+        
+        // Build query with optional WHERE clause
+        statement = select + "* " + from + tab;
+        if (!whereClause.empty()) {
+            statement += " " + where + whereClause;
+        }
+        
+        res = stmt->executeQuery(statement);
+        
+        // Get metadata to determine column names
+        sql::ResultSetMetaData* meta = res->getMetaData();
+        unsigned int columnCount = meta->getColumnCount();
+        
+        // Iterate through all rows
+        while (res->next()) {
+            std::map<std::string, sql::SQLString> row;
+            
+            // Get each column value by index
+            for (unsigned int i = 1; i <= columnCount; ++i) {
+                std::string columnName = meta->getColumnName(i);
+                row[columnName] = res->getString(i);
+            }
+            
+            results.push_back(row);
+        }
+        
+        std::cout << "Retrieved " << results.size() << " rows from table: " << tab << std::endl;
+    }
+    catch (sql::SQLException& e) {
+        std::cerr << "SQL Error in retrieveTable: " << e.what() << std::endl;
+    }
+    
+    if (res) {
+        delete res;
+    }
+    
+    return results;
+}
 // Create a user-specific accounts table
 // Table name format: userID_username_acc
 void DatabaseManager::createUserAccountsTable(std::string userID, std::string username)

@@ -19,11 +19,13 @@ public:
 	// Delete copy constructor and assignment operator
 	DatabaseManager(const DatabaseManager&) = delete;
 	DatabaseManager& operator=(const DatabaseManager&) = delete;
+	
 	// public member functions
 	
 	// These are used to create user-specific tables upon account creation
 	void createUserAccountsTable(std::string userID, std::string username);
 	void createUserTransactionsTable(std::string userID, std::string username);
+	
 	void addtoTable(std::string tab, std::string val);
 	void updateTable(std::string tab, std::string setv, std::string cond);
 
@@ -34,6 +36,11 @@ public:
 		std::string cols,
 		std::string tab,
 		std::string whereClause);
+	std::vector<std::map<std::string, sql::SQLString>> retrieveTable(
+		std::string tab,
+		std::string whereClause);
+
+
 private:
 	// Private constructor for Singleton
 	DatabaseManager();
