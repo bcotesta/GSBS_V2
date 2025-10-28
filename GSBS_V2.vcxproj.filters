@@ -53,6 +53,15 @@
     <ClCompile Include="UIManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Page.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PageManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h">
@@ -80,6 +89,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UIManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Page.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PageManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
