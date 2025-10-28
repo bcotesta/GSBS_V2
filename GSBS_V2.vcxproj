@@ -71,19 +71,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Account.cpp" />
+    <ClCompile Include="AccountManager.cpp" />
     <ClCompile Include="Authenticator.cpp" />
     <ClCompile Include="DatabaseManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SessionManager.cpp" />
     <ClCompile Include="Transaction.cpp" />
     <ClCompile Include="Types.cpp" />
+    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Account.h" />
+    <ClInclude Include="AccountManager.h" />
     <ClInclude Include="Authenticator.h" />
     <ClInclude Include="DatabaseManager.h" />
+    <ClInclude Include="SessionManager.h" />
     <ClInclude Include="Transaction.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
