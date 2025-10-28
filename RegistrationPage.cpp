@@ -38,7 +38,7 @@ void RegistrationPage::buildUI() {
     // Set background color for the page
     centralWidget->setStyleSheet("QWidget { background-color: #f5f5f5; }");
     
-    // Create a mobile-like centered container
+    // centered container
     containerWidget_ = new QWidget(centralWidget);
     containerWidget_->setFixedWidth(400);
     containerWidget_->setStyleSheet(
@@ -53,7 +53,7 @@ void RegistrationPage::buildUI() {
     containerLayout->setSpacing(10);
     containerLayout->setContentsMargins(40, 30, 40, 30);
     
-    // Title with modern styling
+    // Title
     titleLabel_ = new QLabel("Create Account", containerWidget_);
     QFont titleFont("Segoe UI", 26, QFont::Bold);
     titleLabel_->setFont(titleFont);

@@ -48,9 +48,6 @@ private:
     User* currentUser_;
     
     // Helper methods
-    void buildUserInfoSection(QVBoxLayout* layout);
-    void buildAccountsSection(QVBoxLayout* layout);
     void refreshAccountsDisplay();
-    QWidget* createAccountCard(const Account& account);
     QString accountTypeToString(AccountType type) const;
 };

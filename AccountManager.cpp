@@ -1,3 +1,6 @@
+// Brandon Cotesta | 10/28/2025 | 2:00 PM
+
+
 #include "AccountManager.h"
 #include "Authenticator.h"
 #include <iostream>
@@ -40,6 +43,7 @@ AccountManager::AccountManager(const User& user)
     ensureTablesExist();
 }
 
+// initialize table names based on user info
 void AccountManager::initializeTableNames() {
     string cleanName = sanitizeName(user_.name());
     string userIdStr = to_string(user_.userId());
@@ -48,6 +52,7 @@ void AccountManager::initializeTableNames() {
     transactionsTableName_ = userIdStr + "_" + cleanName + "_transactions";
 }
 
+// ensure user-specific tables exist, create if not
 void AccountManager::ensureTablesExist() {
     DatabaseManager& db = DatabaseManager::getInstance();
     Authenticator& auth = Authenticator::getInstance();
@@ -69,6 +74,7 @@ void AccountManager::ensureTablesExist() {
     }
 }
 
+// load existing accounts from database
 vector<Account> AccountManager::loadUserAccounts() {
     DatabaseManager& db = DatabaseManager::getInstance();
     vector<Account> accounts;
@@ -104,6 +110,7 @@ vector<Account> AccountManager::loadUserAccounts() {
     return accounts;
 }
 
+// create a new account and save to database
 Account AccountManager::createAccount(AccountType type) {
     string accountNumber = generateAccountNumber();
     
@@ -116,12 +123,7 @@ Account AccountManager::createAccount(AccountType type) {
     return newAccount;
 }
 
-void AccountManager::saveAccount(const Account& account) {
-    // The account should already have its own saveToDatabase method
-    // This is a wrapper if needed
-    cout << "Saving account: " << account.accountNumber() << endl;
-}
-
+// display summary of accounts to console
 void AccountManager::displayAccountSummary(const vector<Account>& accounts) {
     DatabaseManager& db = DatabaseManager::getInstance();
     
@@ -149,6 +151,7 @@ void AccountManager::displayAccountSummary(const vector<Account>& accounts) {
     }
 }
 
+// perform deposit operation
 bool AccountManager::deposit(Account& account, double amount) {
     if (amount <= 0) {
         cerr << "Deposit amount must be positive." << endl;
@@ -172,6 +175,7 @@ bool AccountManager::deposit(Account& account, double amount) {
     return true;
 }
 
+// perform withdrawal operation
 bool AccountManager::withdraw(Account& account, double amount) {
     if (amount <= 0) {
         cerr << "Withdrawal amount must be positive." << endl;
@@ -201,6 +205,7 @@ bool AccountManager::withdraw(Account& account, double amount) {
     return true;
 }
 
+// perform transfer operation between two accounts
 bool AccountManager::transfer(Account& fromAccount, Account& toAccount, double amount) {
     if (amount <= 0) {
         cerr << "Transfer amount must be positive." << endl;
@@ -238,11 +243,13 @@ bool AccountManager::transfer(Account& fromAccount, Account& toAccount, double a
     return true;
 }
 
+// sync account balance to database
 void AccountManager::syncAccountToDatabase(Account& account) {
     // Update the balance in the accounts table
     account.updateBalanceInDatabase(accountsTableName_);
 }
 
+// record a transaction in the transactions table
 void AccountManager::recordTransaction(const Account& account, double amount,
                                       TransactionType type, const std::string& description) {
     DatabaseManager& db = DatabaseManager::getInstance();

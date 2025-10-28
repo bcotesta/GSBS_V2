@@ -1,3 +1,4 @@
+// Brandon Cotesta | 10/27/2025 | 8:51 PM
 #include "User.h"
 #include "DatabaseManager.h"
 #include "Authenticator.h"

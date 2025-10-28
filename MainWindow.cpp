@@ -27,6 +27,7 @@ MainWindow::~MainWindow() {
     }
 }
 
+// Set the currently logged-in user
 void MainWindow::setCurrentUser(User* user) {
     if (currentUser_) {
         delete currentUser_;
@@ -52,6 +53,7 @@ void MainWindow::setupUI() {
     );
 }
 
+// Setup the menu bar with File and Navigation menus
 void MainWindow::setupMenuBar() {
     QMenuBar* menuBar = new QMenuBar(this);
     setMenuBar(menuBar);
@@ -75,20 +77,6 @@ void MainWindow::setupMenuBar() {
         }
         pageManager_->openPage("login");
         updateStackedWidget();
-    });
-
-    // Navigation menu
-    QMenu* navMenu = menuBar->addMenu("&Navigation");
-    
-    QAction* backAction = new QAction("&Back", this);
-    backAction->setShortcut(QKeySequence("Alt+Left"));
-    navMenu->addAction(backAction);
-
-    connect(backAction, &QAction::triggered, [this]() {
-        if (pageManager_->canGoBack()) {
-            pageManager_->goBack();
-            updateStackedWidget();
-        }
     });
 }
 

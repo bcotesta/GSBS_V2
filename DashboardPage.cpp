@@ -36,10 +36,10 @@ void DashboardPage::setUser(User* user) {
 void DashboardPage::buildUI() {
     QWidget* centralWidget = getCentralWidget();
     
-    // Set background color for the page - EXACT match
+    // Set background color for the page
     centralWidget->setStyleSheet("QWidget { background-color: #f5f5f5; }");
     
-    // Create a centered container like LoginPage
+    // Create a centered container
     containerWidget_ = new QWidget(centralWidget);
     containerWidget_->setFixedWidth(400);
     containerWidget_->setStyleSheet(
@@ -54,7 +54,7 @@ void DashboardPage::buildUI() {
     containerLayout->setSpacing(15);
     containerLayout->setContentsMargins(40, 35, 40, 35);
     
-    // Title - matching LoginPage title style
+    // Title
     titleLabel_ = new QLabel("Dashboard", containerWidget_);
     QFont titleFont("Segoe UI", 28, QFont::Bold);
     titleLabel_->setFont(titleFont);
@@ -65,7 +65,7 @@ void DashboardPage::buildUI() {
     
     containerLayout->addSpacing(5);
     
-    // Welcome message - matching LoginPage subtitle style
+    // Welcome message
     welcomeLabel_ = new QLabel("Welcome back!", containerWidget_);
     QFont welcomeFont("Segoe UI", 11);
     welcomeLabel_->setFont(welcomeFont);
@@ -171,7 +171,7 @@ void DashboardPage::buildUI() {
     
     containerLayout->addWidget(accountsContainer_);
     
-    // Add container to main layout with centering - EXACTLY like LoginPage
+    // Add container to main layout with centering
     mainLayout_->addStretch();
     
     // Horizontal centering
@@ -182,19 +182,6 @@ void DashboardPage::buildUI() {
     mainLayout_->addLayout(hLayout);
     
     mainLayout_->addStretch();
-}
-
-void DashboardPage::buildUserInfoSection(QVBoxLayout* layout) {
-    // Not used anymore - keeping for compatibility
-}
-
-void DashboardPage::buildAccountsSection(QVBoxLayout* layout) {
-    // Not used anymore - keeping for compatibility
-}
-
-QWidget* DashboardPage::createAccountCard(const Account& account) {
-    // Not used anymore - keeping for compatibility
-    return nullptr;
 }
 
 QString DashboardPage::accountTypeToString(AccountType type) const {

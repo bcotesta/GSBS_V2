@@ -1,3 +1,5 @@
+// This class basically is the implementation of the console-based user interface for the banking system.
+
 #include "UIManager.h"
 #include <iostream>
 #include <iomanip>
@@ -11,6 +13,7 @@ void UIManager::displayWelcome() {
     cout << endl;
 }
 
+// Display user information
 void UIManager::displayUserInfo(const User& user) {
     cout << "\n=== User Information ===" << endl;
     cout << "User ID: " << user.userId() << endl;
@@ -20,6 +23,7 @@ void UIManager::displayUserInfo(const User& user) {
     cout << "=========================" << endl;
 }
 
+// Display account details
 void UIManager::displayAccountDetails(const Account& account) {
     cout << "\n--- Account Details ---" << endl;
     cout << "Account Number: " << account.accountNumber() << endl;
@@ -47,6 +51,7 @@ void UIManager::displayAccountDetails(const Account& account) {
     cout << "-----------------------" << endl;
 }
 
+// Display a list of accounts
 void UIManager::displayAccountList(const vector<Account>& accounts) {
     if (accounts.empty()) {
         cout << "\nNo accounts found." << endl;
@@ -61,6 +66,7 @@ void UIManager::displayAccountList(const vector<Account>& accounts) {
     cout << "=====================" << endl;
 }
 
+// Prompt user for a yes/no response
 bool UIManager::promptYesNo(const string& question) {
     cout << "\n" << question << " (y/n): ";
     string response;
@@ -69,6 +75,7 @@ bool UIManager::promptYesNo(const string& question) {
     return !response.empty() && (response[0] == 'y' || response[0] == 'Y');
 }
 
+// Prompt user to select an account type
 AccountType UIManager::promptAccountType() {
     cout << "\n=== Select Account Type ===" << endl;
     cout << "1. CHEQUING" << endl;
@@ -96,6 +103,7 @@ AccountType UIManager::promptAccountType() {
     }
 }
 
+// Prompt user to select from a menu of options
 int UIManager::promptMenuChoice(const vector<string>& options) {
     cout << "\n=== Menu ===" << endl;
     for (size_t i = 0; i < options.size(); ++i) {

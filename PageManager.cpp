@@ -1,3 +1,4 @@
+// Brandon Cotesta || 10/28/2025 | 1:00 PM
 #include "PageManager.h"
 #include <algorithm>
 #include <iostream>
@@ -13,6 +14,7 @@ PageManager::~PageManager() {
     closeAllPages();
 }
 
+// Add a new page with the given ID
 void PageManager::addPage(const string& pageId, Page* page) {
     // Check if page already exists
     if (hasPage(pageId)) {
@@ -27,6 +29,7 @@ void PageManager::addPage(const string& pageId, Page* page) {
     cout << "Page '" << page->getTitle() << "' (ID: " << pageId << ") added to PageManager" << endl;
 }
 
+// Remove a page by its ID
 void PageManager::removePage(const string& pageId) {
     // If trying to remove current page, close it first
     if (currentPageId_ == pageId) {
@@ -41,6 +44,7 @@ void PageManager::removePage(const string& pageId) {
     cout << "Page with ID '" << pageId << "' removed from PageManager" << endl;
 }
 
+// Open a page by its ID
 bool PageManager::openPage(const string& pageId) {
     // Find the page
     PageEntry* entry = findPageEntry(pageId);
@@ -68,6 +72,7 @@ bool PageManager::openPage(const string& pageId) {
     return true;
 }
 
+// Close the currently open page
 void PageManager::closeCurrentPage() {
     if (currentPageId_.empty()) {
         return; // No page is currently open
@@ -82,6 +87,7 @@ void PageManager::closeCurrentPage() {
     currentPageId_ = "";
 }
 
+// Close all pages
 void PageManager::closeAllPages() {
     for (auto& entry : pages_) {
         if (entry.page) {
@@ -155,6 +161,7 @@ void PageManager::clearHistory() {
     navigationHistory_.clear();
 }
 
+// Helper method to find a page entry by ID
 PageManager::PageEntry* PageManager::findPageEntry(const string& pageId) {
     for (auto& entry : pages_) {
         if (entry.id == pageId) {

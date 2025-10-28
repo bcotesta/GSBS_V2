@@ -4,11 +4,13 @@
 
 using namespace std;
 
+// Constructor to set members
 BankingOperationsManager::BankingOperationsManager(AccountManager& accountMgr, std::vector<Account>& accounts)
     : accountMgr_(accountMgr), accounts_(accounts)
 {
 }
 
+// Account selection method
 Account* BankingOperationsManager::selectAccount() {
     if (accounts_.empty()) {
         UIManager::showError("No accounts available.");
@@ -34,6 +36,7 @@ Account* BankingOperationsManager::selectAccount() {
     return &accounts_[choice - 1];
 }
 
+// for console input of amount
 bool BankingOperationsManager::promptAmount(const std::string& prompt, double& amount) {
     cout << prompt;
     cin >> amount;
@@ -41,6 +44,7 @@ bool BankingOperationsManager::promptAmount(const std::string& prompt, double& a
     return cin.good();
 }
 
+// console deposit handler
 void BankingOperationsManager::handleDeposit() {
     Account* account = selectAccount();
     if (!account) return;
@@ -58,6 +62,7 @@ void BankingOperationsManager::handleDeposit() {
     }
 }
 
+// console  for withdrawal
 void BankingOperationsManager::handleWithdraw() {
     Account* account = selectAccount();
     if (!account) return;
@@ -77,6 +82,7 @@ void BankingOperationsManager::handleWithdraw() {
     }
 }
 
+// console transfer
 void BankingOperationsManager::handleTransfer() {
     if (accounts_.size() < 2) {
         UIManager::showError("You need at least 2 accounts to transfer funds.");
@@ -111,6 +117,7 @@ void BankingOperationsManager::handleTransfer() {
     }
 }
 
+// console account creation
 void BankingOperationsManager::handleCreateAccount() {
     AccountType type = UIManager::promptAccountType();
     Account newAccount = accountMgr_.createAccount(type);

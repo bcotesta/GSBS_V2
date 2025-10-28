@@ -1,13 +1,17 @@
+// Brandon Cotesta || 10/28/2025 | 1:00 PM
+
 #include "SessionManager.h"
 #include <iostream>
 
 using namespace std;
 
+// Constructor that grabs the singleton Authenticator instance
 SessionManager::SessionManager()
     : auth_(Authenticator::getInstance()), currentUser_(nullptr), loggedIn_(false)
 {
 }
 
+// Login method
 bool SessionManager::login() {
     string username, password;
     
@@ -30,6 +34,7 @@ bool SessionManager::login() {
     return true;
 }
 
+// logout method
 void SessionManager::logout() {
     if (loggedIn_) {
         cout << "Logging out user: " << currentUser_->name() << endl;
@@ -51,6 +56,7 @@ const User* SessionManager::getCurrentUser() const {
     return currentUser_.get();
 }
 
+// Helper to prompt for username and password in console
 bool SessionManager::promptCredentials(string& username, string& password) {
     cout << "Enter username (email): ";
     getline(cin, username);
@@ -66,6 +72,7 @@ bool SessionManager::promptCredentials(string& username, string& password) {
     return true;
 }
 
+// Registration method
 bool SessionManager::registerUser() {
     string name, email, phone, password;
     
@@ -87,6 +94,7 @@ bool SessionManager::registerUser() {
     return true;
 }
 
+// Helper to prompt for registration info in console
 bool SessionManager::promptRegistrationInfo(string& name, string& email, 
                                            string& phone, string& password) {
     cout << "\n=== User Registration ===" << endl;

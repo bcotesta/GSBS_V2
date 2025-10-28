@@ -12,7 +12,6 @@ public:
     // Account operations
     std::vector<Account> loadUserAccounts();
     Account createAccount(AccountType type);
-    void saveAccount(const Account& account);
     void displayAccountSummary(const std::vector<Account>& accounts);
     
     // Banking operations

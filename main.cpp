@@ -2,6 +2,9 @@
 // MOOD: Neutral. not excited to spend the night doing this
 // but ready to get it done. Blue Jays are down 1-0 >:(.
 
+// VERY IMPORTANT NOTE - ALL PAGE STUFF MUST BE DONE IN MAINWINDOW.CPP
+// THAT IS WHERE YOU ADD THE RESPECTIVE PAGES TO BE USED IN THE APP
+
 #include "SessionManager.h"
 #include "AccountManager.h"
 #include "UIManager.h"
@@ -43,6 +46,8 @@ static void initializeQtWindow(int argc, char* argv[]) {
 }
 
 // ==================== CONSOLE-BASED BANKING APP (Legacy) ====================
+// i'm keeping this here for debug purposes, and using actual banking functions
+// while w build GUI
 
 static void displayMainMenu() {
     cout << "\n========================================" << endl;
