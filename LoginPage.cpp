@@ -2,6 +2,8 @@
 // Example login page
 
 #include "LoginPage.h"
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 
 LoginPage::LoginPage()
     : Page("Login"),

@@ -1,5 +1,3 @@
-# PageManager.h
-
 #pragma once
 
 #include "Page.h"

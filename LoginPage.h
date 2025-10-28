@@ -1,6 +1,10 @@
 #pragma once
 #include "Page.h"
 #include "SessionManager.h"
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
+#include <functional>
 
 class LoginPage : public Page
 {

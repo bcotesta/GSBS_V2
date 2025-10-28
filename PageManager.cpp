@@ -1,6 +1,8 @@
 #include "PageManager.h"
 #include <algorithm>
 #include <iostream>
+#include <string>
+using namespace std;
 
 PageManager::PageManager()
     : currentPageId_("")
