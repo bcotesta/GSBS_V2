@@ -3,6 +3,9 @@
 #include "PageManager.h"
 #include "User.h"
 #include "DashboardPage.h"
+#include "SettingsPage.h"
+#include "TransactionsPage.h"
+#include "UserPage.h"
 
 #include <QMainWindow>
 #include <QPushButton>
@@ -30,6 +33,9 @@ private:
     QStackedWidget* stackedWidget_;
     User* currentUser_;
     DashboardPage* dashboardPage_;
+	SettingsPage* settingsPage_;
+    TransactionsPage* transactionsPage_;
+    UserPage* userPage_;
     
     // Navigation bar widgets
     QWidget* navBarWidget_;

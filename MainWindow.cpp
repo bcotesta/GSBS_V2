@@ -5,10 +5,15 @@
 #include "LoginPage.h"
 #include "RegistrationPage.h"
 
+#include <iostream>
+
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>
-#include <iostream>
+#include <QtSvg/QSvgRenderer>
+#include <QtGui/QIcon>
+#include <QtGui/QPainter>
+
 
 using namespace std;
 
@@ -103,8 +108,11 @@ void MainWindow::setupPages() {
     // Create and add the registration page
     RegistrationPage* registrationPage = new RegistrationPage();
     
-    // Create and add the dashboard page
+    // Create and add the content pages
     dashboardPage_ = new DashboardPage();
+	settingsPage_ = new SettingsPage();
+    transactionsPage_ = new TransactionsPage();
+    userPage_ = new UserPage();
     
     // Set login success callback
     loginPage->setLoginSuccessCallback([this](User* user) {
@@ -148,6 +156,9 @@ void MainWindow::setupPages() {
     pageManager_->addPage("login", loginPage);
     pageManager_->addPage("register", registrationPage);
     pageManager_->addPage("dashboard", dashboardPage_);
+    pageManager_->addPage("settings", settingsPage_);
+    pageManager_->addPage("transactions", transactionsPage_);
+    pageManager_->addPage("user", userPage_);
 
     // Add page widgets to stacked widget
     if (Page* page = pageManager_->getPage("login")) {
@@ -157,6 +168,15 @@ void MainWindow::setupPages() {
         stackedWidget_->addWidget(page->getWidget());
     }
     if (Page* page = pageManager_->getPage("dashboard")) {
+        stackedWidget_->addWidget(page->getWidget());
+    }
+    if (Page* page = pageManager_->getPage("settings")) {
+        stackedWidget_->addWidget(page->getWidget());
+	}
+    if (Page* page = pageManager_->getPage("transactions")) {
+        stackedWidget_->addWidget(page->getWidget());
+    }
+    if (Page* page = pageManager_->getPage("user")) {
         stackedWidget_->addWidget(page->getWidget());
     }
     
@@ -202,22 +222,30 @@ void MainWindow::setupNavBar() {
         "}";
 
     // Create navigation buttons
-    homeButton_ = new QPushButton("🏠\nHome", navBarWidget_);
+    homeButton_ = new QPushButton(navBarWidget_);
     homeButton_->setCheckable(true);
     homeButton_->setChecked(true);
     homeButton_->setStyleSheet(buttonStyle);
+    homeButton_->setIcon(QIcon("img/128x/homeIcon.png"));
+    homeButton_->setIconSize(QSize(36, 36));
 
-    transactionsButton_ = new QPushButton("💳\nTransactions", navBarWidget_);
+    transactionsButton_ = new QPushButton(navBarWidget_);
     transactionsButton_->setCheckable(true);
     transactionsButton_->setStyleSheet(buttonStyle);
+    transactionsButton_->setIcon(QIcon("img/128x/transactionIcon.png"));
+    transactionsButton_->setIconSize(QSize(40, 40)); // this one is diffy just cause we want it to look a bit similar
 
-    accountButton_ = new QPushButton("👤\nAccount", navBarWidget_);
+    accountButton_ = new QPushButton(navBarWidget_);
     accountButton_->setCheckable(true);
     accountButton_->setStyleSheet(buttonStyle);
+    accountButton_->setIcon(QIcon("img/128x/userIcon.png"));
+    accountButton_->setIconSize(QSize(36, 36));
 
-    settingsButton_ = new QPushButton("⚙️\nSettings", navBarWidget_);
+    settingsButton_ = new QPushButton(navBarWidget_);
     settingsButton_->setCheckable(true);
     settingsButton_->setStyleSheet(buttonStyle);
+    settingsButton_->setIcon(QIcon("img/128x/settingsIcon.png"));
+    settingsButton_->setIconSize(QSize(36, 36));
 
     // Add buttons to layout
     navLayout->addWidget(homeButton_);
@@ -253,9 +281,9 @@ void MainWindow::onTransactionsButtonClicked() {
     settingsButton_->setChecked(false);
     transactionsButton_->setChecked(true);
 
-    // Navigate to transactions page (you'll need to add this page)
-    // pageManager_->openPage("transactions");
-    // updateStackedWidget();
+    // Navigate to transactions page
+    pageManager_->openPage("transactions");
+    updateStackedWidget();
 }
 
 void MainWindow::onAccountButtonClicked() {
@@ -264,9 +292,9 @@ void MainWindow::onAccountButtonClicked() {
     settingsButton_->setChecked(false);
     accountButton_->setChecked(true);
 
-    // Navigate to account page (you'll need to add this page)
-    // pageManager_->openPage("account");
-    // updateStackedWidget();
+    // Navigate to user page
+    pageManager_->openPage("user");
+    updateStackedWidget();
 }
 
 void MainWindow::onSettingsButtonClicked() {
@@ -275,9 +303,9 @@ void MainWindow::onSettingsButtonClicked() {
     accountButton_->setChecked(false);
     settingsButton_->setChecked(true);
 
-    // Navigate to settings page (you'll need to add this page)
-    // pageManager_->openPage("settings");
-    // updateStackedWidget();
+    // Navigate to settings
+    pageManager_->openPage("settings");
+    updateStackedWidget();
 }
 
 void MainWindow::updateNavBarVisibility() {
