@@ -1,4 +1,4 @@
-// Brandon Cotesta | 10/28/2025 | 4:00 PM
+﻿// Brandon Cotesta | 10/28/2025 | 4:00 PM
 // Main application window
 
 #include "MainWindow.h"
@@ -41,9 +41,21 @@ void MainWindow::setupUI() {
     // Mobile-like dimensions (portrait orientation)
     setFixedSize(450, 800);
     
+    // Create central widget with vertical layout
+    QWidget* mainWidget = new QWidget(this);
+    QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);  // Set the layout on the widget
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
+
     // Create central stacked widget to hold pages
-    stackedWidget_ = new QStackedWidget(this);
-    setCentralWidget(stackedWidget_);
+    stackedWidget_ = new QStackedWidget(mainWidget);
+    mainLayout->addWidget(stackedWidget_, 1);  // Add stretch factor so pages take remaining space
+
+    // Navigation bar setup
+    setupNavBar();
+    mainLayout->addWidget(navBarWidget_);
+
+    setCentralWidget(mainWidget);
     
     // Set stylesheet for mobile app feel
     setStyleSheet(
@@ -75,6 +87,10 @@ void MainWindow::setupMenuBar() {
             delete currentUser_;
             currentUser_ = nullptr;
         }
+        
+        // Hide navigation bar
+        navBarWidget_->setVisible(false);
+        
         pageManager_->openPage("login");
         updateStackedWidget();
     });
@@ -95,6 +111,10 @@ void MainWindow::setupPages() {
         this->setCurrentUser(user);
         dashboardPage_->setUser(user);
         cout << "User logged in: " << user->email() << endl;
+        
+        // Show navigation bar
+        navBarWidget_->setVisible(true);
+        homeButton_->setChecked(true);
         
         // Navigate to dashboard page
         pageManager_->openPage("dashboard");
@@ -145,6 +165,125 @@ void MainWindow::setupPages() {
     updateStackedWidget();
 }
 
+void MainWindow::setupNavBar() {
+    // Create navigation bar widget
+    navBarWidget_ = new QWidget(this);
+    navBarWidget_->setFixedHeight(70);
+    navBarWidget_->setStyleSheet(
+        "QWidget {"
+        "   background-color: #ffffff;"
+        "   border-top: 1px solid #e0e0e0;"
+        "}"
+    );
+
+    // Create horizontal layout for nav buttons
+    QHBoxLayout* navLayout = new QHBoxLayout(navBarWidget_);
+    navLayout->setContentsMargins(0, 5, 0, 5);
+    navLayout->setSpacing(0);
+
+    // Button style
+    QString buttonStyle =
+        "QPushButton {"
+        "   background-color: transparent;"
+        "   border: none;"
+        "   color: #757575;"
+        "   font-size: 12px;"
+        "   padding: 8px;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #f0f0f0;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #e0e0e0;"
+        "}"
+        "QPushButton:checked {"
+        "   color: #1976D2;"
+        "   font-weight: bold;"
+        "}";
+
+    // Create navigation buttons
+    homeButton_ = new QPushButton("🏠\nHome", navBarWidget_);
+    homeButton_->setCheckable(true);
+    homeButton_->setChecked(true);
+    homeButton_->setStyleSheet(buttonStyle);
+
+    transactionsButton_ = new QPushButton("💳\nTransactions", navBarWidget_);
+    transactionsButton_->setCheckable(true);
+    transactionsButton_->setStyleSheet(buttonStyle);
+
+    accountButton_ = new QPushButton("👤\nAccount", navBarWidget_);
+    accountButton_->setCheckable(true);
+    accountButton_->setStyleSheet(buttonStyle);
+
+    settingsButton_ = new QPushButton("⚙️\nSettings", navBarWidget_);
+    settingsButton_->setCheckable(true);
+    settingsButton_->setStyleSheet(buttonStyle);
+
+    // Add buttons to layout
+    navLayout->addWidget(homeButton_);
+    navLayout->addWidget(transactionsButton_);
+    navLayout->addWidget(accountButton_);
+    navLayout->addWidget(settingsButton_);
+
+    // Connect button signals
+    connect(homeButton_, &QPushButton::clicked, this, &MainWindow::onHomeButtonClicked);
+    connect(transactionsButton_, &QPushButton::clicked, this, &MainWindow::onTransactionsButtonClicked);
+    connect(accountButton_, &QPushButton::clicked, this, &MainWindow::onAccountButtonClicked);
+    connect(settingsButton_, &QPushButton::clicked, this, &MainWindow::onSettingsButtonClicked);
+
+    // Initially hide nav bar (show only when logged in)
+    navBarWidget_->setVisible(false);
+}
+
+void MainWindow::onHomeButtonClicked() {
+    // Uncheck other buttons
+    transactionsButton_->setChecked(false);
+    accountButton_->setChecked(false);
+    settingsButton_->setChecked(false);
+    homeButton_->setChecked(true);
+
+    // Navigate to dashboard
+    pageManager_->openPage("dashboard");
+    updateStackedWidget();
+}
+
+void MainWindow::onTransactionsButtonClicked() {
+    homeButton_->setChecked(false);
+    accountButton_->setChecked(false);
+    settingsButton_->setChecked(false);
+    transactionsButton_->setChecked(true);
+
+    // Navigate to transactions page (you'll need to add this page)
+    // pageManager_->openPage("transactions");
+    // updateStackedWidget();
+}
+
+void MainWindow::onAccountButtonClicked() {
+    homeButton_->setChecked(false);
+    transactionsButton_->setChecked(false);
+    settingsButton_->setChecked(false);
+    accountButton_->setChecked(true);
+
+    // Navigate to account page (you'll need to add this page)
+    // pageManager_->openPage("account");
+    // updateStackedWidget();
+}
+
+void MainWindow::onSettingsButtonClicked() {
+    homeButton_->setChecked(false);
+    transactionsButton_->setChecked(false);
+    accountButton_->setChecked(false);
+    settingsButton_->setChecked(true);
+
+    // Navigate to settings page (you'll need to add this page)
+    // pageManager_->openPage("settings");
+    // updateStackedWidget();
+}
+
+void MainWindow::updateNavBarVisibility() {
+    // Show nav bar only when user is logged in
+    navBarWidget_->setVisible(currentUser_ != nullptr);
+}
 void MainWindow::updateStackedWidget() {
     if (Page* currentPage = pageManager_->getCurrentPage()) {
         stackedWidget_->setCurrentWidget(currentPage->getWidget());

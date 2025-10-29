@@ -296,6 +296,10 @@ void LoginPage::handleLogin() {
         
         showSuccess("Login successful! Welcome back.");
         
+        // Disable button during processing
+        loginButton_->setEnabled(true);
+        loginButton_->setText("Sign in");
+
         // Call success callback with user object
         if (onLoginSuccess_) {
             onLoginSuccess_(user);
