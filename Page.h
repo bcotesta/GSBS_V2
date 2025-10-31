@@ -8,7 +8,7 @@
 #include <string>
 using namespace std;
 
-class Page
+class Page : public QWidget
 {
 public:
     Page(const string& title);

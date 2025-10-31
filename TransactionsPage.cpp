@@ -11,9 +11,15 @@
 
 TransactionsPage::TransactionsPage()
     : Page("transactions"),
+
     containerWidget_(nullptr),
-    currentUser_(nullptr)
+    currentUser_(nullptr),
+    accounts_(nullptr),
+    accountLabel_(nullptr),
+    accountsDrop(nullptr)
+
 {
+
 }
 
 TransactionsPage::~TransactionsPage() {
@@ -55,6 +61,27 @@ void TransactionsPage::buildUI() {
     containerLayout->addWidget(titleLabel_);
 
     
+    //Account dropdown label
+    accountLabel_ = new QLabel("Select account:", containerWidget_);
+    QFont accountFont("Segoe UI", 11, QFont::Bold);
+    accountLabel_->setFont(accountFont);
+    
+    accountLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
+    containerLayout->addWidget(accountLabel_);
+
+    accountsDrop = new QComboBox(containerWidget_);
+    accountsDrop->addItem("Chequing", QVariant("Chequing"));
+    accountsDrop->addItem("Savings", QVariant("Savings"));
+    accountsDrop->addItem("Credit", QVariant("Credit"));
+    accountsDrop->addItem("Loan", QVariant("Loan"));
+
+    containerLayout->addWidget(accountsDrop);
+
+    connect(accountsDrop, &QComboBox::currentIndexChanged, this, &TransactionsPage::onAccountChanged);
+    
+
+
+
     // Add container to main layout with centering
     mainLayout_->addStretch();
 
@@ -70,4 +97,13 @@ void TransactionsPage::buildUI() {
 
 void TransactionsPage::onShow() {
 	cout << "TransactionsPage::onShow called" << endl;
+}
+
+void TransactionsPage::onAccountChanged(int index) {
+
+    QString accountName = accountsDrop->itemText(index);
+    QString accountId = accountsDrop->itemData(index).toString();
+
+    qDebug() << "Account changed to:" << accountName << "(" << accountId << ")";
+
 }

@@ -136,12 +136,12 @@
     <ClInclude Include="UserPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TransactionsPage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="TransactionsPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

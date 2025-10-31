@@ -99,7 +99,7 @@
     <ClInclude Include="DashboardPage.h" />
     <ClInclude Include="DatabaseManager.h" />
     <ClInclude Include="LoginPage.h" />
-    <ClInclude Include="TransactionsPage.h" />
+    <QtMoc Include="TransactionsPage.h" />
     <ClInclude Include="UserPage.h" />
     <QtMoc Include="MainWindow.h" />
     <ClInclude Include="Page.h" />
