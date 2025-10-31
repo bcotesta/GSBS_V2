@@ -16,6 +16,7 @@
 
 class TransactionsPage : public Page
 {
+    //needed for connect statements
     Q_OBJECT
 
 public:
@@ -35,6 +36,7 @@ protected:
     void buildUI() override;
 
 private slots:
+    //when drop down is changed this is what detects it
     void onAccountChanged(int index);
 
 private:

@@ -65,18 +65,19 @@ void TransactionsPage::buildUI() {
     accountLabel_ = new QLabel("Select account:", containerWidget_);
     QFont accountFont("Segoe UI", 11, QFont::Bold);
     accountLabel_->setFont(accountFont);
-    
     accountLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
     containerLayout->addWidget(accountLabel_);
 
+    //create combo box for the dropdown
     accountsDrop = new QComboBox(containerWidget_);
+    //the options to select from. the first string is the account name / what is displayed
+    //and the second string is the id
     accountsDrop->addItem("Chequing", QVariant("Chequing"));
     accountsDrop->addItem("Savings", QVariant("Savings"));
     accountsDrop->addItem("Credit", QVariant("Credit"));
     accountsDrop->addItem("Loan", QVariant("Loan"));
-
     containerLayout->addWidget(accountsDrop);
-
+    //connects button/drop down to a function.
     connect(accountsDrop, &QComboBox::currentIndexChanged, this, &TransactionsPage::onAccountChanged);
     
 
@@ -99,6 +100,10 @@ void TransactionsPage::onShow() {
 	cout << "TransactionsPage::onShow called" << endl;
 }
 
+
+//Detects when drop down selection is changed
+// no info currently displayed
+//currently doesn't change the info displayed
 void TransactionsPage::onAccountChanged(int index) {
 
     QString accountName = accountsDrop->itemText(index);

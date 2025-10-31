@@ -8,7 +8,7 @@
 #include <string>
 using namespace std;
 
-class Page : public QWidget
+class Page : public QWidget //added public QWidget for so other classes inheriting this can use connect() statements
 {
 public:
     Page(const string& title);
