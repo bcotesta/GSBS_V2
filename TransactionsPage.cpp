@@ -16,7 +16,8 @@ TransactionsPage::TransactionsPage()
     currentUser_(nullptr),
     accounts_(nullptr),
     accountLabel_(nullptr),
-    accountsDrop(nullptr)
+    accountsDrop_(nullptr),
+    transTable_(nullptr)
 
 {
 
@@ -26,11 +27,15 @@ TransactionsPage::~TransactionsPage() {
     // Qt's parent-child system handles cleanup
 }
 
+
+
 void TransactionsPage::setUser(User* user) {
     currentUser_ = user;
 }
 
 void TransactionsPage::buildUI() {
+    SessionManager s = SessionManager();
+    setUser(s.getCurrentUser());
     QWidget* centralWidget = getCentralWidget();
 
     // Set background color for the page
@@ -69,18 +74,23 @@ void TransactionsPage::buildUI() {
     containerLayout->addWidget(accountLabel_);
 
     //create combo box for the dropdown
-    accountsDrop = new QComboBox(containerWidget_);
+    accountsDrop_ = new QComboBox(containerWidget_);
     //the options to select from. the first string is the account name / what is displayed
     //and the second string is the id
-    accountsDrop->addItem("Chequing", QVariant("Chequing"));
-    accountsDrop->addItem("Savings", QVariant("Savings"));
-    accountsDrop->addItem("Credit", QVariant("Credit"));
-    accountsDrop->addItem("Loan", QVariant("Loan"));
-    containerLayout->addWidget(accountsDrop);
+    accountsDrop_->addItem("Chequing", QVariant("Chequing"));
+    accountsDrop_->addItem("Savings", QVariant("Savings"));
+    accountsDrop_->addItem("Credit", QVariant("Credit"));
+    accountsDrop_->addItem("Loan", QVariant("Loan"));
+    containerLayout->addWidget(accountsDrop_);
     //connects button/drop down to a function.
-    connect(accountsDrop, &QComboBox::currentIndexChanged, this, &TransactionsPage::onAccountChanged);
+    connect(accountsDrop_, &QComboBox::currentIndexChanged, this, &TransactionsPage::onAccountChanged);
     
+    //create and add transaction table
+    transTable_ = new QTableWidget(containerWidget_);
+    transTable_->setStyleSheet("QTableWidget { background-color: #ecf0f1;}");
+    containerLayout->addWidget(transTable_);
 
+    //transactiontablesetup();
 
 
     // Add container to main layout with centering
@@ -98,6 +108,9 @@ void TransactionsPage::buildUI() {
 
 void TransactionsPage::onShow() {
 	cout << "TransactionsPage::onShow called" << endl;
+
+    transactiontablesetup();
+
 }
 
 
@@ -106,9 +119,68 @@ void TransactionsPage::onShow() {
 //currently doesn't change the info displayed
 void TransactionsPage::onAccountChanged(int index) {
 
-    QString accountName = accountsDrop->itemText(index);
-    QString accountId = accountsDrop->itemData(index).toString();
+    QString accountName = accountsDrop_->itemText(index);
+    QString accountId = accountsDrop_->itemData(index).toString();
 
     qDebug() << "Account changed to:" << accountName << "(" << accountId << ")";
 
+}
+
+//temp name
+//transaction table
+void TransactionsPage::transactiontablesetup()
+{
+    cout << "in transaction table setup";
+    if (!currentUser_) {
+         qDebug() << "Error: currentUser_ is null";
+         return;
+    }
+        AccountManager transac(*currentUser_);
+        transTable_->setColumnCount(5);
+        transTable_->setHorizontalHeaderLabels({ "Transaction Type", "Amount", "Transaction Date", "Description", "Balance After" });
+
+        DatabaseManager& db = DatabaseManager::getInstance();
+        int j = 0;
+        auto vec =
+            db.retrieveTable(transac.getTransactionsTableName(), "");
+
+        transTable_->setRowCount(static_cast<int>(vec.size()));
+
+        if (!vec.empty())
+        {
+            cout << "\n=== Loading Transaction Data ===" << endl;
+            for (const auto& t : vec)
+            {
+                //Extract transaction info from result
+                string transType = static_cast<string>(t.at("transactionType"));
+                string transAmt = static_cast<string>(t.at("amount"));
+                string transDate = static_cast<string>(t.at("transactionDate"));
+                string transDesc = static_cast<string>(t.at("description"));
+                string transBal = static_cast<string>(t.at("balanceAfter"));
+
+                transTable_->setItem(j, 0, new QTableWidgetItem(QString::fromStdString(transType)));
+                transTable_->setItem(j, 1, new QTableWidgetItem(QString::fromStdString(transAmt)));
+                transTable_->setItem(j, 2, new QTableWidgetItem(QString::fromStdString(transDate)));
+                transTable_->setItem(j, 3, new QTableWidgetItem(QString::fromStdString(transDesc)));
+                transTable_->setItem(j, 4, new QTableWidgetItem(QString::fromStdString(transBal)));
+                j++;
+            }
+        }
+
+        //transTable_->setRowCount(static_cast<int>(vec.size()));
+
+        //for loop to fill table with each row with the vector from retrieveTable()
+        /*
+        for (int i = 0; i < vec.size(); i++)
+        {
+            const auto& info = vec[i];
+            transTable_->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(info.at("transactionType"))));
+            transTable_->setItem(i, 1, new QTableWidgetItem(QString::fromStdString(info.at("amount"))));
+            transTable_->setItem(i, 2, new QTableWidgetItem(QString::fromStdString(info.at("transactionDate"))));
+            transTable_->setItem(i, 3, new QTableWidgetItem(QString::fromStdString(info.at("description"))));
+            transTable_->setItem(i, 4, new QTableWidgetItem(QString::fromStdString(info.at("balanceAfter"))));
+        }*/
+   
+    transTable_->resizeRowsToContents();
+    //transTable_->show();
 }

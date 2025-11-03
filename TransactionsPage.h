@@ -8,9 +8,12 @@
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QVBoxLayout>
+#include <QTableWidget>
 #include <QComboBox>
 #include <vector>
 #include <functional>
+#include "Transaction.h"
+#include "SessionManager.h"
 
 
 
@@ -30,6 +33,7 @@ public:
     // Set the current user
     void setUser(User* user);
 
+    void transactiontablesetup();
 
 
 protected:
@@ -48,7 +52,11 @@ private:
     User* currentUser_;
 
     // dropdown for account selection
-    QComboBox *accountsDrop;
+    QComboBox *accountsDrop_;
     QStringList *accounts_;
+
+    //table
+    QTableWidget* transTable_;
+
 
 };

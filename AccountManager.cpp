@@ -292,3 +292,4 @@ string AccountManager::getAccountsTableName() const {
 string AccountManager::getTransactionsTableName() const {
     return transactionsTableName_;
 }
+
