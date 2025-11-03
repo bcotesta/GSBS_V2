@@ -35,7 +35,7 @@ void TransactionsPage::setUser(User* user) {
 
 void TransactionsPage::buildUI() {
     SessionManager s = SessionManager();
-    setUser(s.getCurrentUser());
+    //setUser(s.getCurrentUser());
     QWidget* centralWidget = getCentralWidget();
 
     // Set background color for the page

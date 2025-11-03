@@ -40,6 +40,23 @@ void MainWindow::setCurrentUser(User* user) {
     currentUser_ = user;
 }
 
+// This could be done better with a loop and a list of pages, but for now this is fine
+// when you make your own pages just add them here
+void MainWindow::setUserForAllPages(User* user) {
+    if (dashboardPage_) {
+        dashboardPage_->setUser(user);
+    }
+    if (settingsPage_) {
+        settingsPage_->setUser(user);
+    }
+    if (transactionsPage_) {
+        transactionsPage_->setUser(user);
+    }
+    if (userPage_) {
+        userPage_->setUser(user);
+    }
+}
+
 void MainWindow::setupUI() {
     setWindowTitle("GSBS Banking System");
     
@@ -179,7 +196,7 @@ void MainWindow::setupPages() {
     if (Page* page = pageManager_->getPage("user")) {
         stackedWidget_->addWidget(page->getWidget());
     }
-    
+
     // Open the login page initially
     pageManager_->openPage("login");
     updateStackedWidget();
@@ -280,6 +297,8 @@ void MainWindow::onTransactionsButtonClicked() {
     accountButton_->setChecked(false);
     settingsButton_->setChecked(false);
     transactionsButton_->setChecked(true);
+
+	transactionsPage_->setUser(currentUser_);
 
     // Navigate to transactions page
     pageManager_->openPage("transactions");

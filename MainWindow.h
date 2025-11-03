@@ -45,6 +45,7 @@ private:
     QPushButton* settingsButton_;
 
     void setupUI();
+	void setUserForAllPages(User* user);
     void setupMenuBar();
     void setupPages();
     void updateStackedWidget();
