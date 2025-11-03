@@ -2,6 +2,7 @@
 // Example login page
 
 #include "LoginPage.h"
+#include "AccountManager.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QSpacerItem>
@@ -181,10 +182,10 @@ void LoginPage::buildUI() {
         "   font-weight: 600;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #2980b9;"
+        "   background-color: #029e02;"
         "}"
         "QPushButton:pressed {"
-        "   background-color: #21618c;"
+        "   background-color: #029e02;"
         "}"
     );
     loginButton_->setCursor(Qt::PointingHandCursor);
@@ -294,9 +295,19 @@ void LoginPage::handleLogin() {
             passwordStr
         );
         
+        // Check if user has any accounts, create default chequing account if not
+        AccountManager accountMgr(*user);
+        std::vector<Account> accounts = accountMgr.loadUserAccounts();
+        
+        if (accounts.empty()) {
+            std::cout << "No accounts found for user. Creating default chequing account..." << std::endl;
+            accountMgr.createAccount(AccountType::CHEQUING);
+            std::cout << "Default chequing account created successfully." << std::endl;
+        }
+        
         showSuccess("Login successful! Welcome back.");
         
-        // Disable button during processing
+        // Re-enable button
         loginButton_->setEnabled(true);
         loginButton_->setText("Sign in");
 

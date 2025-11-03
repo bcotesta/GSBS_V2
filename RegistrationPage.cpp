@@ -2,6 +2,7 @@
 // Registration page for new users
 
 #include "RegistrationPage.h"
+#include "AccountManager.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QSpacerItem>
@@ -426,6 +427,12 @@ void RegistrationPage::handleRegister() {
             auth_.getUsername(),
             passwordStr
         );
+        
+        // Create default chequing account for new user
+        std::cout << "Creating default chequing account for new user..." << std::endl;
+        AccountManager accountMgr(*user);
+        accountMgr.createAccount(AccountType::CHEQUING);
+        std::cout << "Default chequing account created successfully." << std::endl;
         
         showSuccess("Account created successfully! Welcome.");
         
