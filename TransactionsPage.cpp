@@ -87,6 +87,8 @@ void TransactionsPage::buildUI() {
     
     //create and add transaction table
     transTable_ = new QTableWidget(containerWidget_);
+    QFont transTFont("Segoe UI", 11, QFont::Bold);
+    transTable_->setFont(transTFont);
     transTable_->setStyleSheet("QTableWidget { background-color: #ecf0f1;}");
     containerLayout->addWidget(transTable_);
 
@@ -158,15 +160,59 @@ void TransactionsPage::transactiontablesetup()
                 string transDesc = static_cast<string>(t.at("description"));
                 string transBal = static_cast<string>(t.at("balanceAfter"));
 
-                transTable_->setItem(j, 0, new QTableWidgetItem(QString::fromStdString(transType)));
-                transTable_->setItem(j, 1, new QTableWidgetItem(QString::fromStdString(transAmt)));
-                transTable_->setItem(j, 2, new QTableWidgetItem(QString::fromStdString(transDate)));
-                transTable_->setItem(j, 3, new QTableWidgetItem(QString::fromStdString(transDesc)));
-                transTable_->setItem(j, 4, new QTableWidgetItem(QString::fromStdString(transBal)));
-                j++;
-            }
-        }
+                //QTableWidgetItem* newItem = new QTableWidgetItem();
 
+
+                //transTable_ *newItem = new QTableWidgetItem(tr("%1").arg(rows + 1) * (column + 1)));
+          
+                QTableWidgetItem* item0 = new QTableWidgetItem(QString::fromStdString(transType));
+                item0->setFlags(item0->flags() | Qt::ItemIsEditable);
+                transTable_->setItem(j, 0, item0);
+                QTableWidgetItem* item1 = new QTableWidgetItem(QString::fromStdString(transAmt));
+                item1->setFlags(item1->flags() | Qt::ItemIsEditable);
+                transTable_->setItem(j, 1, item1);
+                QTableWidgetItem* item2 = new QTableWidgetItem(QString::fromStdString(transDate));
+                item2->setFlags(item2->flags() | Qt::ItemIsEditable);
+                transTable_->setItem(j, 2, item2);
+                QTableWidgetItem* item3 = new QTableWidgetItem(QString::fromStdString(transDesc));
+                item3->setFlags(item3->flags() | Qt::ItemIsEditable);
+                transTable_->setItem(j, 3, item3);
+                QTableWidgetItem* item4 = new QTableWidgetItem(QString::fromStdString(transBal));
+                item4->setFlags(item4->flags() | Qt::ItemIsEditable);
+                transTable_->setItem(j, 4, item4);
+                ++j;
+
+                /*
+                    transTable_->setItem(j, 1, new QTableWidgetItem(QString::fromStdString(transAmt)));
+                    transTable_->setItem(j, 2, new QTableWidgetItem(QString::fromStdString(transDate)));
+                    transTable_->setItem(j, 3, new QTableWidgetItem(QString::fromStdString(transDesc)));
+                    transTable_->setItem(j, 4, new QTableWidgetItem(QString::fromStdString(transBal)));
+                    j++;
+                    QTableWidgetItem* existingItem0 = transTable_->item(j, 0);
+                    QTableWidgetItem* existingItem1 = transTable_->item(j, 1);
+                    QTableWidgetItem* existingItem2 = transTable_->item(j, 2);
+                    QTableWidgetItem* existingItem3 = transTable_->item(j, 3);
+                    QTableWidgetItem* existingItem4 = transTable_->item(j, 4);
+                    existingItem0->setFlags(existingItem0->flags() | Qt::ItemIsEditable);
+                    existingItem1->setFlags(existingItem1->flags() | Qt::ItemIsEditable);
+                    existingItem2->setFlags(existingItem2->flags() | Qt::ItemIsEditable);
+                    existingItem3->setFlags(existingItem3->flags() | Qt::ItemIsEditable);
+                    existingItem4->setFlags(existingItem4->flags() | Qt::ItemIsEditable);
+                    existingItem0->setFlags(existingItem0->flags() & ~Qt::ItemIsEditable);
+                    existingItem1->setFlags(existingItem1->flags() & ~Qt::ItemIsEditable);
+                    existingItem2->setFlags(existingItem2->flags() & ~Qt::ItemIsEditable);
+                    existingItem3->setFlags(existingItem3->flags() & ~Qt::ItemIsEditable);
+                    existingItem4->setFlags(existingItem4->flags() & ~Qt::ItemIsEditable);
+                    */
+                item0->setFlags(item0->flags() & ~Qt::ItemIsEditable);
+                item1->setFlags(item1->flags() & ~Qt::ItemIsEditable);
+                item2->setFlags(item2->flags() & ~Qt::ItemIsEditable);
+                item3->setFlags(item3->flags() & ~Qt::ItemIsEditable);
+                item4->setFlags(item4->flags() & ~Qt::ItemIsEditable);
+            }
+           // item0->setFlags(item0->flags() & ~Qt::ItemIsEditable);
+        }
+            
         //transTable_->setRowCount(static_cast<int>(vec.size()));
 
         //for loop to fill table with each row with the vector from retrieveTable()
@@ -182,5 +228,6 @@ void TransactionsPage::transactiontablesetup()
         }*/
    
     transTable_->resizeRowsToContents();
-    //transTable_->show();
+    transTable_->close();
+    transTable_->show();
 }
