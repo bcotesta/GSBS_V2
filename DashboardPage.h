@@ -8,11 +8,14 @@
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QFrame>
 #include <vector>
 #include <functional>
 
 class DashboardPage : public Page
 {
+    Q_OBJECT
+
 public:
     DashboardPage();
     ~DashboardPage() override;
@@ -23,31 +26,50 @@ public:
     // Set the current user
     void setUser(User* user);
     
+    // Callback for when an account card is clicked
+    void setAccountClickCallback(std::function<void(const Account&)> callback);
+    
 protected:
     void buildUI() override;
+    
+private slots:
+    void onAccountCardClicked();
     
 private:
     // UI Components
     QScrollArea* scrollArea_;
-    QWidget* containerWidget_;
+    QWidget* scrollContent_;
+    QVBoxLayout* contentLayout_;
+    
+    // Header section
+    QWidget* headerWidget_;
     QLabel* titleLabel_;
-    QLabel* welcomeLabel_;
     
-    // User info section
-    QWidget* userInfoCard_;
-    QLabel* userIdLabel_;
-    QLabel* nameLabel_;
-    QLabel* emailLabel_;
-    QLabel* phoneLabel_;
+    // Account sections
+    QWidget* depositAccountsSection_;
+    QVBoxLayout* depositAccountsLayout_;
+    QLabel* depositAccountsLabel_;
+    QLabel* depositTotalLabel_;
     
-    // Accounts section
-    QWidget* accountsContainer_;
-    std::vector<QWidget*> accountCards_;
+    QWidget* creditCardsSection_;
+    QVBoxLayout* creditCardsLayout_;
+    QLabel* creditCardsLabel_;
+    
+    // Account cards storage
+    std::vector<QPushButton*> accountCards_;
+    std::vector<Account> accounts_;
     
     // Current user
     User* currentUser_;
     
+    // Callback
+    std::function<void(const Account&)> onAccountClick_;
+    
     // Helper methods
     void refreshAccountsDisplay();
+    void clearAccountCards();
+    QPushButton* createAccountCard(const Account& account, bool isDeposit);
     QString accountTypeToString(AccountType type) const;
+    QString formatCurrency(double amount) const;
+    QWidget* createSectionHeader(const QString& title);
 };

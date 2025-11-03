@@ -127,9 +127,6 @@
     <ClInclude Include="RegistrationPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DashboardPage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SettingsPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -142,6 +139,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="TransactionsPage.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="DashboardPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

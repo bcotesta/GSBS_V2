@@ -6,21 +6,24 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QScrollArea>
+#include <QtWidgets/QSpacerItem>
 #include <iomanip>
 #include <sstream>
 
 DashboardPage::DashboardPage()
     : Page("Dashboard"),
       scrollArea_(nullptr),
-      containerWidget_(nullptr),
+      scrollContent_(nullptr),
+      contentLayout_(nullptr),
+      headerWidget_(nullptr),
       titleLabel_(nullptr),
-      welcomeLabel_(nullptr),
-      userInfoCard_(nullptr),
-      userIdLabel_(nullptr),
-      nameLabel_(nullptr),
-      emailLabel_(nullptr),
-      phoneLabel_(nullptr),
-      accountsContainer_(nullptr),
+      depositAccountsSection_(nullptr),
+      depositAccountsLayout_(nullptr),
+      depositAccountsLabel_(nullptr),
+      depositTotalLabel_(nullptr),
+      creditCardsSection_(nullptr),
+      creditCardsLayout_(nullptr),
+      creditCardsLabel_(nullptr),
       currentUser_(nullptr)
 {
 }
@@ -33,155 +36,216 @@ void DashboardPage::setUser(User* user) {
     currentUser_ = user;
 }
 
+void DashboardPage::setAccountClickCallback(std::function<void(const Account&)> callback) {
+    onAccountClick_ = callback;
+}
+
 void DashboardPage::buildUI() {
     QWidget* centralWidget = getCentralWidget();
     
     // Set background color for the page
     centralWidget->setStyleSheet("QWidget { background-color: #f5f5f5; }");
     
-    // Create a centered container
-    containerWidget_ = new QWidget(centralWidget);
-    containerWidget_->setFixedWidth(400);
-    containerWidget_->setStyleSheet(
-        "QWidget {"
-        "   background-color: white;"
-        "   color: black;"
-        "   border-radius: 12px;"
-        "}"
-    );
+    // Create scroll area for content
+    scrollArea_ = new QScrollArea(centralWidget);
+    scrollArea_->setWidgetResizable(true);
+    scrollArea_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea_->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea_->setFrameShape(QFrame::NoFrame);
+    scrollArea_->setStyleSheet("QScrollArea { background-color: #f5f5f5; border: none; }");
     
-    QVBoxLayout* containerLayout = new QVBoxLayout(containerWidget_);
-    containerLayout->setSpacing(15);
-    containerLayout->setContentsMargins(40, 35, 40, 35);
+    // Create content widget for scroll area
+    scrollContent_ = new QWidget();
+    scrollContent_->setStyleSheet("QWidget { background-color: #f5f5f5; }");
+    contentLayout_ = new QVBoxLayout(scrollContent_);
+    contentLayout_->setSpacing(0);
+    contentLayout_->setContentsMargins(0, 0, 0, 20);
     
-    // Title
-    titleLabel_ = new QLabel("Dashboard", containerWidget_);
-    QFont titleFont("Segoe UI", 28, QFont::Bold);
+    // Header with title
+    headerWidget_ = new QWidget(scrollContent_);
+    headerWidget_->setStyleSheet("QWidget { background-color: white; }");
+    headerWidget_->setFixedHeight(80);
+    
+    QHBoxLayout* headerLayout = new QHBoxLayout(headerWidget_);
+    headerLayout->setContentsMargins(20, 20, 20, 20);
+    
+    titleLabel_ = new QLabel("Home", headerWidget_);
+    QFont titleFont("Segoe UI", 24, QFont::Bold);
     titleLabel_->setFont(titleFont);
-    titleLabel_->setAlignment(Qt::AlignCenter);
     titleLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
-    titleLabel_->setMinimumHeight(45);
-    containerLayout->addWidget(titleLabel_);
+    headerLayout->addWidget(titleLabel_);
+    headerLayout->addStretch();
     
-    containerLayout->addSpacing(5);
+    contentLayout_->addWidget(headerWidget_);
+    contentLayout_->addSpacing(15);
     
-    // Welcome message
-    welcomeLabel_ = new QLabel("Welcome back!", containerWidget_);
-    QFont welcomeFont("Segoe UI", 11);
-    welcomeLabel_->setFont(welcomeFont);
-    welcomeLabel_->setAlignment(Qt::AlignCenter);
-    welcomeLabel_->setStyleSheet("QLabel { color: #7f8c8d; }");
-    containerLayout->addWidget(welcomeLabel_);
+    // Deposit Accounts Section
+    depositAccountsSection_ = new QWidget(scrollContent_);
+    depositAccountsSection_->setStyleSheet("QWidget { background-color: transparent; }");
+    depositAccountsLayout_ = new QVBoxLayout(depositAccountsSection_);
+    depositAccountsLayout_->setSpacing(10);
+    depositAccountsLayout_->setContentsMargins(15, 0, 15, 0);
     
-    containerLayout->addSpacing(25);
+    // Section header
+    QWidget* depositHeader = createSectionHeader("DEPOSIT ACCOUNTS");
+    depositAccountsLayout_->addWidget(depositHeader);
     
-    // User Information Section
-    QLabel* userInfoLabel = new QLabel("User Information", containerWidget_);
-    userInfoLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; font-size: 12px; }");
-    containerLayout->addWidget(userInfoLabel);
+    // Account cards will be added dynamically in refreshAccountsDisplay()
     
-    containerLayout->addSpacing(5);
-    
-    // User ID
-    userIdLabel_ = new QLabel("User ID: -", containerWidget_);
-    QFont infoFont("Segoe UI", 11);
-    userIdLabel_->setFont(infoFont);
-    userIdLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
-    containerLayout->addWidget(userIdLabel_);
-    
-    // Name
-    nameLabel_ = new QLabel("Name: -", containerWidget_);
-    nameLabel_->setFont(infoFont);
-    nameLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
-    containerLayout->addWidget(nameLabel_);
-    
-    // Email
-    emailLabel_ = new QLabel("Email: -", containerWidget_);
-    emailLabel_->setFont(infoFont);
-    emailLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
-    emailLabel_->setWordWrap(true);
-    containerLayout->addWidget(emailLabel_);
-    
-    // Phone
-    phoneLabel_ = new QLabel("Phone: -", containerWidget_);
-    phoneLabel_->setFont(infoFont);
-    phoneLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
-    containerLayout->addWidget(phoneLabel_);
-    
-    containerLayout->addSpacing(15);
-    
-    // Divider
-    QFrame* divider = new QFrame(containerWidget_);
-    divider->setFrameShape(QFrame::HLine);
-    divider->setStyleSheet("QFrame { color: #e0e0e0; }");
-    containerLayout->addWidget(divider);
-    
-    containerLayout->addSpacing(5);
-    
-    // Account Summary Label
-    QLabel* accountSummaryLabel = new QLabel("Account Summary", containerWidget_);
-    accountSummaryLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; font-size: 12px; }");
-    containerLayout->addWidget(accountSummaryLabel);
-    
-    containerLayout->addSpacing(5);
-    
-    // Total Balance Display
-    userInfoCard_ = new QWidget(containerWidget_);
-    userInfoCard_->setStyleSheet(
-        "QWidget {"
-        "   background-color: #3498db;"
+    // Total label
+    depositTotalLabel_ = new QLabel("Total  $0.00", depositAccountsSection_);
+    QFont totalFont("Segoe UI", 14, QFont::Normal);
+    depositTotalLabel_->setFont(totalFont);
+    depositTotalLabel_->setStyleSheet(
+        "QLabel { "
+        "   color: #2c3e50; "
+        "   padding: 15px 20px; "
+        "   background-color: white; "
         "   border-radius: 8px;"
         "}"
     );
+    depositTotalLabel_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    depositAccountsLayout_->addWidget(depositTotalLabel_);
     
-    QVBoxLayout* balanceLayout = new QVBoxLayout(userInfoCard_);
-    balanceLayout->setSpacing(5);
-    balanceLayout->setContentsMargins(20, 15, 20, 15);
+    contentLayout_->addWidget(depositAccountsSection_);
+    contentLayout_->addSpacing(20);
     
-    QLabel* totalLabel = new QLabel("Total Balance", userInfoCard_);
-    totalLabel->setStyleSheet("QLabel { color: white; font-size: 11px; }");
-    totalLabel->setAlignment(Qt::AlignCenter);
-    balanceLayout->addWidget(totalLabel);
+    // Credit Cards Section
+    creditCardsSection_ = new QWidget(scrollContent_);
+    creditCardsSection_->setStyleSheet("QWidget { background-color: transparent; }");
+    creditCardsLayout_ = new QVBoxLayout(creditCardsSection_);
+    creditCardsLayout_->setSpacing(10);
+    creditCardsLayout_->setContentsMargins(15, 0, 15, 0);
     
-    // This will be updated in onShow
-    QLabel* totalAmountLabel = new QLabel("$0.00", userInfoCard_);
-    QFont totalFont("Segoe UI", 24, QFont::Bold);
-    totalAmountLabel->setFont(totalFont);
-    totalAmountLabel->setStyleSheet("QLabel { color: white; }");
-    totalAmountLabel->setAlignment(Qt::AlignCenter);
-    totalAmountLabel->setObjectName("totalAmountLabel");
-    balanceLayout->addWidget(totalAmountLabel);
+    // Section header
+    QWidget* creditHeader = createSectionHeader("CREDIT CARDS");
+    creditCardsLayout_->addWidget(creditHeader);
     
-    containerLayout->addWidget(userInfoCard_);
+    // Credit card cards will be added dynamically in refreshAccountsDisplay()
     
-    containerLayout->addSpacing(10);
+    contentLayout_->addWidget(creditCardsSection_);
+    contentLayout_->addStretch();
     
-    // Account count info
-    accountsContainer_ = new QWidget(containerWidget_);
-    QVBoxLayout* accountsLayout = new QVBoxLayout(accountsContainer_);
-    accountsLayout->setSpacing(5);
-    accountsLayout->setContentsMargins(0, 0, 0, 0);
+    // Set scroll content
+    scrollArea_->setWidget(scrollContent_);
     
-    // This will show number of accounts
-    QLabel* accountCountLabel = new QLabel("No accounts", accountsContainer_);
-    accountCountLabel->setObjectName("accountCountLabel");
-    accountCountLabel->setStyleSheet("QLabel { color: #7f8c8d; font-size: 11px; }");
-    accountCountLabel->setAlignment(Qt::AlignCenter);
-    accountsLayout->addWidget(accountCountLabel);
+    // Add scroll area to main layout
+    mainLayout_->addWidget(scrollArea_);
+}
+
+QWidget* DashboardPage::createSectionHeader(const QString& title) {
+    QWidget* header = new QWidget();
+    header->setStyleSheet("QWidget { background-color: transparent; }");
     
-    containerLayout->addWidget(accountsContainer_);
+    QHBoxLayout* layout = new QHBoxLayout(header);
+    layout->setContentsMargins(5, 10, 5, 10);
     
-    // Add container to main layout with centering
-    mainLayout_->addStretch();
+    QLabel* label = new QLabel(title, header);
+    QFont font("Segoe UI", 11, QFont::Bold);
+    label->setFont(font);
+    label->setStyleSheet("QLabel { color: #7f8c8d; }");
+    layout->addWidget(label);
+    layout->addStretch();
     
-    // Horizontal centering
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->addStretch();
-    hLayout->addWidget(containerWidget_);
-    hLayout->addStretch();
-    mainLayout_->addLayout(hLayout);
+    return header;
+}
+
+QPushButton* DashboardPage::createAccountCard(const Account& account, bool isDeposit) {
+    QPushButton* card = new QPushButton(scrollContent_);
+    card->setCursor(Qt::PointingHandCursor);
+    card->setFixedHeight(160);
     
-    mainLayout_->addStretch();
+    // Store account info in the button's property
+    card->setProperty("accountNumber", QString::fromStdString(account.accountNumber()));
+    
+    // Card styling
+    QString cardStyle = 
+        "QPushButton {"
+        "   background-color: white;"
+        "   border: 1px solid #e0e0e0;"
+        "   border-radius: 12px;"
+        "   text-align: left;"
+        "   padding: 0px;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #f8f9fa;"
+        "   border: 1px solid #d0d0d0;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #e9ecef;"
+        "}";
+    
+    card->setStyleSheet(cardStyle);
+    
+    // Create layout for card content
+    QWidget* contentWidget = new QWidget(card);
+    contentWidget->setStyleSheet("QWidget { background-color: transparent; }");
+    
+    QVBoxLayout* cardLayout = new QVBoxLayout(contentWidget);
+    cardLayout->setContentsMargins(20, 15, 20, 15);
+    cardLayout->setSpacing(8);
+    
+    // Account type and number
+    QLabel* accountTypeLabel = new QLabel(accountTypeToString(account.accountType()), contentWidget);
+    QFont typeFont("Segoe UI", 13, QFont::DemiBold);
+    accountTypeLabel->setFont(typeFont);
+    accountTypeLabel->setStyleSheet("QLabel { color: #2c3e50; }");
+    cardLayout->addWidget(accountTypeLabel);
+    
+    QLabel* accountNumberLabel = new QLabel(QString::fromStdString(account.accountNumber()), contentWidget);
+    QFont numberFont("Segoe UI", 11, QFont::Normal);
+    accountNumberLabel->setFont(numberFont);
+    accountNumberLabel->setStyleSheet("QLabel { color: #7f8c8d; }");
+    cardLayout->addWidget(accountNumberLabel);
+    
+    cardLayout->addSpacing(10);
+    
+    // Balance
+    QLabel* balanceLabel = new QLabel(formatCurrency(account.getBalance()), contentWidget);
+    QFont balanceFont("Segoe UI", 26, QFont::Bold);
+    balanceLabel->setFont(balanceFont);
+    balanceLabel->setStyleSheet("QLabel { color: #2c3e50; }");
+    cardLayout->addWidget(balanceLabel);
+    
+    cardLayout->addStretch();
+    
+    // Action buttons row (for deposit accounts)
+    if (isDeposit) {
+        QWidget* actionsWidget = new QWidget(contentWidget);
+        actionsWidget->setStyleSheet("QWidget { background-color: transparent; }");
+        QHBoxLayout* actionsLayout = new QHBoxLayout(actionsWidget);
+        actionsLayout->setContentsMargins(0, 0, 0, 0);
+        actionsLayout->setSpacing(10);
+        
+        // Debit badge
+        QLabel* debitBadge = new QLabel("DEBIT", actionsWidget);
+        debitBadge->setFixedSize(60, 24);
+        debitBadge->setAlignment(Qt::AlignCenter);
+        QFont badgeFont("Segoe UI", 9, QFont::Bold);
+        debitBadge->setFont(badgeFont);
+        debitBadge->setStyleSheet(
+            "QLabel {"
+            "   background-color: #00cc00;" // new green colour
+            "   color: white;"
+            "   border-radius: 4px;"
+            "}"
+        );
+        actionsLayout->addWidget(debitBadge);
+        
+        actionsLayout->addStretch();
+        
+        cardLayout->addWidget(actionsWidget);
+    }
+    
+    // Position content widget in button
+    QVBoxLayout* buttonLayout = new QVBoxLayout(card);
+    buttonLayout->setContentsMargins(0, 0, 0, 0);
+    buttonLayout->addWidget(contentWidget);
+    
+    // Connect click handler
+    connect(card, &QPushButton::clicked, this, &DashboardPage::onAccountCardClicked);
+    
+    return card;
 }
 
 QString DashboardPage::accountTypeToString(AccountType type) const {
@@ -199,58 +263,102 @@ QString DashboardPage::accountTypeToString(AccountType type) const {
     }
 }
 
+QString DashboardPage::formatCurrency(double amount) const {
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(2) << amount;
+    return QString("$%1").arg(QString::fromStdString(ss.str()));
+}
+
+void DashboardPage::clearAccountCards() {
+    // Remove all account cards from layouts
+    for (auto* card : accountCards_) {
+        card->deleteLater();
+    }
+    accountCards_.clear();
+}
+
 void DashboardPage::refreshAccountsDisplay() {
-    if (!accountsContainer_ || !currentUser_) {
+    if (!currentUser_) {
         return;
     }
     
+    // Clear existing cards
+    clearAccountCards();
+    
     // Load accounts for current user
     AccountManager accountMgr(*currentUser_);
-    std::vector<Account> accounts = accountMgr.loadUserAccounts();
+    accounts_ = accountMgr.loadUserAccounts();
     
-    // Calculate total balance
-    double totalBalance = 0.0;
-    for (const Account& account : accounts) {
-        totalBalance += account.getBalance();
+    // Separate deposit and credit accounts
+    double depositTotal = 0.0;
+    double creditTotal = 0.0;
+    
+    // Add deposit account cards
+    for (const Account& account : accounts_) {
+        if (account.accountType() == AccountType::CHEQUING || 
+            account.accountType() == AccountType::SAVINGS) {
+            QPushButton* card = createAccountCard(account, true);
+            depositAccountsLayout_->insertWidget(depositAccountsLayout_->count() - 1, card);
+            accountCards_.push_back(card);
+            depositTotal += account.getBalance();
+        }
     }
     
-    // Update total balance display
-    QLabel* totalAmountLabel = userInfoCard_->findChild<QLabel*>("totalAmountLabel");
-    if (totalAmountLabel) {
-        std::stringstream balanceStream;
-        balanceStream << std::fixed << std::setprecision(2) << totalBalance;
-        totalAmountLabel->setText(QString("$%1").arg(QString::fromStdString(balanceStream.str())));
+    // Add credit card cards
+    for (const Account& account : accounts_) {
+        if (account.accountType() == AccountType::CREDIT || 
+            account.accountType() == AccountType::LOAN) {
+            QPushButton* card = createAccountCard(account, false);
+            creditCardsLayout_->addWidget(card);
+            accountCards_.push_back(card);
+            creditTotal += account.getBalance();
+        }
     }
     
-    // Update account count
-    QLabel* accountCountLabel = accountsContainer_->findChild<QLabel*>("accountCountLabel");
-    if (accountCountLabel) {
-        if (accounts.empty()) {
-            accountCountLabel->setText("No accounts");
-        } else if (accounts.size() == 1) {
-            accountCountLabel->setText("1 account");
-        } else {
-            accountCountLabel->setText(QString("%1 accounts").arg(accounts.size()));
+    // Update totals
+    depositTotalLabel_->setText(QString("Total   %1").arg(formatCurrency(depositTotal)));
+    
+    // Hide sections if no accounts
+    depositAccountsSection_->setVisible(depositTotal > 0 || 
+        std::any_of(accounts_.begin(), accounts_.end(), [](const Account& acc) {
+            return acc.accountType() == AccountType::CHEQUING || 
+                   acc.accountType() == AccountType::SAVINGS;
+        }));
+    
+    creditCardsSection_->setVisible(
+        std::any_of(accounts_.begin(), accounts_.end(), [](const Account& acc) {
+            return acc.accountType() == AccountType::CREDIT || 
+                   acc.accountType() == AccountType::LOAN;
+        }));
+    
+    // Force layout updates to fix scroll area sizing
+    scrollContent_->updateGeometry();
+    scrollContent_->adjustSize();
+    scrollArea_->updateGeometry();
+}
+
+void DashboardPage::onAccountCardClicked() {
+    QPushButton* clickedCard = qobject_cast<QPushButton*>(sender());
+    if (!clickedCard) {
+        return;
+    }
+    
+    QString accountNumber = clickedCard->property("accountNumber").toString();
+    
+    // Find the account
+    for (const Account& account : accounts_) {
+        if (QString::fromStdString(account.accountNumber()) == accountNumber) {
+            if (onAccountClick_) {
+                onAccountClick_(account);
+            }
+            break;
         }
     }
 }
 
 void DashboardPage::onShow() {
-    // Update user information display
+    // Update welcome message
     if (currentUser_) {
-        welcomeLabel_->setText(QString("Welcome back, %1!").arg(QString::fromStdString(currentUser_->name())));
-        
-        userIdLabel_->setText(QString("User ID: %1").arg(currentUser_->userId()));
-        nameLabel_->setText(QString("Name: %1").arg(QString::fromStdString(currentUser_->name())));
-        emailLabel_->setText(QString("Email: %1").arg(QString::fromStdString(currentUser_->email())));
-        
-        QString phone = QString::fromStdString(currentUser_->phone());
-        if (phone.isEmpty() || phone == "") {
-            phoneLabel_->setText("Phone: Not provided");
-        } else {
-            phoneLabel_->setText(QString("Phone: %1").arg(phone));
-        }
-        
         // Refresh accounts display
         refreshAccountsDisplay();
     }

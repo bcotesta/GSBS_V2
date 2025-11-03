@@ -86,7 +86,7 @@ void LoginPage::buildUI() {
         "   background-color: #f9f9f9;"
         "}"
         "QLineEdit:focus {"
-        "   border: 2px solid #3498db;"
+        "   border: 2px solid #00cc00;"
         "   background-color: white;"
         "}"
     );
@@ -113,7 +113,7 @@ void LoginPage::buildUI() {
         "   background-color: #f9f9f9;"
         "}"
         "QLineEdit:focus {"
-        "   border: 2px solid #3498db;"
+        "   border: 2px solid #00cc00;"
         "   background-color: white;"
         "}"
     );
@@ -137,11 +137,11 @@ void LoginPage::buildUI() {
         "   background-color: white;"
         "}"
         "QCheckBox::indicator:hover {"
-        "   border: 2px solid #3498db;"
+        "   border: 2px solid #00cc00;"
         "}"
         "QCheckBox::indicator:checked {"
-        "   background-color: #3498db;"
-        "   border: 2px solid #3498db;"
+        "   background-color: #00cc00;"
+        "   border: 2px solid #00cc00;"
         "   image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOSIgdmlld0JveD0iMCAwIDEyIDkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEgNEw0LjUgNy41TDExIDEiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+);"
         "}"
     );
@@ -172,7 +172,7 @@ void LoginPage::buildUI() {
     loginButton_ = new QPushButton("Sign In", containerWidget_);
     loginButton_->setStyleSheet(
         "QPushButton {"
-        "   background-color: #3498db;"
+        "   background-color: #00cc00;"
         "   color: white;"
         "   border: none;"
         "   padding: 14px;"
@@ -205,8 +205,8 @@ void LoginPage::buildUI() {
     registerButton_->setStyleSheet(
         "QPushButton {"
         "   background-color: transparent;"
-        "   color: #3498db;"
-        "   border: 2px solid #3498db;"
+        "   color: #00cc00;"
+        "   border: 2px solid #00cc00;"
         "   padding: 12px;"
         "   border-radius: 8px;"
         "   font-size: 14px;"

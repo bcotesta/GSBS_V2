@@ -93,7 +93,7 @@ void RegistrationPage::buildUI() {
         "   background-color: #f9f9f9;"
         "}"
         "QLineEdit:focus {"
-        "   border: 2px solid #3498db;"
+        "   border: 2px solid #00cc00;"
         "   background-color: white;"
         "}"
     );
@@ -120,7 +120,7 @@ void RegistrationPage::buildUI() {
         "   background-color: #f9f9f9;"
         "}"
         "QLineEdit:focus {"
-        "   border: 2px solid #3498db;"
+        "   border: 2px solid #00cc00;"
         "   background-color: white;"
         "}"
     );
@@ -147,7 +147,7 @@ void RegistrationPage::buildUI() {
         "   background-color: #f9f9f9;"
         "}"
         "QLineEdit:focus {"
-        "   border: 2px solid #3498db;"
+        "   border: 2px solid #00cc00;"
         "   background-color: white;"
         "}"
     );
@@ -175,7 +175,7 @@ void RegistrationPage::buildUI() {
         "   background-color: #f9f9f9;"
         "}"
         "QLineEdit:focus {"
-        "   border: 2px solid #3498db;"
+        "   border: 2px solid #00cc00;"
         "   background-color: white;"
         "}"
     );
@@ -203,7 +203,7 @@ void RegistrationPage::buildUI() {
         "   background-color: #f9f9f9;"
         "}"
         "QLineEdit:focus {"
-        "   border: 2px solid #3498db;"
+        "   border: 2px solid #00cc00;"
         "   background-color: white;"
         "}"
     );
@@ -227,11 +227,11 @@ void RegistrationPage::buildUI() {
         "   background-color: white;"
         "}"
         "QCheckBox::indicator:hover {"
-        "   border: 2px solid #3498db;"
+        "   border: 2px solid #00cc00;"
         "}"
         "QCheckBox::indicator:checked {"
-        "   background-color: #3498db;"
-        "   border: 2px solid #3498db;"
+        "   background-color: #00cc00;"
+        "   border: 2px solid #00cc00;"
         "}"
     );
     showPasswordCheckbox_->setCursor(Qt::PointingHandCursor);
@@ -261,7 +261,7 @@ void RegistrationPage::buildUI() {
     registerButton_ = new QPushButton("Create Account", containerWidget_);
     registerButton_->setStyleSheet(
         "QPushButton {"
-        "   background-color: #3498db;"
+        "   background-color: #00cc00;"
         "   color: white;"
         "   border: none;"
         "   padding: 14px;"
@@ -294,8 +294,8 @@ void RegistrationPage::buildUI() {
     backToLoginButton_->setStyleSheet(
         "QPushButton {"
         "   background-color: transparent;"
-        "   color: #3498db;"
-        "   border: 2px solid #3498db;"
+        "   color: #00cc00;"
+        "   border: 2px solid #00cc00;"
         "   padding: 12px;"
         "   border-radius: 8px;"
         "   font-size: 14px;"
