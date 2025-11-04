@@ -173,15 +173,19 @@ void TransactionsPage::transactiontablesetup()
                 QTableWidgetItem* item1 = new QTableWidgetItem(QString::fromStdString(transAmt));
                 item1->setFlags(item1->flags() | Qt::ItemIsEditable);
                 transTable_->setItem(j, 1, item1);
+
                 QTableWidgetItem* item2 = new QTableWidgetItem(QString::fromStdString(transDate));
                 item2->setFlags(item2->flags() | Qt::ItemIsEditable);
                 transTable_->setItem(j, 2, item2);
+
                 QTableWidgetItem* item3 = new QTableWidgetItem(QString::fromStdString(transDesc));
                 item3->setFlags(item3->flags() | Qt::ItemIsEditable);
                 transTable_->setItem(j, 3, item3);
+
                 QTableWidgetItem* item4 = new QTableWidgetItem(QString::fromStdString(transBal));
                 item4->setFlags(item4->flags() | Qt::ItemIsEditable);
                 transTable_->setItem(j, 4, item4);
+                //increment for row count
                 ++j;
 
 
@@ -195,7 +199,7 @@ void TransactionsPage::transactiontablesetup()
 
         }
             
-   
+   //table cleanup
     transTable_->resizeRowsToContents();
     transTable_->close();
     transTable_->show();
