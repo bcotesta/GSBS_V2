@@ -2,13 +2,16 @@
 // Sahara Rahimani || 11/04/2025 | 8:00 AM
 // Dashboard page for displaying user and account information
 
-#include "SettingsPage.h"
+#include "SettingsPage.h"                       
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QScrollArea>
 #include <QtGui/QPixmap>
+#include <QtGui/QIcon>
 #include <QtCore/QDebug>
+#include <QtCore/QFile>
+#include <QtCore/QCoreApplication>
 #include <iomanip>
 #include <sstream>
 
@@ -73,21 +76,23 @@ void SettingsPage::buildUI() {
     QVBoxLayout* btnLayout = new QVBoxLayout();
     btnLayout->setSpacing(12);
 
+    // Helper to create the settings buttons with optional left icon and right chevron.
     auto createArrowButton = [&](const QString& text, const QString& iconPath = "") -> QPushButton* {
         QPushButton* btn = new QPushButton(containerWidget_);
         btn->setMinimumHeight(45);
+        btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
         QFont btnFont("Segoe UI", 14, QFont::DemiBold);
         btn->setFont(btnFont);
 
-        // Button base style (background, border). Text & arrow will be child labels.
+        // Add right padding in stylesheet so child content never touches the button edge
         btn->setStyleSheet(
             "QPushButton {"
             "   background-color: white;"
             "   border: 1px solid #00cc00;"
             "   border-radius: 8px;"
             "   font-size: 14px;"
-            "   padding: 0px;"
+            "   padding: 0px 16px 0px 16px;" // left/right padding
             "}"
             "QPushButton:hover {"
             "   background-color: #f4fff4;"
@@ -97,71 +102,79 @@ void SettingsPage::buildUI() {
             "}"
         );
 
-        // Clear native text (we'll add child widgets for precise layout)
+        // Build content: optional icon (fixed) -> label (expanding) -> arrow (fixed)
         btn->setText("");
-        // Content widget inside the button
         QWidget* content = new QWidget(btn);
         content->setStyleSheet("QWidget { background-color: transparent; }");
+        content->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
         QHBoxLayout* contentLayout = new QHBoxLayout(content);
-        contentLayout->setContentsMargins(12, 0, 12, 0);
+        // increase right margin to ensure arrow never clips
+        contentLayout->setContentsMargins(8, 0, 16, 0);
         contentLayout->setSpacing(8);
 
-        // Optional icon on the left: load pixmap and only add the widget when loaded successfully.
-        bool addedIcon = false;
+        // Optional icon on the left (fixed sized)
         if (!iconPath.isEmpty()) {
-            QPixmap iconPixmap;
-            if (iconPath.startsWith(":/")) {
-                // resource path
-                iconPixmap.load(iconPath);
-            } else {
-                // filesystem path
-                iconPixmap.load(iconPath);
+            const int iconDisplaySize = 28; // tweak if needed
+            QPixmap pix;
+            QIcon icon(iconPath);
+            pix = icon.pixmap(iconDisplaySize, iconDisplaySize);
+            if (pix.isNull()) {
+                pix.load(iconPath);
             }
-
-            if (!iconPixmap.isNull()) {
+            if (!pix.isNull()) {
                 QLabel* iconLabel = new QLabel(content);
-                iconLabel->setPixmap(iconPixmap.scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-                iconLabel->setFixedSize(24, 24);
+                iconLabel->setPixmap(pix.scaled(iconDisplaySize, iconDisplaySize,
+                                                Qt::KeepAspectRatio, Qt::SmoothTransformation));
+                iconLabel->setFixedSize(iconDisplaySize, iconDisplaySize);
+                iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                iconLabel->setContentsMargins(0, 0, 5, 0);
                 iconLabel->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
                 contentLayout->addWidget(iconLabel);
-                contentLayout->addSpacing(8);
-                addedIcon = true;
             } else {
                 qDebug() << "SettingsPage: failed to load icon at" << iconPath;
             }
         }
 
-        // Left label (the button text)
+        // Text label: expanding so it doesn't push fixed widgets out
         QLabel* leftLabel = new QLabel(text, content);
         leftLabel->setFont(btnFont);
         leftLabel->setStyleSheet("QLabel { color: #00cc00; }");
         leftLabel->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-
-        // Add the text after the icon (if any)
+        leftLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        leftLabel->setWordWrap(false);
+        leftLabel->setIndent(0);
         contentLayout->addWidget(leftLabel);
 
-        // Arrow label on the right
-        QLabel* arrowLabel = new QLabel(QString::fromUtf8("\u276F"), content); // chevron
+        // small stretch to keep space but avoid pushing arrow off-screen
+        contentLayout->addSpacing(6);
+
+        // Arrow on the right: fixed size so it won't be cropped
+        const int arrowSize = 16;
+        QLabel* arrowLabel = new QLabel(content);
+        arrowLabel->setText(QString::fromUtf8("\u276F"));
         arrowLabel->setFont(btnFont);
         arrowLabel->setStyleSheet("QLabel { color: #00cc00; }");
         arrowLabel->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-
-        contentLayout->addStretch();
+        // slightly larger fixed width so glyph always visible
+        arrowLabel->setFixedSize(arrowSize + 12, arrowSize + 4);
+        arrowLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         contentLayout->addWidget(arrowLabel);
 
-        // Place content into the button
+        // Place content into the button with zero margins
         QVBoxLayout* btnLayoutInner = new QVBoxLayout(btn);
         btnLayoutInner->setContentsMargins(0, 0, 0, 0);
         btnLayoutInner->addWidget(content);
 
         return btn;
-        };
-    // Helper to create the Sign Out button (red background, black centered text, no arrow)
+    };
+
+    // Sign out button factory (red)
     auto createSignOutButton = [&]() -> QPushButton* {
         QPushButton* btn = new QPushButton("Sign Out", containerWidget_);
         btn->setMinimumHeight(45);
 
-        QFont btnFont("Segoe UI", 14, QFont::DemiBold);
+        QFont btnFont("Segoe UI", 16, QFont::DemiBold);
         btn->setFont(btnFont);
 
         btn->setStyleSheet(
@@ -170,7 +183,7 @@ void SettingsPage::buildUI() {
             "   color: black;"
             "   border: 1px solid #A82F2F;"
             "   border-radius: 8px;"
-            "   font-size: 14px;"
+            "   font-size: 20px;"
             "   padding-left: 0px;"
             "   text-align: center;"
             "}"
@@ -182,20 +195,24 @@ void SettingsPage::buildUI() {
             "}"
         );
 
-        // center native text (some platforms/styles may ignore text-align; ensure alignment)
         btn->setContentsMargins(0, 0, 0, 0);
         btn->setStyleSheet(btn->styleSheet() + " QPushButton { qproperty-alignment: 'AlignCenter'; }");
         return btn;
-        };
+    };
 
+    // Use the exact filenames you provided
+    QString profileIconPath = "img/128x/userIcon.png";
+    QString starIconPath = "img/128x/star.png";
+    QString cartIconPath = "img/128x/shopping-cart.png";
+    QString contactIconPath = "img/128x/contact-mail.png";
+    QString infoIconPath = "img/128x/information.png";
 
-    // Use a resource path (recommended) or absolute filesystem path.
-    // If using a .qrc, ensure the image is listed there and you rebuilt the project.
-    QPushButton* profileBtn = createArrowButton("Profile", ":/icons/userIcon.png");
-    QPushButton* productsBtn = createArrowButton("Products and Services");
-    QPushButton* appInfoBtn = createArrowButton("Get to Know the App");
-    QPushButton* contactBtn = createArrowButton("Contact Us");
-    QPushButton* privacyBtn = createArrowButton("Privacy and Legal");
+    // Create buttons with those icons  
+    QPushButton* profileBtn = createArrowButton("Profile", profileIconPath);
+    QPushButton* productsBtn = createArrowButton("Products and Services", cartIconPath);
+    QPushButton* appInfoBtn = createArrowButton("Get to Know the App", starIconPath);
+    QPushButton* contactBtn = createArrowButton("Contact Us", contactIconPath);
+    QPushButton* privacyBtn = createArrowButton("Privacy and Legal", infoIconPath);
     QPushButton* signOutBtn = createSignOutButton();
 
     // Add buttons to layout
@@ -211,5 +228,5 @@ void SettingsPage::buildUI() {
 }
 
 void SettingsPage::onShow() {
-	cout << "SettingsPage::onShow called" << endl;
+    qDebug() << "SettingsPage::onShow called";
 }
