@@ -30,6 +30,11 @@ private:
     // UI Components
     QWidget* containerWidget_;
     QLabel* titleLabel_;
+    QPushButton* productsButton_;
+    QPushButton* learnAppButton_;
+    QPushButton* contactButton_;
+    QPushButton* privacyButton_;
+    QPushButton* signOutButton_;
 
     // Current user
     User* currentUser_;

@@ -130,7 +130,7 @@ void MainWindow::setupPages() {
 	settingsPage_ = new SettingsPage();
     transactionsPage_ = new TransactionsPage();
     userPage_ = new UserPage();
-    
+ 
     // Set login success callback
     loginPage->setLoginSuccessCallback([this](User* user) {
         this->setCurrentUser(user);
