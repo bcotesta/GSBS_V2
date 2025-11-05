@@ -33,8 +33,14 @@ public:
     // Set the current user
     void setUser(User* user);
 
+    void accountDeposit();
+
+    //table functions
     void transactiontablesetup();
     void transactionTableRefresh(string acc);
+
+    //account type check
+    bool accountTypeCheck(string type);
 
 
 protected:
@@ -56,6 +62,11 @@ private:
     QComboBox *accountsDrop_;
     QStringList *accounts_;
     QString accountName_;
+
+    //deposit button
+    QPushButton* deposit_;
+    QLineEdit* depositAmt_;
+
 
     //table
     QTableWidget *transTable_;
