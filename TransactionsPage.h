@@ -34,6 +34,7 @@ public:
     void setUser(User* user);
 
     void transactiontablesetup();
+    void transactionTableRefresh(string acc);
 
 
 protected:
@@ -54,9 +55,10 @@ private:
     // dropdown for account selection
     QComboBox *accountsDrop_;
     QStringList *accounts_;
+    QString accountName_;
 
     //table
-    QTableWidget* transTable_;
+    QTableWidget *transTable_;
 
 
 };

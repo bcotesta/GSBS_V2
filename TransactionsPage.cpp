@@ -92,7 +92,7 @@ void TransactionsPage::buildUI() {
     transTable_->setStyleSheet("QTableWidget { background-color: #ecf0f1;}");
     containerLayout->addWidget(transTable_);
 
-    //transactiontablesetup();
+    transactiontablesetup();
 
 
     // Add container to main layout with centering
@@ -116,17 +116,37 @@ void TransactionsPage::onShow() {
 }
 
 
-//Detects when drop down selection is changed
+//Detects when drop down selection is chan ged
 // no info currently displayed
 //currently doesn't change the info displayed
 void TransactionsPage::onAccountChanged(int index) {
 
-    QString accountName = accountsDrop_->itemText(index);
+    accountName_ = accountsDrop_->itemText(index);
     QString accountId = accountsDrop_->itemData(index).toString();
 
-    qDebug() << "Account changed to:" << accountName << "(" << accountId << ")";
+    qDebug() << "Account changed to:" << accountName_ << "(" << accountId << ")";
+
+    if (accountName_ == "Savings")
+    {
+        transactionTableRefresh("Savings");
+    }
+    else if (accountName_ == "Chequing")
+    {
+        transactionTableRefresh("Chequing");
+    }
+    else if (accountName_ == "Credit")
+    {
+        transactionTableRefresh("Credit");
+    }
+    else if (accountName_ == "Loan")
+    {
+        transactionTableRefresh("Loan");
+    }
 
 }
+
+
+
 
 //temp name
 //transaction table
@@ -143,9 +163,13 @@ void TransactionsPage::transactiontablesetup()
 
         DatabaseManager& db = DatabaseManager::getInstance();
         int j = 0;
-        auto vec =
-            db.retrieveTable(transac.getTransactionsTableName(), "");
+        string accnum;
 
+        accnum = db.retStringW("accountNumber, accountType", transac.getAccountsTableName(), "accountType = 'Chequing'", "accountNumber");
+
+        string tabwhere = "accountNumber = '" + accnum + "'";
+        auto vec =
+            db.retrieveTable(transac.getTransactionsTableName(), tabwhere);
         transTable_->setRowCount(static_cast<int>(vec.size()));
 
         if (!vec.empty())
@@ -159,7 +183,7 @@ void TransactionsPage::transactiontablesetup()
                 string transDate = static_cast<string>(t.at("transactionDate"));
                 string transDesc = static_cast<string>(t.at("description"));
                 string transBal = static_cast<string>(t.at("balanceAfter"));
-          
+
 
 
                 //Create item to be added to row 
@@ -198,9 +222,96 @@ void TransactionsPage::transactiontablesetup()
             }
 
         }
-            
-   //table cleanup
+
+        //table cleanup
+        transTable_->resizeRowsToContents();
+
+
+}
+
+
+void TransactionsPage::transactionTableRefresh(string acc)
+{
+    transTable_->clearContents();
+    AccountManager transac(*currentUser_);
+    DatabaseManager& db = DatabaseManager::getInstance();
+    int j = 0;
+    string accnum;
+    
+    if (acc == "Savings")
+    {
+        accnum = db.retStringW("accountNumber, accountType", transac.getAccountsTableName(), "accountType = 'Savings'", "accountNumber");
+
+    }
+    else if (acc == "Chequing")
+    {
+        accnum = db.retStringW("accountNumber, accountType", transac.getAccountsTableName(), "accountType = 'Chequing'", "accountNumber");
+    }
+    else if (acc == "Credit")
+    {
+        accnum = db.retStringW("accountNumber, accountType", transac.getAccountsTableName(), "accountType = 'CREDIT'", "accountNumber");
+    }
+    else if (acc == "Loan")
+    {
+        accnum = db.retStringW("accountNumber, accountType", transac.getAccountsTableName(), "accountType = 'LOAN'", "accountNumber");
+    } 
+    
+    string tabwhere = "accountNumber = '" + accnum + "'";
+    auto vec =
+        db.retrieveTable(transac.getTransactionsTableName(), tabwhere);
+    transTable_->setRowCount(static_cast<int>(vec.size()));
+
+    if (!vec.empty())
+    {
+        cout << "\n=== Loading Transaction Data ===" << endl;
+        for (const auto& t : vec)
+        {
+            //Extract transaction info from result
+            string transType = static_cast<string>(t.at("transactionType"));
+            string transAmt = static_cast<string>(t.at("amount"));
+            string transDate = static_cast<string>(t.at("transactionDate"));
+            string transDesc = static_cast<string>(t.at("description"));
+            string transBal = static_cast<string>(t.at("balanceAfter"));
+
+
+
+            //Create item to be added to row 
+            QTableWidgetItem* item0 = new QTableWidgetItem(QString::fromStdString(transType));
+            //set item's flag to be editable
+            item0->setFlags(item0->flags() | Qt::ItemIsEditable);
+            //add item to correct row, column , then the item info
+            transTable_->setItem(j, 0, item0);
+
+            //repeat above for each column
+            QTableWidgetItem* item1 = new QTableWidgetItem(QString::fromStdString(transAmt));
+            item1->setFlags(item1->flags() | Qt::ItemIsEditable);
+            transTable_->setItem(j, 1, item1);
+
+            QTableWidgetItem* item2 = new QTableWidgetItem(QString::fromStdString(transDate));
+            item2->setFlags(item2->flags() | Qt::ItemIsEditable);
+            transTable_->setItem(j, 2, item2);
+
+            QTableWidgetItem* item3 = new QTableWidgetItem(QString::fromStdString(transDesc));
+            item3->setFlags(item3->flags() | Qt::ItemIsEditable);
+            transTable_->setItem(j, 3, item3);
+
+            QTableWidgetItem* item4 = new QTableWidgetItem(QString::fromStdString(transBal));
+            item4->setFlags(item4->flags() | Qt::ItemIsEditable);
+            transTable_->setItem(j, 4, item4);
+            //increment for row count
+            ++j;
+
+
+            //Code to make each item in the table uneditable
+            item0->setFlags(item0->flags() & ~Qt::ItemIsEditable);
+            item1->setFlags(item1->flags() & ~Qt::ItemIsEditable);
+            item2->setFlags(item2->flags() & ~Qt::ItemIsEditable);
+            item3->setFlags(item3->flags() & ~Qt::ItemIsEditable);
+            item4->setFlags(item4->flags() & ~Qt::ItemIsEditable);
+        }
+
+    }
+
+    //table cleanup
     transTable_->resizeRowsToContents();
-    transTable_->close();
-    transTable_->show();
 }
