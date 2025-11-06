@@ -82,42 +82,12 @@ void TransactionsPage::buildUI() {
     //transaction table will automatically display the first account available in descending order
     //ex. savings will only be displayed first if chequing is not a account
 
-    if (accountTypeCheck("CHEQUING") == true)
-    {
-        accountName_ = "Chequing";
-        accountsDrop_->addItem("Chequing", QVariant("Chequing"));
-    }
-    if (accountTypeCheck("SAVINGS") == true)
-    {
-        accountsDrop_->addItem("Savings", QVariant("Savings"));
-        if (accountTypeCheck("CHEQUING") == false)
-        {
-            accountName_ = "Savings";
-        }
-    }
-    if (accountTypeCheck("CREDIT") == true)
-    {
-        accountsDrop_->addItem("Credit", QVariant("Credit"));
-        if (accountTypeCheck("CHEQUING") == false && accountTypeCheck("SAVINGS") == false)
-        {
-            accountName_ = "Credit";
-        }
-    }
-    if (accountTypeCheck("LOAN") == true)
-    {
-        accountsDrop_->addItem("Loan", QVariant("Loan"));
-        if (accountTypeCheck("CHEQUING") == false && accountTypeCheck("SAVINGS") == false && accountTypeCheck("CREDIT"))
-        {
-            accountName_ = "Loan";
-        }
-    }
-    // accountsDrop_->addItem("Chequing", QVariant("Chequing"));
-    //accountsDrop_->addItem("Savings", QVariant("Savings"));
-    //accountsDrop_->addItem("Credit", QVariant("Credit"));
-    //accountsDrop_->addItem("Loan", QVariant("Loan"));
+    accountDropSet();
+
     accountsDrop_->setCursor(Qt::PointingHandCursor);
     containerLayout->addWidget(accountsDrop_);
     //connects button/drop down to a function.
+
     connect(accountsDrop_, &QComboBox::currentIndexChanged, this, &TransactionsPage::onAccountChanged);
 
     containerLayout->addSpacing(10);
@@ -150,8 +120,9 @@ void TransactionsPage::buildUI() {
     deposit_->setCursor(Qt::PointingHandCursor);
     containerLayout->addWidget(deposit_);
 
-
+    //onAccountChanged(1);
     QObject::connect(deposit_, &QPushButton::clicked, [this]() { accountDeposit(); });
+
 
 
     containerLayout->addSpacing(10);
@@ -189,29 +160,25 @@ void TransactionsPage::onShow() {
 
 }
 
-bool TransactionsPage::accountTypeCheck(string type)
+void TransactionsPage::accountDropSet()
 {
     DatabaseManager& db = DatabaseManager::getInstance();
     AccountManager accM(*currentUser_);
 
-    string where = "accountType = '" + type + "'";
+    auto accResults = db.retrieveTable(accM.getAccountsTableName(), "");
 
-    auto accResults = db.retrieveTable(accM.getAccountsTableName(), where);
-
-    string returnType;
-
+    QString returnType;
+    QString returnNum;
     for (const auto& ty : accResults)
     {
-        returnType = static_cast<string>(ty.at("accountType"));
+        returnType = QString::fromStdString(static_cast<string>(ty.at("accountType")));
+        returnNum = QString::fromStdString(static_cast<string>(ty.at("accountNumber")));
+        returnType = returnType + returnNum;
+        accountsDrop_->addItem(returnType, QVariant(returnNum));
+
     }
 
-
-    if (returnType == type)
-    {
-        return true;
-    }
-    
-    return false;
+    accountsDrop_->setCurrentIndex(-1);
 }
 
 void TransactionsPage::accountDeposit()
@@ -254,27 +221,14 @@ void TransactionsPage::accountDeposit()
 void TransactionsPage::onAccountChanged(int index) {
 
     accountName_ = accountsDrop_->itemText(index);
-    QString accountId = accountsDrop_->itemData(index).toString();
+    accountID_ = accountsDrop_->itemData(index).toString();
 
-    qDebug() << "Account changed to:" << accountName_ << "(" << accountId << ")";
+    qDebug() << "Account changed to:" << accountName_ << "(" << accountID_ << ")";
 
-    if (accountName_ == "Savings")
-    {
-        transactionTableRefresh("Savings");
+    string tempnum = accountID_.toStdString();
 
-    }
-    else if (accountName_ == "Chequing")
-    {
-        transactionTableRefresh("Chequing");
-    }
-    else if (accountName_ == "Credit")
-    {
-        transactionTableRefresh("Credit");
-    }
-    else if (accountName_ == "Loan")
-    {
-        transactionTableRefresh("Loan");
-    }
+    transactionTableRefresh(tempnum);
+
 
 }
 
@@ -295,28 +249,9 @@ void TransactionsPage::transactiontablesetup()
         transTable_->setHorizontalHeaderLabels({ "Transaction Type", "Amount", "Transaction Date", "Description", "Balance After" });
 
         DatabaseManager& db = DatabaseManager::getInstance();
-        string accType;
-        if (accountName_ == "Chequing")
-        {
-            cout << "CHEQUING";
-            accType = "Chequing";
-            transactionTableRefresh(accType);
-        }
-        else if (accountName_ == "Savings")
-        {
-            accType = "Savings";
-            transactionTableRefresh(accType);
-        }
-        else if (accountName_ == "Credit")
-        {
-            accType = "Credit";
-            transactionTableRefresh(accType);
-        }
-        else if (accountName_ == "Loan")
-        {
-            accType = "Loan";
-            transactionTableRefresh(accType);
-        }
+        string tempnum = accountID_.toStdString();
+
+        transactionTableRefresh(tempnum);
 
 }
 
@@ -327,27 +262,8 @@ void TransactionsPage::transactionTableRefresh(string acc)
     AccountManager transac(*currentUser_);
     DatabaseManager& db = DatabaseManager::getInstance();
     int j = 0;
-    string accnum;
     
-    if (acc == "Savings")
-    {
-        accnum = db.retStringW("accountNumber, accountType", transac.getAccountsTableName(), "accountType = 'Savings'", "accountNumber");
-
-    }
-    else if (acc == "Chequing")
-    {
-        accnum = db.retStringW("accountNumber, accountType", transac.getAccountsTableName(), "accountType = 'Chequing'", "accountNumber");
-    }
-    else if (acc == "Credit")
-    {
-        accnum = db.retStringW("accountNumber, accountType", transac.getAccountsTableName(), "accountType = 'CREDIT'", "accountNumber");
-    }
-    else if (acc == "Loan")
-    {
-        accnum = db.retStringW("accountNumber, accountType", transac.getAccountsTableName(), "accountType = 'LOAN'", "accountNumber");
-    } 
-    
-    string tabwhere = "accountNumber = '" + accnum + "'";
+    string tabwhere = "accountNumber = '" + acc + "'";
     auto vec =
         db.retrieveTable(transac.getTransactionsTableName(), tabwhere);
     transTable_->setRowCount(static_cast<int>(vec.size()));

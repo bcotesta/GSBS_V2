@@ -40,7 +40,7 @@ public:
     void transactionTableRefresh(string acc);
 
     //account type check
-    bool accountTypeCheck(string type);
+    void accountDropSet();
 
 
 protected:
@@ -62,6 +62,7 @@ private:
     QComboBox *accountsDrop_;
     QStringList *accounts_;
     QString accountName_;
+    QString accountID_;
 
     //deposit button
     QPushButton* deposit_;
