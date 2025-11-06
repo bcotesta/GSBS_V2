@@ -90,40 +90,6 @@ void TransactionsPage::buildUI() {
 
     connect(accountsDrop_, &QComboBox::currentIndexChanged, this, &TransactionsPage::onAccountChanged);
 
-    containerLayout->addSpacing(10);
-
-    //deposit amount 
-    depositAmt_ = new QLineEdit(containerWidget_);
-    depositAmt_->setPlaceholderText("Enter Deposit Amount...");
-    containerLayout->addWidget(depositAmt_);
-
-
-    //deposit buttons
-    deposit_ = new QPushButton("Deposit", containerWidget_);
-    deposit_->setStyleSheet(
-        "QPushButton {"
-        "   background-color: #3498db;"
-        "   color: white;"
-        "   border: none;"
-        "   padding: 14px;"
-        "   border-radius: 8px;"
-        "   font-size: 15px;"
-        "   font-weight: 600;"
-        "}"
-        "QPushButton:hover {"
-        "   background-color: #2980b9;"
-        "}"
-        "QPushButton:pressed {"
-        "   background-color: #21618c;"
-        "}"
-    );
-    deposit_->setCursor(Qt::PointingHandCursor);
-    containerLayout->addWidget(deposit_);
-
-    //onAccountChanged(1);
-    QObject::connect(deposit_, &QPushButton::clicked, [this]() { accountDeposit(); });
-
-
 
     containerLayout->addSpacing(10);
 
@@ -179,39 +145,6 @@ void TransactionsPage::accountDropSet()
     }
 
     accountsDrop_->setCurrentIndex(-1);
-}
-
-void TransactionsPage::accountDeposit()
-{
-    DatabaseManager& db = DatabaseManager::getInstance();
-    AccountManager accM(*currentUser_);
-
-    std::vector<Account> accounts = accM.loadUserAccounts();
-
-    string accnum;
-    double value;
-
-    if (accountName_ == "Savings")
-    {
-        accnum = db.retStringW("accountNumber, accountType", accM.getAccountsTableName(), "accountType = 'Savings'", "accountNumber");
-        value = (depositAmt_->text()).toDouble();
-        //accM.deposit(, value);
-        transactionTableRefresh("Savings");
-    }
-    else if (accountName_ == "Chequing")
-    {
-        transactionTableRefresh("Chequing");
-    }
-    else if (accountName_ == "Credit")
-    {
-        transactionTableRefresh("Credit");
-    }
-    else if (accountName_ == "Loan")
-    {
-        transactionTableRefresh("Loan");
-    }
-
-
 }
 
 

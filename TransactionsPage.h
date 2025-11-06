@@ -33,8 +33,6 @@ public:
     // Set the current user
     void setUser(User* user);
 
-    void accountDeposit();
-
     //table functions
     void transactiontablesetup();
     void transactionTableRefresh(string acc);
@@ -64,9 +62,6 @@ private:
     QString accountName_;
     QString accountID_;
 
-    //deposit button
-    QPushButton* deposit_;
-    QLineEdit* depositAmt_;
 
 
     //table
