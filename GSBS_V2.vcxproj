@@ -79,8 +79,10 @@
     <ClCompile Include="LoginPage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="OperationsPage.cpp" />
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PageManager.cpp" />
+    <ClCompile Include="ProductsPage.cpp" />
     <ClCompile Include="RegistrationPage.cpp" />
     <ClCompile Include="SessionManager.cpp" />
     <ClCompile Include="SettingsPage.cpp" />
@@ -100,6 +102,8 @@
     <ClInclude Include="DatabaseManager.h" />
     <ClInclude Include="LoginPage.h" />
     <QtMoc Include="TransactionsPage.h" />
+    <QtMoc Include="OperationsPage.h" />
+    <ClInclude Include="ProductsPage.h" />
     <ClInclude Include="UserPage.h" />
     <QtMoc Include="MainWindow.h" />
     <ClInclude Include="Page.h" />

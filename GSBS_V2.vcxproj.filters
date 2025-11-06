@@ -83,6 +83,12 @@
     <ClCompile Include="TransactionsPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ProductsPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OperationsPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h">
@@ -133,6 +139,9 @@
     <ClInclude Include="UserPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ProductsPage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h">
@@ -142,6 +151,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="DashboardPage.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="OperationsPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

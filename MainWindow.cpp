@@ -130,6 +130,8 @@ void MainWindow::setupPages() {
 	settingsPage_ = new SettingsPage();
     transactionsPage_ = new TransactionsPage();
     userPage_ = new UserPage();
+    productsPage_ = new ProductsPage();
+    operationsPage_ = new OperationsPage();
  
     // Set login success callback
     loginPage->setLoginSuccessCallback([this](User* user) {
@@ -176,6 +178,8 @@ void MainWindow::setupPages() {
     pageManager_->addPage("settings", settingsPage_);
     pageManager_->addPage("transactions", transactionsPage_);
     pageManager_->addPage("user", userPage_);
+    pageManager_->addPage("products", productsPage_);
+    pageManager_->addPage("operations", operationsPage_);
 
     // Add page widgets to stacked widget
     if (Page* page = pageManager_->getPage("login")) {
@@ -194,6 +198,12 @@ void MainWindow::setupPages() {
         stackedWidget_->addWidget(page->getWidget());
     }
     if (Page* page = pageManager_->getPage("user")) {
+        stackedWidget_->addWidget(page->getWidget());
+    }
+    if (Page* page = pageManager_->getPage("products")) {
+        stackedWidget_->addWidget(page->getWidget());
+    }
+    if (Page* page = pageManager_->getPage("operations")) {
         stackedWidget_->addWidget(page->getWidget());
     }
 
@@ -312,7 +322,7 @@ void MainWindow::onAccountButtonClicked() {
     accountButton_->setChecked(true);
 
     // Navigate to user page
-    pageManager_->openPage("user");
+    pageManager_->openPage("operations");
     updateStackedWidget();
 }
 

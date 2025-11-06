@@ -2,7 +2,9 @@
 // Sahara Rahimani || 11/04/2025 | 8:00 AM
 // Dashboard page for displaying user and account information
 
-#include "SettingsPage.h"                       
+#include "SettingsPage.h" 
+#include "PageManager.h"
+#include "MainWindow.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QFrame>
@@ -224,7 +226,33 @@ void SettingsPage::buildUI() {
     btnLayout->addWidget(signOutBtn);
 
     containerLayout->addLayout(btnLayout);
+    // Inside buildUI() after buttons are created:
 
+    connect(profileBtn, &QPushButton::clicked, [this]() {
+        qDebug() << "Contact Us clicked";
+        });
+
+    connect(productsBtn, &QPushButton::clicked, [this]() {
+		pageManager_ = new PageManager();
+		pageManager_->openPage("products");
+        qDebug() << "Contact Us clicked";
+        });
+
+    connect(appInfoBtn, &QPushButton::clicked, []() {
+        qDebug() << "Get to Know the App clicked";
+        });
+
+    connect(contactBtn, &QPushButton::clicked, []() {
+        qDebug() << "Contact Us clicked";
+        });
+
+    connect(privacyBtn, &QPushButton::clicked, []() {
+        qDebug() << "Privacy & Legal clicked";
+        });
+
+    connect(signOutBtn, &QPushButton::clicked, [this]() {
+        qDebug() << "Privacy & Legal clicked";
+        });
 }
 
 void SettingsPage::onShow() {
