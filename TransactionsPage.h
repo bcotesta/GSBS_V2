@@ -48,6 +48,8 @@ private slots:
     //when drop down is changed this is what detects it
     void onAccountChanged(int index);
 
+    void miniPress();
+
 private:
     // UI Components
     QWidget* containerWidget_;
@@ -62,7 +64,9 @@ private:
     QString accountName_;
     QString accountID_;
 
-
+    //mini statement button and label
+    QLabel* ministateLabel_;
+    QPushButton* miniStatement_;
 
     //table
     QTableWidget *transTable_;

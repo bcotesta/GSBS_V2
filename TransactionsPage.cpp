@@ -75,12 +75,7 @@ void TransactionsPage::buildUI() {
 
     //create combo box for the dropdown
     accountsDrop_ = new QComboBox(containerWidget_);
-    //the options to select from. the first string is the account name / what is displayed
-    //and the second string is the id
 
-    //checks if each type of account is used and adds it to the drop box if true
-    //transaction table will automatically display the first account available in descending order
-    //ex. savings will only be displayed first if chequing is not a account
 
     accountDropSet();
 
@@ -100,10 +95,54 @@ void TransactionsPage::buildUI() {
     transTable_ = new QTableWidget(containerWidget_);
     QFont transTFont("Segoe UI", 11, QFont::Bold);
     transTable_->setFont(transTFont);
-    transTable_->setStyleSheet("QTableWidget { background-color: #ecf0f1;}");
+    transTable_->setStyleSheet(
+        "QTableWidget {"
+        "[addint: 12px 15px;"
+        "background - color: #ecf0f1;"
+        "border: 2px solid #e0e0e0;"
+        "border-radius: 8px;"
+        "}"
+        "QHeaderView::section {"
+        "background-color: #ecg0f1;"
+        "}"
+    );
     containerLayout->addWidget(transTable_);
 
     transactiontablesetup();
+
+    //Mini statement label
+    //currently no label does not look great with a label
+
+    /*ministateLabel_ = new QLabel("Statement:", containerWidget_);
+    QFont ministateFont("Segoe UI", 11, QFont::Bold);
+    accountLabel_->setFont(ministateFont);
+    accountLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
+    containerLayout->addWidget(ministateLabel_); */
+
+
+    //Mini statement download button
+    miniStatement_ = new QPushButton("Download Statement");
+    miniStatement_->setStyleSheet(
+        "QPushButton {"
+        "   background-color: #3498db;"
+        "   color: white;"
+        "   border: none;"
+        "   padding: 14px;"
+        "   border-radius: 8px;"
+        "   font-size: 15px;"
+        "   font-weight: 600;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #2980b9;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #21618c;"
+        "}"
+    );
+    miniStatement_->setCursor(Qt::PointingHandCursor);
+    containerLayout->addWidget(miniStatement_);
+
+    connect(miniStatement_, &QPushButton::clicked, [this]() {miniPress(); });
 
 
     // Add container to main layout with centering
@@ -122,10 +161,17 @@ void TransactionsPage::buildUI() {
 void TransactionsPage::onShow() {
 	cout << "TransactionsPage::onShow called" << endl;
 
-    transactiontablesetup();
 
 }
 
+//mini statement button function
+void TransactionsPage::miniPress()
+{
+
+}
+
+//sets the drop down selections
+//drop down is blank by default
 void TransactionsPage::accountDropSet()
 {
     DatabaseManager& db = DatabaseManager::getInstance();
@@ -139,7 +185,7 @@ void TransactionsPage::accountDropSet()
     {
         returnType = QString::fromStdString(static_cast<string>(ty.at("accountType")));
         returnNum = QString::fromStdString(static_cast<string>(ty.at("accountNumber")));
-        returnType = returnType + returnNum;
+        returnType = returnType + " " + returnNum;
         accountsDrop_->addItem(returnType, QVariant(returnNum));
 
     }
@@ -148,9 +194,8 @@ void TransactionsPage::accountDropSet()
 }
 
 
-//Detects when drop down selection is chan ged
-// no info currently displayed
-//currently doesn't change the info displayed
+//Detects when drop down selection is changed 
+//and refreshes table to current selection
 void TransactionsPage::onAccountChanged(int index) {
 
     accountName_ = accountsDrop_->itemText(index);
@@ -167,9 +212,7 @@ void TransactionsPage::onAccountChanged(int index) {
 
 
 
-
-//temp name
-//transaction table
+//transaction table setup
 void TransactionsPage::transactiontablesetup()
 {
     cout << "in transaction table setup" << endl;
@@ -178,10 +221,10 @@ void TransactionsPage::transactiontablesetup()
          return;
     }
         AccountManager transac(*currentUser_);
+        //Creates columns and adds header labels to each column
         transTable_->setColumnCount(5);
         transTable_->setHorizontalHeaderLabels({ "Transaction Type", "Amount", "Transaction Date", "Description", "Balance After" });
 
-        DatabaseManager& db = DatabaseManager::getInstance();
         string tempnum = accountID_.toStdString();
 
         transactionTableRefresh(tempnum);
@@ -189,6 +232,8 @@ void TransactionsPage::transactiontablesetup()
 }
 
 
+//clears the current info in the table then fills it out again
+//with the account that is currently selected
 void TransactionsPage::transactionTableRefresh(string acc)
 {
     transTable_->clearContents();
