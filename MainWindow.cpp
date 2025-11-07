@@ -60,6 +60,9 @@ void MainWindow::setUserForAllPages(User* user) {
     if (userPage_) {
         userPage_->setUser(user);
     }
+    if (moveMoneyPage_) {
+		moveMoneyPage_->setUser(user);
+    }
 }
 
 void MainWindow::setupUI() {
@@ -140,6 +143,7 @@ void MainWindow::setupPages() {
 	settingsPage_ = new SettingsPage();
     transactionsPage_ = new TransactionsPage();
     userPage_ = new UserPage();
+	moveMoneyPage_ = new MoveMoneyPage();
     
     // Set login success callback - MODIFIED FOR 2FA
     loginPage->setLoginSuccessCallback([this, &auth](User* user) {
@@ -313,6 +317,7 @@ void MainWindow::setupPages() {
     pageManager_->addPage("settings", settingsPage_);
     pageManager_->addPage("transactions", transactionsPage_);
     pageManager_->addPage("user", userPage_);
+	pageManager_->addPage("move_money", moveMoneyPage_);
 
     // Add page widgets to stacked widget
     if (Page* page = pageManager_->getPage("login")) {
@@ -336,6 +341,9 @@ void MainWindow::setupPages() {
     if (Page* page = pageManager_->getPage("user")) {
         stackedWidget_->addWidget(page->getWidget());
     }
+    if (Page* page = pageManager_->getPage("move_money")) {
+        stackedWidget_->addWidget(page->getWidget());
+	}
 
     // Open the login page initially
     pageManager_->openPage("login");
@@ -392,11 +400,11 @@ void MainWindow::setupNavBar() {
     transactionsButton_->setIcon(QIcon("img/128x/transactionIcon.png"));
     transactionsButton_->setIconSize(QSize(40, 40));
 
-    accountButton_ = new QPushButton(navBarWidget_);
-    accountButton_->setCheckable(true);
-    accountButton_->setStyleSheet(buttonStyle);
-    accountButton_->setIcon(QIcon("img/128x/userIcon.png"));
-    accountButton_->setIconSize(QSize(36, 36));
+    moveMoneyButton_ = new QPushButton(navBarWidget_);
+    moveMoneyButton_->setCheckable(true);
+    moveMoneyButton_->setStyleSheet(buttonStyle);
+    moveMoneyButton_->setIcon(QIcon("img/128x/data-transfer.png"));
+    moveMoneyButton_->setIconSize(QSize(36, 36));
 
     settingsButton_ = new QPushButton(navBarWidget_);
     settingsButton_->setCheckable(true);
@@ -407,13 +415,13 @@ void MainWindow::setupNavBar() {
     // Add buttons to layout
     navLayout->addWidget(homeButton_);
     navLayout->addWidget(transactionsButton_);
-    navLayout->addWidget(accountButton_);
+    navLayout->addWidget(moveMoneyButton_);
     navLayout->addWidget(settingsButton_);
 
     // Connect button signals
     connect(homeButton_, &QPushButton::clicked, this, &MainWindow::onHomeButtonClicked);
     connect(transactionsButton_, &QPushButton::clicked, this, &MainWindow::onTransactionsButtonClicked);
-    connect(accountButton_, &QPushButton::clicked, this, &MainWindow::onAccountButtonClicked);
+    connect(moveMoneyButton_, &QPushButton::clicked, this, &MainWindow::onMoveMoneyButtonClicked);
     connect(settingsButton_, &QPushButton::clicked, this, &MainWindow::onSettingsButtonClicked);
 
     // Initially hide nav bar (show only when logged in)
@@ -422,7 +430,7 @@ void MainWindow::setupNavBar() {
 
 void MainWindow::onHomeButtonClicked() {
     transactionsButton_->setChecked(false);
-    accountButton_->setChecked(false);
+    moveMoneyButton_->setChecked(false);
     settingsButton_->setChecked(false);
     homeButton_->setChecked(true);
 
@@ -432,7 +440,7 @@ void MainWindow::onHomeButtonClicked() {
 
 void MainWindow::onTransactionsButtonClicked() {
     homeButton_->setChecked(false);
-    accountButton_->setChecked(false);
+    moveMoneyButton_->setChecked(false);
     settingsButton_->setChecked(false);
     transactionsButton_->setChecked(true);
 
@@ -442,20 +450,20 @@ void MainWindow::onTransactionsButtonClicked() {
     updateStackedWidget();
 }
 
-void MainWindow::onAccountButtonClicked() {
+void MainWindow::onMoveMoneyButtonClicked() {
     homeButton_->setChecked(false);
     transactionsButton_->setChecked(false);
     settingsButton_->setChecked(false);
-    accountButton_->setChecked(true);
+    moveMoneyButton_->setChecked(true);
 
-    pageManager_->openPage("user");
+    pageManager_->openPage("move_money");
     updateStackedWidget();
 }
 
 void MainWindow::onSettingsButtonClicked() {
     homeButton_->setChecked(false);
     transactionsButton_->setChecked(false);
-    accountButton_->setChecked(false);
+    moveMoneyButton_->setChecked(false);
     settingsButton_->setChecked(true);
 
     pageManager_->openPage("settings");

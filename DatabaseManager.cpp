@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 // Singleton instance getter
 DatabaseManager& DatabaseManager::getInstance() {

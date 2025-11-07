@@ -7,6 +7,8 @@
 #include <jdbc/cppconn/resultset.h>
 #include <jdbc/cppconn/statement.h>
 #include <string>
+#include <map>
+#include <vector>
 
 using std::string;
 using namespace std;

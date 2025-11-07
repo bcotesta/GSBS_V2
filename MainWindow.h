@@ -7,6 +7,7 @@
 #include "TransactionsPage.h"
 #include "UserPage.h"
 #include "OTPPage.h"
+#include "MoveMoneyPage.h"
 
 #include <QMainWindow>
 #include <QPushButton>
@@ -26,7 +27,7 @@ public:
 private slots:
     void onHomeButtonClicked();
     void onTransactionsButtonClicked();
-    void onAccountButtonClicked();
+    void onMoveMoneyButtonClicked();
     void onSettingsButtonClicked();
 
 private:
@@ -38,7 +39,8 @@ private:
     TransactionsPage* transactionsPage_;
     UserPage* userPage_;
     OTPPage* otpPage_;
-    
+	MoveMoneyPage* moveMoneyPage_;
+
     // Temporary storage for user during OTP verification
     User* pendingUser_; 
     
@@ -46,7 +48,7 @@ private:
     QWidget* navBarWidget_;
     QPushButton* homeButton_;
     QPushButton* transactionsButton_;
-    QPushButton* accountButton_;
+    QPushButton* moveMoneyButton_;
     QPushButton* settingsButton_;
 
     void setupUI();

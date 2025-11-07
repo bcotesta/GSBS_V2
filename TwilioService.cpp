@@ -1,11 +1,14 @@
 #include "TwilioService.h"
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QUrl>
-#include <QUrlQuery>
-#include <QEventLoop>
-#include <QTimer>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+#include <QtCore/QUrl>
+#include <QtCore/QUrlQuery>
+#include <QtCore/QEventLoop>
+#include <QtCore/QTimer>
+#include <QtCore/QObject>
+#include <QtCore/QByteArray>
+#include <QtCore/QString>
 #include <iostream>
 
 TwilioService& TwilioService::getInstance() {
@@ -49,7 +52,8 @@ bool TwilioService::sendSMS(const std::string& toNumber, const std::string& mess
     
     // Build Twilio API URL
     QString urlString = QString("https://api.twilio.com/2010-04-01/Accounts/%1/Messages.json")
-                        .arg(QString::fromStdString(accountSid_));
+                        .arg(QString::fromStdString(accountSid_))
+                        ;
     QUrl url(urlString);
     
     // Create request
@@ -59,7 +63,8 @@ bool TwilioService::sendSMS(const std::string& toNumber, const std::string& mess
     // Set basic authentication
     QString credentials = QString("%1:%2")
                           .arg(QString::fromStdString(accountSid_))
-                          .arg(QString::fromStdString(authToken_));
+                          .arg(QString::fromStdString(authToken_))
+                          ;
     QByteArray authData = credentials.toUtf8().toBase64();
     request.setRawHeader("Authorization", "Basic " + authData);
     

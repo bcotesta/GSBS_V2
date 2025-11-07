@@ -26,7 +26,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.9.3_msvc2022_64</QtInstall>
-    <QtModules>core;gui;network;widgets;svg</QtModules>
+    <QtModules>core;gui;network;widgets;printsupport;svg</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -46,7 +46,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\lib\;$(ProjectDir)\include\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);$(ProjectDir)\lib\vs14\mysqlcppconn.lib;$(ProjectDir)\lib\vs14\mysqlcppconn-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -79,6 +79,7 @@
     <ClCompile Include="LoginPage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="MoveMoneyPage.cpp" />
     <ClCompile Include="OTPManager.cpp" />
     <ClCompile Include="OTPPage.cpp" />
     <ClCompile Include="Page.cpp" />
@@ -103,6 +104,7 @@
     <ClInclude Include="DatabaseManager.h" />
     <ClInclude Include="LoginPage.h" />
     <QtMoc Include="TransactionsPage.h" />
+    <QtMoc Include="MoveMoneyPage.h" />
     <ClInclude Include="OTPManager.h" />
     <ClInclude Include="OTPPage.h" />
     <ClInclude Include="TwilioService.h" />
