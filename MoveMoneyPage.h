@@ -51,6 +51,7 @@ private slots:
     void handleETransferSend();
     void handleTransfer();
     void handleGenerateMiniStatement();
+    void handleExportPdf();
 
 private:
     // Helper function to create action cards
@@ -104,6 +105,7 @@ private:
     QComboBox* miniStatementAccountSelect_;
     QTableWidget* miniStatementTable_;
     QPushButton* generateStatementButton_;
+    QPushButton* exportPdfButton_;
 
     // Current user and accounts (loaded from DB via AccountManager)
     User* currentUser_;
