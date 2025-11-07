@@ -26,7 +26,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.9.3_msvc2022_64</QtInstall>
-    <QtModules>core;gui;widgets;svg</QtModules>
+    <QtModules>core;gui;network;widgets;svg</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -79,6 +79,8 @@
     <ClCompile Include="LoginPage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="OTPManager.cpp" />
+    <ClCompile Include="OTPPage.cpp" />
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PageManager.cpp" />
     <ClCompile Include="RegistrationPage.cpp" />
@@ -86,6 +88,7 @@
     <ClCompile Include="SettingsPage.cpp" />
     <ClCompile Include="Transaction.cpp" />
     <ClCompile Include="TransactionsPage.cpp" />
+    <ClCompile Include="TwilioService.cpp" />
     <ClCompile Include="Types.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="User.cpp" />
@@ -100,6 +103,9 @@
     <ClInclude Include="DatabaseManager.h" />
     <ClInclude Include="LoginPage.h" />
     <QtMoc Include="TransactionsPage.h" />
+    <ClInclude Include="OTPManager.h" />
+    <ClInclude Include="OTPPage.h" />
+    <ClInclude Include="TwilioService.h" />
     <ClInclude Include="UserPage.h" />
     <QtMoc Include="MainWindow.h" />
     <ClInclude Include="Page.h" />

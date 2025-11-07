@@ -39,7 +39,8 @@ public:
 	std::vector<std::map<std::string, sql::SQLString>> retrieveTable(
 		std::string tab,
 		std::string whereClause);
-
+	// for twillo integration
+	std::string getSystemConfig(const std::string& configKey);
 
 private:
 	// Private constructor for Singleton
