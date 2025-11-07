@@ -77,7 +77,7 @@ void TransactionsPage::buildUI() {
     accountsDrop_ = new QComboBox(containerWidget_);
 
 
-    accountDropSet();
+    //accountDropSet();
 
     accountsDrop_->setCursor(Qt::PointingHandCursor);
     containerLayout->addWidget(accountsDrop_);
@@ -160,7 +160,7 @@ void TransactionsPage::buildUI() {
 
 void TransactionsPage::onShow() {
 	cout << "TransactionsPage::onShow called" << endl;
-
+    accountDropSet();
 
 }
 
@@ -174,6 +174,7 @@ void TransactionsPage::miniPress()
 //drop down is blank by default
 void TransactionsPage::accountDropSet()
 {
+    accountsDrop_->clear();
     DatabaseManager& db = DatabaseManager::getInstance();
     AccountManager accM(*currentUser_);
 
