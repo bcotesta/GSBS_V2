@@ -83,13 +83,10 @@
     <ClCompile Include="TransactionsPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OTPManager.cpp">
+    <ClCompile Include="ProductsPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TwilioService.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OTPPage.cpp">
+    <ClCompile Include="OperationsPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -142,13 +139,7 @@
     <ClInclude Include="UserPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OTPManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TwilioService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OTPPage.h">
+    <ClInclude Include="ProductsPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -160,6 +151,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="DashboardPage.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="OperationsPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
