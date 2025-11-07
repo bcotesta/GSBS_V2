@@ -89,6 +89,9 @@
     <ClCompile Include="TwilioService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OTPPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h">
@@ -143,6 +146,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TwilioService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OTPPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

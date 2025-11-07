@@ -4,21 +4,22 @@
 #include "MainWindow.h"
 #include "LoginPage.h"
 #include "RegistrationPage.h"
-
+#include "OTPPage.h" 
+#include "DatabaseManager.h"  // For 2FA database operations
 #include <iostream>
-
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>
-#include <QtSvg/QSvgRenderer>
-#include <QtGui/QIcon>
-#include <QtGui/QPainter>
-
+#include <QMessageBox>
 
 using namespace std;
 
 MainWindow::MainWindow(PageManager* pageManager, QWidget* parent)
-    : QMainWindow(parent), pageManager_(pageManager), currentUser_(nullptr), dashboardPage_(nullptr)
+    : QMainWindow(parent), 
+      pageManager_(pageManager), 
+      currentUser_(nullptr), 
+      dashboardPage_(nullptr),
+      pendingUser_(nullptr) 
 {
     setupUI();
     setupPages();
@@ -29,6 +30,10 @@ MainWindow::~MainWindow() {
     if (currentUser_) {
         delete currentUser_;
         currentUser_ = nullptr;
+    }
+    if (pendingUser_) {
+        delete pendingUser_;
+        pendingUser_ = nullptr;
     }
 }
 
@@ -65,13 +70,13 @@ void MainWindow::setupUI() {
     
     // Create central widget with vertical layout
     QWidget* mainWidget = new QWidget(this);
-    QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);  // Set the layout on the widget
+    QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
     // Create central stacked widget to hold pages
     stackedWidget_ = new QStackedWidget(mainWidget);
-    mainLayout->addWidget(stackedWidget_, 1);  // Add stretch factor so pages take remaining space
+    mainLayout->addWidget(stackedWidget_, 1);
 
     // Navigation bar setup
     setupNavBar();
@@ -119,11 +124,16 @@ void MainWindow::setupMenuBar() {
 }
 
 void MainWindow::setupPages() {
+    Authenticator& auth = Authenticator::getInstance();
+    
     // Create and add the login page
     LoginPage* loginPage = new LoginPage();
     
     // Create and add the registration page
     RegistrationPage* registrationPage = new RegistrationPage();
+    
+    // CREATE OTP PAGE - ADD THIS
+    otpPage_ = new OTPPage();
     
     // Create and add the content pages
     dashboardPage_ = new DashboardPage();
@@ -131,19 +141,72 @@ void MainWindow::setupPages() {
     transactionsPage_ = new TransactionsPage();
     userPage_ = new UserPage();
     
-    // Set login success callback
-    loginPage->setLoginSuccessCallback([this](User* user) {
-        this->setCurrentUser(user);
-        dashboardPage_->setUser(user);
-        cout << "User logged in: " << user->email() << endl;
+    // Set login success callback - MODIFIED FOR 2FA
+    loginPage->setLoginSuccessCallback([this, &auth](User* user) {
+        std::string userID = user->userId() == 0 ? 
+                            auth.getUserID() : 
+                            std::to_string(user->userId());
         
-        // Show navigation bar
-        navBarWidget_->setVisible(true);
-        homeButton_->setChecked(true);
-        
-        // Navigate to dashboard page
-        pageManager_->openPage("dashboard");
-        updateStackedWidget();
+        // Check if 2FA is enabled
+        if (auth.isTwoFactorEnabled(userID)) {
+            // Store user temporarily
+            pendingUser_ = user;
+            
+            // Get 2FA method
+            std::string method = auth.getTwoFactorMethod(userID);
+            
+            // Configure OTP page
+            otpPage_->setUserID(userID);
+            otpPage_->setDeliveryMethod(method);
+            
+            // Navigate to OTP page
+            pageManager_->openPage("otp");
+            updateStackedWidget();
+            
+            std::cout << "2FA required for user: " << user->email() << endl;
+        } else {
+            // No 2FA - prompt to enable it
+            QMessageBox msgBox(this);
+            msgBox.setWindowTitle("Enable Two-Factor Authentication");
+            msgBox.setText("Two-factor authentication is not enabled on your account.");
+            msgBox.setInformativeText("Would you like to enable it now for better security?");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            msgBox.setIcon(QMessageBox::Question);
+            
+            int choice = msgBox.exec();
+            
+            if (choice == QMessageBox::Yes) {
+                // Enable 2FA in database
+                DatabaseManager& dbManager = DatabaseManager::getInstance();
+                try {
+                    std::string setClause = "twoFactorEnabled = '1', twoFactorMethod = 'phone'";
+                    std::string whereClause = "userID = '" + userID + "'";
+                    dbManager.updateTable("userinfo", setClause, whereClause);
+
+                    QMessageBox::information(this, "Success",
+                        "Two-factor authentication has been enabled successfully!");
+                }
+                catch (const std::exception& e) {
+                    QMessageBox::warning(this, "Error",
+                        "Failed to enable 2FA. You can enable it later in settings.");
+                }
+                
+            }
+            
+            // Complete login
+            this->setCurrentUser(user);
+            dashboardPage_->setUser(user);
+            std::cout << "User logged in: " << user->email() << std::endl;
+
+            // Show navigation bar
+            navBarWidget_->setVisible(true);
+            homeButton_->setChecked(true);
+            
+            // Navigate to dashboard page
+            pageManager_->openPage("dashboard");
+            updateStackedWidget();
+        }
     });
     
     // Set register callback to navigate to registration page
@@ -152,11 +215,48 @@ void MainWindow::setupPages() {
         updateStackedWidget();
     });
     
-    // Set registration success callback
-    registrationPage->setRegistrationSuccessCallback([this](User* user) {
+    // Set registration success callback - MODIFIED FOR 2FA
+    registrationPage->setRegistrationSuccessCallback([this, &auth](User* user) {
+        std::string userID = user->userId() == 0 ? 
+                            auth.getUserID() : 
+                            std::to_string(user->userId());
+        
+        // Always prompt to enable 2FA after registration
+        QMessageBox msgBox(this);
+        msgBox.setWindowTitle("Secure Your Account");
+        msgBox.setText("Would you like to enable two-factor authentication?");
+        msgBox.setInformativeText("This adds an extra layer of security to your account. Highly recommended!");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        msgBox.setIcon(QMessageBox::Question);
+        
+        int choice = msgBox.exec();
+        
+        if (choice == QMessageBox::Yes) {
+            // Enable 2FA in database
+            DatabaseManager& dbManager = DatabaseManager::getInstance();
+            try {
+                std::string setClause = "twoFactorEnabled = '1', twoFactorMethod = 'phone'";
+                std::string whereClause = "userID = '" + userID + "'";
+                dbManager.updateTable("userinfo", setClause, whereClause);
+
+                QMessageBox::information(this, "Success",
+                    "Two-factor authentication has been enabled successfully!");
+            }
+            catch (const std::exception& e) {
+                QMessageBox::warning(this, "Error",
+                    "Failed to enable 2FA. You can enable it later in settings.");
+            }
+        }
+        
+        // Complete registration
         this->setCurrentUser(user);
         dashboardPage_->setUser(user);
-        cout << "User registered: " << user->email() << endl;
+        std::cout << "User registered: " << user->email() << std::endl;
+
+        // Show navigation bar
+        navBarWidget_->setVisible(true);
+        homeButton_->setChecked(true);
         
         // Navigate to dashboard page
         pageManager_->openPage("dashboard");
@@ -169,9 +269,46 @@ void MainWindow::setupPages() {
         updateStackedWidget();
     });
     
+    // SET OTP PAGE CALLBACKS - ADD THIS
+    otpPage_->setVerificationSuccessCallback([this]() {
+        // OTP verified successfully - complete login
+        if (pendingUser_) {
+            this->setCurrentUser(pendingUser_);
+            dashboardPage_->setUser(pendingUser_);
+            std::cout << "User logged in with 2FA: " << pendingUser_->email() << std::endl;
+
+            pendingUser_ = nullptr;  // Clear pending user
+            
+            // Show navigation bar
+            navBarWidget_->setVisible(true);
+            homeButton_->setChecked(true);
+            
+            // Navigate to dashboard
+            pageManager_->openPage("dashboard");
+            updateStackedWidget();
+        }
+    });
+    
+    otpPage_->setVerificationFailedCallback([this]() {
+        // OTP verification failed - stay on OTP page
+        std::cout << "OTP verification failed" << std::endl;
+    });
+    
+    otpPage_->setCancelCallback([this]() {
+        // User cancelled OTP - go back to login
+        if (pendingUser_) {
+            delete pendingUser_;
+            pendingUser_ = nullptr;
+        }
+        
+        pageManager_->openPage("login");
+        updateStackedWidget();
+    });
+    
     // Add pages to page manager
     pageManager_->addPage("login", loginPage);
     pageManager_->addPage("register", registrationPage);
+    pageManager_->addPage("otp", otpPage_);  // ADD THIS
     pageManager_->addPage("dashboard", dashboardPage_);
     pageManager_->addPage("settings", settingsPage_);
     pageManager_->addPage("transactions", transactionsPage_);
@@ -182,6 +319,9 @@ void MainWindow::setupPages() {
         stackedWidget_->addWidget(page->getWidget());
     }
     if (Page* page = pageManager_->getPage("register")) {
+        stackedWidget_->addWidget(page->getWidget());
+    }
+    if (Page* page = pageManager_->getPage("otp")) {  // ADD THIS
         stackedWidget_->addWidget(page->getWidget());
     }
     if (Page* page = pageManager_->getPage("dashboard")) {
@@ -250,7 +390,7 @@ void MainWindow::setupNavBar() {
     transactionsButton_->setCheckable(true);
     transactionsButton_->setStyleSheet(buttonStyle);
     transactionsButton_->setIcon(QIcon("img/128x/transactionIcon.png"));
-    transactionsButton_->setIconSize(QSize(40, 40)); // this one is diffy just cause we want it to look a bit similar
+    transactionsButton_->setIconSize(QSize(40, 40));
 
     accountButton_ = new QPushButton(navBarWidget_);
     accountButton_->setCheckable(true);
@@ -281,13 +421,11 @@ void MainWindow::setupNavBar() {
 }
 
 void MainWindow::onHomeButtonClicked() {
-    // Uncheck other buttons
     transactionsButton_->setChecked(false);
     accountButton_->setChecked(false);
     settingsButton_->setChecked(false);
     homeButton_->setChecked(true);
 
-    // Navigate to dashboard
     pageManager_->openPage("dashboard");
     updateStackedWidget();
 }
@@ -300,7 +438,6 @@ void MainWindow::onTransactionsButtonClicked() {
 
 	transactionsPage_->setUser(currentUser_);
 
-    // Navigate to transactions page
     pageManager_->openPage("transactions");
     updateStackedWidget();
 }
@@ -311,7 +448,6 @@ void MainWindow::onAccountButtonClicked() {
     settingsButton_->setChecked(false);
     accountButton_->setChecked(true);
 
-    // Navigate to user page
     pageManager_->openPage("user");
     updateStackedWidget();
 }
@@ -322,15 +458,14 @@ void MainWindow::onSettingsButtonClicked() {
     accountButton_->setChecked(false);
     settingsButton_->setChecked(true);
 
-    // Navigate to settings
     pageManager_->openPage("settings");
     updateStackedWidget();
 }
 
 void MainWindow::updateNavBarVisibility() {
-    // Show nav bar only when user is logged in
     navBarWidget_->setVisible(currentUser_ != nullptr);
 }
+
 void MainWindow::updateStackedWidget() {
     if (Page* currentPage = pageManager_->getCurrentPage()) {
         stackedWidget_->setCurrentWidget(currentPage->getWidget());
