@@ -456,6 +456,8 @@ void MainWindow::onMoveMoneyButtonClicked() {
     settingsButton_->setChecked(false);
     moveMoneyButton_->setChecked(true);
 
+    moveMoneyPage_->setUser(currentUser_);
+
     pageManager_->openPage("move_money");
     updateStackedWidget();
 }
