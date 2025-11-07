@@ -24,10 +24,16 @@ public:
 
 	void setUser(User* user);
 
+	bool doubleCheck();
+
 protected:
 	void buildUI() override;
 
 private slots:
+	void onNewSavingsPress();
+	void onNewChequingPress();
+	void onNewCreditPress();
+	void onNewLoanPress();
 
 private:
 	//UI Components

@@ -14,18 +14,22 @@ OpenAccountPage::OpenAccountPage()
     containerWidget_(nullptr),
     titleLabel_(nullptr),
     newAccountLabel_(nullptr),
-    currentUser_(nullptr)
+    currentUser_(nullptr),
+    newChequingButton_(nullptr),
+    newSavingsButton_(nullptr),
+    newCreditButton_(nullptr),
+    newLoanButton_(nullptr)
 {
 
 }
 
 OpenAccountPage::~OpenAccountPage()
 {
-	// Qt's parent-child system handles cleanup
+    // Qt's parent-child system handles cleanup
 }
 
 void OpenAccountPage::setUser(User* user) {
-	currentUser_ = user;
+    currentUser_ = user;
 }
 
 void OpenAccountPage::buildUI() {
@@ -35,7 +39,7 @@ void OpenAccountPage::buildUI() {
 
     // Set background color for the page
     centralWidget->setStyleSheet("QWidget { background-color: #f5f5f5; }");
-    
+
     // Create a centered container
     containerWidget_ = new QWidget(centralWidget);
     containerWidget_->setFixedWidth(400);
@@ -67,9 +71,9 @@ void OpenAccountPage::buildUI() {
     newAccountLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
     containerLayout->addWidget(newAccountLabel_);
 
-    
+
     //New savings account button
-    newSavingsButton_ = new QPushButton("Create New Savings Account",containerWidget_);
+    newSavingsButton_ = new QPushButton("Create New Savings Account", containerWidget_);
     newSavingsButton_->setStyleSheet(
         "QPushButton {"
         "   background-color: #00cc00;"
@@ -91,6 +95,7 @@ void OpenAccountPage::buildUI() {
     containerLayout->addWidget(newSavingsButton_);
 
     containerLayout->addSpacing(15);
+
 
     //new chequing account button
     newChequingButton_ = new QPushButton("Create New Chequing Account", containerWidget_);
@@ -115,6 +120,11 @@ void OpenAccountPage::buildUI() {
     containerLayout->addWidget(newChequingButton_);
 
     containerLayout->addSpacing(15);
+
+
+
+
+
 
     //new credit account button
     newCreditButton_ = new QPushButton("Create New Credit Account", containerWidget_);
@@ -141,9 +151,12 @@ void OpenAccountPage::buildUI() {
     containerLayout->addSpacing(15);
 
 
+
+
+
     //new loan account button
-    newSavingsButton_ = new QPushButton("Create New Loan Account", containerWidget_);
-    newSavingsButton_->setStyleSheet(
+    newLoanButton_ = new QPushButton("Create New Loan Account", containerWidget_);
+    newLoanButton_->setStyleSheet(
         "QPushButton {"
         "   background-color: #00cc00;"
         "   color: white;"
@@ -160,13 +173,20 @@ void OpenAccountPage::buildUI() {
         "   background-color: #029e02;"
         "}"
     );
-    newSavingsButton_->setCursor(Qt::PointingHandCursor);
-    containerLayout->addWidget(newSavingsButton_);
+    newLoanButton_->setCursor(Qt::PointingHandCursor);
+    containerLayout->addWidget(newLoanButton_);
 
     containerLayout->addSpacing(15);
 
 
 
+
+    //connect  buttons to functions 
+
+    connect(newSavingsButton_, &QPushButton::clicked, [this]() { onNewSavingsPress(); });
+    connect(newChequingButton_, &QPushButton::clicked, [this]() { onNewChequingPress(); });
+    connect(newCreditButton_, &QPushButton::clicked, [this]() { onNewCreditPress(); });
+    connect(newLoanButton_, &QPushButton::clicked, [this]() { onNewLoanPress(); });
 
 
     // Add container to main layout with centering
@@ -180,8 +200,73 @@ void OpenAccountPage::buildUI() {
     mainLayout_->addLayout(hLayout);
 
     mainLayout_->addStretch();
-        
 
+
+}
+
+
+void OpenAccountPage::onNewSavingsPress()
+{
+    bool yn = doubleCheck();
+    if (yn == true)
+    {
+        AccountManager accM(*currentUser_);
+        AccountType s = AccountType::SAVINGS;
+        accM.createAccount(s);
+    }
+}
+
+void OpenAccountPage::onNewChequingPress()
+{
+    bool yn = doubleCheck();
+    if (yn == true)
+    {
+        AccountManager accM(*currentUser_);
+        AccountType s = AccountType::CHEQUING;
+        accM.createAccount(s);
+    }
+}
+
+void OpenAccountPage::onNewCreditPress()
+{
+    
+    if (doubleCheck() == true)
+    {
+        AccountManager accM(*currentUser_);
+        AccountType s = AccountType::CREDIT;
+        accM.createAccount(s);
+    }
+}
+
+void OpenAccountPage::onNewLoanPress()
+{
+
+    if (doubleCheck() == true)
+    {
+        AccountManager accM(*currentUser_);
+        AccountType s = AccountType::LOAN;
+        accM.createAccount(s);
+    }
+}
+
+bool OpenAccountPage::doubleCheck()
+{
+    //QApplication::activeWindow() will display the QMessageBox in the current active window
+    QMessageBox msgBox(QApplication::activeWindow());
+    msgBox.setWindowTitle("Create New Account");
+    msgBox.setText("Are you sure you want to make a new account?");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    msgBox.setIcon(QMessageBox::Question);
+
+
+    int choice = msgBox.exec();
+
+    if (choice == QMessageBox::Yes) {
+        return true;
+    }
+    
+    return false;
 }
 
 

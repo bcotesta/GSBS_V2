@@ -110,39 +110,6 @@ void TransactionsPage::buildUI() {
 
     transactiontablesetup();
 
-    //Mini statement label
-    //currently no label does not look great with a label
-
-    /*ministateLabel_ = new QLabel("Statement:", containerWidget_);
-    QFont ministateFont("Segoe UI", 11, QFont::Bold);
-    accountLabel_->setFont(ministateFont);
-    accountLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
-    containerLayout->addWidget(ministateLabel_); */
-
-
-    //Mini statement download button
-    miniStatement_ = new QPushButton("Download Statement");
-    miniStatement_->setStyleSheet(
-        "QPushButton {"
-        "   background-color: #7f8c8d;"
-        "   color: white;"
-        "   border: none;"
-        "   padding: 14px;"
-        "   border-radius: 8px;"
-        "   font-size: 15px;"
-        "   font-weight: 600;"
-        "}"
-        "QPushButton:hover {"
-        "   background-color: #7f8c8d;"
-        "}"
-        "QPushButton:pressed {"
-        "   background-color: #7f8c8d;"
-        "}"
-    );
-    miniStatement_->setCursor(Qt::PointingHandCursor);
-    containerLayout->addWidget(miniStatement_);
-
-    connect(miniStatement_, &QPushButton::clicked, [this]() {miniPress(); });
 
 
     // Add container to main layout with centering
@@ -164,11 +131,6 @@ void TransactionsPage::onShow() {
 
 }
 
-//mini statement button function
-void TransactionsPage::miniPress()
-{
-
-}
 
 //sets the drop down selections
 //drop down is blank by default
