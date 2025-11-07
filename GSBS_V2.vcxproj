@@ -79,6 +79,7 @@
     <ClCompile Include="LoginPage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="OpenAccountPage.cpp" />
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PageManager.cpp" />
     <ClCompile Include="RegistrationPage.cpp" />
@@ -100,6 +101,7 @@
     <ClInclude Include="DatabaseManager.h" />
     <ClInclude Include="LoginPage.h" />
     <QtMoc Include="TransactionsPage.h" />
+    <QtMoc Include="OpenAccountPage.h" />
     <ClInclude Include="UserPage.h" />
     <QtMoc Include="MainWindow.h" />
     <ClInclude Include="Page.h" />

@@ -130,6 +130,7 @@ void MainWindow::setupPages() {
 	settingsPage_ = new SettingsPage();
     transactionsPage_ = new TransactionsPage();
     userPage_ = new UserPage();
+    openaccountPage_ = new OpenAccountPage();
     
     // Set login success callback
     loginPage->setLoginSuccessCallback([this](User* user) {
@@ -176,6 +177,7 @@ void MainWindow::setupPages() {
     pageManager_->addPage("settings", settingsPage_);
     pageManager_->addPage("transactions", transactionsPage_);
     pageManager_->addPage("user", userPage_);
+    pageManager_->addPage("openaccount", openaccountPage_);
 
     // Add page widgets to stacked widget
     if (Page* page = pageManager_->getPage("login")) {
@@ -194,6 +196,9 @@ void MainWindow::setupPages() {
         stackedWidget_->addWidget(page->getWidget());
     }
     if (Page* page = pageManager_->getPage("user")) {
+        stackedWidget_->addWidget(page->getWidget());
+    }
+    if (Page* page = pageManager_->getPage("openaccount")) {
         stackedWidget_->addWidget(page->getWidget());
     }
 
@@ -264,15 +269,23 @@ void MainWindow::setupNavBar() {
     settingsButton_->setIcon(QIcon("img/128x/settingsIcon.png"));
     settingsButton_->setIconSize(QSize(36, 36));
 
+    openaccountButton_ = new QPushButton(navBarWidget_);
+    openaccountButton_->setCheckable(true);
+    openaccountButton_->setStyleSheet(buttonStyle);
+    openaccountButton_->setIcon(QIcon("img/128x/newaccountIcon.png"));
+    openaccountButton_->setIconSize(QSize(36, 36));
+
     // Add buttons to layout
     navLayout->addWidget(homeButton_);
     navLayout->addWidget(transactionsButton_);
+    navLayout->addWidget(openaccountButton_);
     navLayout->addWidget(accountButton_);
     navLayout->addWidget(settingsButton_);
 
     // Connect button signals
     connect(homeButton_, &QPushButton::clicked, this, &MainWindow::onHomeButtonClicked);
     connect(transactionsButton_, &QPushButton::clicked, this, &MainWindow::onTransactionsButtonClicked);
+    connect(openaccountButton_, &QPushButton::clicked, this, &MainWindow::onOpenAccountButtonClicked);
     connect(accountButton_, &QPushButton::clicked, this, &MainWindow::onAccountButtonClicked);
     connect(settingsButton_, &QPushButton::clicked, this, &MainWindow::onSettingsButtonClicked);
 
@@ -285,6 +298,7 @@ void MainWindow::onHomeButtonClicked() {
     transactionsButton_->setChecked(false);
     accountButton_->setChecked(false);
     settingsButton_->setChecked(false);
+    openaccountButton_->setChecked(false);
     homeButton_->setChecked(true);
 
     // Navigate to dashboard
@@ -297,6 +311,7 @@ void MainWindow::onTransactionsButtonClicked() {
     accountButton_->setChecked(false);
     settingsButton_->setChecked(false);
     transactionsButton_->setChecked(true);
+    openaccountButton_->setChecked(false);
 
 	transactionsPage_->setUser(currentUser_);
 
@@ -310,6 +325,7 @@ void MainWindow::onAccountButtonClicked() {
     transactionsButton_->setChecked(false);
     settingsButton_->setChecked(false);
     accountButton_->setChecked(true);
+    openaccountButton_->setChecked(false);
 
     // Navigate to user page
     pageManager_->openPage("user");
@@ -321,9 +337,21 @@ void MainWindow::onSettingsButtonClicked() {
     transactionsButton_->setChecked(false);
     accountButton_->setChecked(false);
     settingsButton_->setChecked(true);
+    openaccountButton_->setChecked(false);
 
     // Navigate to settings
     pageManager_->openPage("settings");
+    updateStackedWidget();
+}
+
+void MainWindow::onOpenAccountButtonClicked() {
+    homeButton_->setChecked(false);
+    transactionsButton_->setChecked(false);
+    accountButton_->setChecked(false);
+    settingsButton_->setChecked(false);
+    openaccountButton_->setChecked(true);
+
+    pageManager_->openPage("openaccount");
     updateStackedWidget();
 }
 

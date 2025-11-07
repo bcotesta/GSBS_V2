@@ -83,6 +83,9 @@
     <ClCompile Include="TransactionsPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenAccountPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h">
@@ -142,6 +145,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="DashboardPage.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="OpenAccountPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

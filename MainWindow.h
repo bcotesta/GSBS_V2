@@ -6,6 +6,7 @@
 #include "SettingsPage.h"
 #include "TransactionsPage.h"
 #include "UserPage.h"
+#include "OpenAccountPage.h"
 
 #include <QMainWindow>
 #include <QPushButton>
@@ -27,6 +28,7 @@ private slots:
     void onTransactionsButtonClicked();
     void onAccountButtonClicked();
     void onSettingsButtonClicked();
+    void onOpenAccountButtonClicked();
 
 private:
     PageManager* pageManager_;
@@ -36,6 +38,7 @@ private:
 	SettingsPage* settingsPage_;
     TransactionsPage* transactionsPage_;
     UserPage* userPage_;
+    OpenAccountPage* openaccountPage_;
     
     // Navigation bar widgets
     QWidget* navBarWidget_;
@@ -43,6 +46,7 @@ private:
     QPushButton* transactionsButton_;
     QPushButton* accountButton_;
     QPushButton* settingsButton_;
+    QPushButton* openaccountButton_;
 
     void setupUI();
 	void setUserForAllPages(User* user);
