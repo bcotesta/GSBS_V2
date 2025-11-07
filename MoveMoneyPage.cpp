@@ -10,10 +10,6 @@
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#include <QtPrintSupport/QPrinter>
-#include <QtGui/QPainter>
-#include <QtGui/QTextDocument>
 #include <iomanip>
 #include <sstream>
 #include <QDateTime>
@@ -39,8 +35,7 @@ MoveMoneyPage::MoveMoneyPage()
     titleLabel_(nullptr),
     miniStatementAccountSelect_(nullptr),
     miniStatementTable_(nullptr),
-    generateStatementButton_(nullptr),
-    exportPdfButton_(nullptr)
+    generateStatementButton_(nullptr)
 {
 }
 
@@ -189,6 +184,7 @@ void MoveMoneyPage::buildUI() {
     sectionTitle->setStyleSheet("QLabel { color: #7f8c8d; padding: 10px 5px; }");
     sectionLayout->addWidget(sectionTitle);
 
+    // Grid layout for action cards (2 columns)
     QGridLayout* gridLayout = new QGridLayout();
     gridLayout->setSpacing(15);
     gridLayout->setContentsMargins(0, 0, 0, 0);
@@ -251,6 +247,7 @@ void MoveMoneyPage::buildUI() {
     stackedWidget_->addWidget(miniStatementOverlay_);
     stackedWidget_->addWidget(eDepositOverlay_);
 
+    // Show main menu by default
     stackedWidget_->setCurrentIndex(MAIN_MENU);
 }
 
@@ -264,8 +261,10 @@ QPushButton* MoveMoneyPage::createActionCard(const QString& title, const QString
     card->setCursor(Qt::PointingHandCursor);
     card->setFixedHeight(160);
     
+    // Fix hover issue: set attribute to enable proper mouse tracking
     card->setAttribute(Qt::WA_Hover, true);
 
+    // Card styling with green outline and proper hover effect
     QString cardStyle =
         "QPushButton {"
         "   background-color: #f0f0f0;"
@@ -346,7 +345,7 @@ QWidget* MoveMoneyPage::createOverlayHeader(const QString& title, QWidget* paren
 
     // Back button
     QPushButton* backButton = new QPushButton(header);
-    backButton->setText("<");
+    backButton->setText("<");  // Simple text back arrow
     backButton->setFixedSize(40, 40);
     backButton->setCursor(Qt::PointingHandCursor);
     QFont backFont("Segoe UI", 18, QFont::Bold);
@@ -691,30 +690,6 @@ QWidget* MoveMoneyPage::createMiniStatementOverlay() {
     miniStatementTable_->setMinimumHeight(300);
     contentLayout->addWidget(miniStatementTable_);
 
-    // Export to PDF button (new)
-    exportPdfButton_ = new QPushButton("Export to PDF", content);
-    exportPdfButton_->setMinimumHeight(50);
-    exportPdfButton_->setCursor(Qt::PointingHandCursor);
-    exportPdfButton_->setStyleSheet(
-        "QPushButton {"
-        "   background-color: #00cc00;"
-        "   color: white;"
-        "   border: none;"
-        "   border-radius: 8px;"
-        "   font-size: 16px;"
-        "   font-weight: bold;"
-        "}"
-        "QPushButton:hover {"
-        "   background-color: #02a802;"
-        "}"
-        "QPushButton:pressed {"
-        "   background-color: #008f39;"
-        "}"
-    );
-    exportPdfButton_->setEnabled(false);  // Initially disabled until statement is generated
-    connect(exportPdfButton_, &QPushButton::clicked, this, &MoveMoneyPage::handleExportPdf);
-    contentLayout->addWidget(exportPdfButton_);
-
     contentLayout->addStretch();
 
     scrollArea->setWidget(content);
@@ -1002,7 +977,6 @@ void MoveMoneyPage::handleGenerateMiniStatement() {
     miniStatementTable_->setRowCount(0);
     
     if (transactions.empty()) {
-        exportPdfButton_->setEnabled(false);  // Disable PDF button if no data
         QMessageBox::information(nullptr, "No Transactions", 
             "No transactions found for this account in the last 4 weeks.");
         return;
@@ -1048,101 +1022,4 @@ void MoveMoneyPage::handleGenerateMiniStatement() {
     
     // Resize columns to content
     miniStatementTable_->resizeColumnsToContents();
-    
-    // Enable PDF export button
-    exportPdfButton_->setEnabled(true);
-}
-
-void MoveMoneyPage::handleExportPdf() {
-    cout << "[MoveMoneyPage] Exporting PDF" << endl;
-    
-    // Check if table has data
-    if (miniStatementTable_->rowCount() == 0) {
-        QMessageBox::warning(nullptr, "No Data", "Please generate a statement first.");
-        return;
-    }
-    
-    // Get selected account info
-    int accountIndex = miniStatementAccountSelect_->currentIndex();
-    if (accountIndex < 0 || accountIndex >= static_cast<int>(accounts_.size())) {
-        QMessageBox::warning(nullptr, "Error", "No account selected.");
-        return;
-    }
-    
-    const Account& account = accounts_[accountIndex];
-    QString defaultFileName = QString("MiniStatement_%1_%2.pdf")
-        .arg(QString::fromStdString(account.accountNumber()))
-        .arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss"));
-    
-    // Let user choose save location
-    QString fileName = QFileDialog::getSaveFileName(
-        nullptr,
-        "Export Mini Statement to PDF",
-        defaultFileName,
-        "PDF Files (*.pdf)"
-    );
-    
-    if (fileName.isEmpty()) {
-        return;  // User cancelled
-    }
-    
-    // Create QPrinter for PDF generation
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(fileName);
-    printer.setPageSize(QPageSize::A4);
-    printer.setPageOrientation(QPageLayout::Portrait);
-    printer.setPageMargins(QMarginsF(15, 15, 15, 15), QPageLayout::Millimeter);
-    
-    // Create HTML content for the PDF
-    QString html = "<html><head><style>"
-        "body { font-family: 'Segoe UI', Arial, sans-serif; }"
-        "h1 { color: #00cc00; text-align: center; }"
-        "h2 { color: #2c3e50; }"
-        "table { width: 100%; border-collapse: collapse; margin-top: 20px; }"
-        "th { background-color: #00cc00; color: white; padding: 10px; text-align: left; border: 1px solid #ddd; }"
-        "td { padding: 8px; border: 1px solid #ddd; }"
-        "tr:nth-child(even) { background-color: #e8f5e9; }"
-        ".header-info { margin: 20px 0; }"
-        ".footer { margin-top: 30px; text-align: center; font-size: 10px; color: #7f8c8d; }"
-        "</style></head><body>";
-    
-    // Add header
-    html += "<h1>Greater Sudbury Banking Service</h1>";    
-    // Add account info
-    html += "<div class='header-info'>";
-    html += "<p><strong>Account Type:</strong> " + accountTypeToString(account.accountType()) + "</p>";
-    html += "<p><strong>Account Number:</strong> " + QString::fromStdString(account.accountNumber()) + "</p>";
-    html += "<p><strong>Generated:</strong> " + QDateTime::currentDateTime().toString("MMMM dd, yyyy hh:mm AP") + "</p>";
-    html += "</div>";
-    
-    // Add table
-    html += "<table>";
-    html += "<thead><tr>";
-    for (int col = 0; col < miniStatementTable_->columnCount(); ++col) {
-        html += "<th>" + miniStatementTable_->horizontalHeaderItem(col)->text() + "</th>";
-    }
-    html += "</tr></thead>";
-    
-    html += "<tbody>";
-    for (int row = 0; row < miniStatementTable_->rowCount(); ++row) {
-        html += "<tr>";
-        for (int col = 0; col < miniStatementTable_->columnCount(); ++col) {
-            QTableWidgetItem* item = miniStatementTable_->item(row, col);
-            html += "<td>" + (item ? item->text() : "") + "</td>";
-        }
-        html += "</tr>";
-    }
-    html += "</tbody></table>";
-    html += "</body></html>";
-    
-    // Render HTML to PDF
-    QTextDocument document;
-    document.setHtml(html);
-    document.print(&printer);
-    
-    cout << "[MoveMoneyPage] PDF exported successfully to: " << fileName.toStdString() << endl;
-    
-    QMessageBox::information(nullptr, "Export Successful", 
-        QString("Mini statement has been exported to:\n%1").arg(fileName));
 }
