@@ -51,6 +51,7 @@ private:
     QLabel* depositAccountsLabel_;
     QLabel* depositTotalLabel_;
     
+public:
     QWidget* creditCardsSection_;
     QVBoxLayout* creditCardsLayout_;
     QLabel* creditCardsLabel_;

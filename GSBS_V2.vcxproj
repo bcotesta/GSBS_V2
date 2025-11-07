@@ -79,6 +79,7 @@
     <ClCompile Include="LoginPage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="MoveMoneyPage.cpp" />
     <ClCompile Include="OperationsPage.cpp" />
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PageManager.cpp" />
@@ -103,6 +104,7 @@
     <ClInclude Include="LoginPage.h" />
     <QtMoc Include="TransactionsPage.h" />
     <QtMoc Include="OperationsPage.h" />
+    <QtMoc Include="MoveMoneyPage.h" />
     <ClInclude Include="ProductsPage.h" />
     <ClInclude Include="UserPage.h" />
     <QtMoc Include="MainWindow.h" />

@@ -8,6 +8,7 @@
 #include "UserPage.h"
 #include "ProductsPage.h"
 #include "OperationsPage.h"
+#include "MoveMoneyPage.h"
 #include <QMainWindow>
 #include <QPushButton>
 #include <QStackedWidget>
@@ -27,7 +28,7 @@ public:
 private slots:
     void onHomeButtonClicked();
     void onTransactionsButtonClicked();
-    void onAccountButtonClicked();
+    void onMoveMoneyButtonClicked();
     void onSettingsButtonClicked();
  
 
@@ -35,18 +36,21 @@ private:
     PageManager* pageManager_;
     QStackedWidget* stackedWidget_;
     User* currentUser_;
+
+    // Pages of app
     DashboardPage* dashboardPage_;
 	SettingsPage* settingsPage_;
     TransactionsPage* transactionsPage_;
     UserPage* userPage_;
 	ProductsPage* productsPage_;
     OperationsPage* operationsPage_;
+	MoveMoneyPage* moveMoneyPage_;
     
     // Navigation bar widgets
     QWidget* navBarWidget_;
     QPushButton* homeButton_;
     QPushButton* transactionsButton_;
-    QPushButton* accountButton_;
+    QPushButton* moveMoneyButton_;
     QPushButton* settingsButton_;
 
     void setupUI();
