@@ -32,7 +32,13 @@ private slots:
 private:
 	//UI Components
 	QWidget* containerWidget_;
+
+	//Labels
 	QLabel* titleLabel_;
+	QLabel* newAccountLabel_;
+
+	//Buttons
+	QPushButton* newSavingsButton_;
 
 	//Current user
 	User* currentUser_;
