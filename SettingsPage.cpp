@@ -104,7 +104,6 @@ void SettingsPage::buildUI() {
             "}"
         );
 
-        // Build content: optional icon (fixed) -> label (expanding) -> arrow (fixed)
         btn->setText("");
         QWidget* content = new QWidget(btn);
         content->setStyleSheet("QWidget { background-color: transparent; }");
@@ -198,7 +197,7 @@ void SettingsPage::buildUI() {
         );
 
         btn->setContentsMargins(0, 0, 0, 0);
-        btn->setStyleSheet(btn->styleSheet() + " QPushButton { qproperty-alignment: 'AlignCenter'; }");
+        btn->setStyleSheet(btn->styleSheet());
         return btn;
     };
 
