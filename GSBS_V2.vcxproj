@@ -26,7 +26,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.9.3_msvc2022_64</QtInstall>
-    <QtModules>core;gui;widgets;printsupport;svg</QtModules>
+    <QtModules>core;gui;network;widgets;printsupport;svg</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -81,6 +81,8 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="MoveMoneyPage.cpp" />
     <ClCompile Include="OperationsPage.cpp" />
+    <ClCompile Include="OTPManager.cpp" />
+    <ClCompile Include="OTPPage.cpp" />
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PageManager.cpp" />
     <ClCompile Include="ProductsPage.cpp" />
@@ -89,6 +91,7 @@
     <ClCompile Include="SettingsPage.cpp" />
     <ClCompile Include="Transaction.cpp" />
     <ClCompile Include="TransactionsPage.cpp" />
+    <ClCompile Include="TwilioService.cpp" />
     <ClCompile Include="Types.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="User.cpp" />
@@ -105,7 +108,10 @@
     <QtMoc Include="TransactionsPage.h" />
     <QtMoc Include="OperationsPage.h" />
     <QtMoc Include="MoveMoneyPage.h" />
+    <ClInclude Include="OTPManager.h" />
+    <ClInclude Include="OTPPage.h" />
     <ClInclude Include="ProductsPage.h" />
+    <ClInclude Include="TwilioService.h" />
     <ClInclude Include="UserPage.h" />
     <QtMoc Include="MainWindow.h" />
     <ClInclude Include="Page.h" />
