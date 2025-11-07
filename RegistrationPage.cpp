@@ -130,7 +130,7 @@ void RegistrationPage::buildUI() {
     containerLayout->addSpacing(6);
     
     // Phone input
-    QLabel* phoneLabel = new QLabel("Phone Number (Optional)", containerWidget_);
+    QLabel* phoneLabel = new QLabel("Phone Number", containerWidget_);
     phoneLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; font-size: 12px; }");
     containerLayout->addWidget(phoneLabel);
     
