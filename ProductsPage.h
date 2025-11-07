@@ -1,8 +1,8 @@
 #pragma once
 #include "Page.h"
+#include "ProductsPage.h"
 #include "User.h"
 #include "Account.h"
-#include "PageManager.h"
 #include "AccountManager.h"
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
@@ -12,34 +12,25 @@
 #include <vector>
 #include <functional>
 
-class SettingsPage : public Page
+class ProductsPage : public Page
 {
 public:
-    SettingsPage();
-    ~SettingsPage() override;
+    ProductsPage();
+    ~ProductsPage() override;
 
     // Lifecycle hooks
     void onShow() override;
 
     // Set the current user
     void setUser(User* user);
-    void onProductsClicked();
-  
 
 protected:
     void buildUI() override;
-   
 
 private:
     // UI Components
     QWidget* containerWidget_;
     QLabel* titleLabel_;
-    QPushButton* productsButton_;
-    QPushButton* learnAppButton_;
-    QPushButton* contactButton_;
-    QPushButton* privacyButton_;
-    QPushButton* signOutButton_;
-    PageManager* pageManager_;
 
     // Current user
     User* currentUser_;
