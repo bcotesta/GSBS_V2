@@ -1,6 +1,7 @@
 // Brandon Cotesta || 10/28/2025 | 1:00 PM
 
 #include "SessionManager.h"
+#include "OTPManager.h"
 #include <iostream>
 
 using namespace std;
@@ -11,7 +12,7 @@ SessionManager::SessionManager()
 {
 }
 
-// Login method
+// Login method with 2FA support
 bool SessionManager::login() {
     string username, password;
     
@@ -24,6 +25,37 @@ bool SessionManager::login() {
         cout << "Login failed: Invalid credentials" << endl;
         loggedIn_ = false;
         return false;
+    }
+    
+    // Check if 2FA is enabled
+    string userID = auth_.getUserID();
+    if (auth_.isTwoFactorEnabled(userID)) {
+        cout << "\n=== Two-Factor Authentication Required ===" << endl;
+        
+        // Get 2FA method (email or phone)
+        string method = auth_.getTwoFactorMethod(userID);
+        
+        // Send OTP
+        if (!auth_.sendOTP(userID, method)) {
+            cout << "Failed to send verification code" << endl;
+            return false;
+        }
+        
+        cout << "A verification code has been sent to your " << method << endl;
+        
+        // Prompt for OTP
+        string otpCode;
+        cout << "Enter verification code: ";
+        getline(cin, otpCode);
+        
+        // Verify OTP
+        if (!auth_.verifyOTP(userID, otpCode)) {
+            cout << "Login failed: Invalid or expired verification code" << endl;
+            loggedIn_ = false;
+            return false;
+        }
+        
+        cout << "Two-factor authentication successful!" << endl;
     }
     
     // Create user object

@@ -6,31 +6,43 @@
 #include <iostream>
 
 using namespace std;
+
 class Authenticator
 {
 public:
-	// Singleton instance accessor
-	static Authenticator& getInstance();
-	// Delete copy constructor and assignment operator
-	Authenticator(const Authenticator&) = delete;
-	Authenticator& operator=(const Authenticator&) = delete;
+    // Singleton instance accessor
+    static Authenticator& getInstance();
+    // Delete copy constructor and assignment operator
+    Authenticator(const Authenticator&) = delete;
+    Authenticator& operator=(const Authenticator&) = delete;
 
-	// Member functions
-	bool verifyCredentials(const std::string& username, const std::string& password);
-	void setValidInfo(const std::string& username, const std::string& password);
-	bool registerNewUser(const std::string& name, const std::string& email, 
-	                     const std::string& phone, const std::string& password);  // ADD THIS
-	std::string getUserID() const { return validUserID_; }
-	std::string getUsername() const { return validUsername_; }
+    // Member functions
+    bool verifyCredentials(const std::string& username, const std::string& password);
+    void setValidInfo(const std::string& username, const std::string& password);
+    bool registerNewUser(const std::string& name, const std::string& email, 
+                         const std::string& phone, const std::string& password);
+    
+    // 2FA methods
+    bool isTwoFactorEnabled(const std::string& userID) const;
+    std::string getTwoFactorMethod(const std::string& userID) const;
+    bool sendOTP(const std::string& userID, const std::string& method = "");
+    bool verifyOTP(const std::string& userID, const std::string& code);
+    
+    // Getters
+    std::string getUserID() const { return validUserID_; }
+    std::string getUsername() const { return validUsername_; }
+    std::string getName() const { return validName_; }
+    std::string getPhone() const { return validPhone_; }
+
 private:
-	Authenticator();
-	~Authenticator();
+    Authenticator();
+    ~Authenticator();
 
-	string validUserID_;
-	string validUsername_;
-	string validPassword_;
-	string validName_;
-	string validPhone_;
-	string validAddress_;
-	string validAccountNum_;
+    string validUserID_;
+    string validUsername_;
+    string validPassword_;
+    string validName_;
+    string validPhone_;
+    string validAddress_;
+    string validAccountNum_;
 };

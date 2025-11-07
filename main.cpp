@@ -12,6 +12,7 @@
 #include "BankingOperationsManager.h"
 #include "MainWindow.h"
 #include "User.h"
+#include "TwilioService.h"
 
 #include <QApplication>
 #include <QFont>
@@ -20,11 +21,36 @@
 
 using namespace std;
 
+// ==================== TWILIO INITIALIZATION ====================
+
+static void initializeTwilio() {
+    // Initialize Twilio service
+    TwilioService& twilioSvc = TwilioService::getInstance();
+    
+	// These are dummy values to be replaced by environment variables or secure storage
+    std::string accountSid = "AC01c344a51d00980541f6b435af6d12a7";
+    std::string authToken = "b60ef1e8d62a81056be61b81115a8c86";
+    std::string fromNumber = "+17058065789"; // Your Twilio phone number
+   
+    
+    // Configure Twilio
+    if (accountSid != "YOUR_TWILIO_ACCOUNT_SID") {
+        twilioSvc.configure(accountSid, authToken, fromNumber);
+        std::cout << "[MAIN] Twilio SMS service initialized" << std::endl;
+    } else {
+        std::cout << "[MAIN] WARNING: Twilio not configured. SMS will be simulated." << std::endl;
+        std::cout << "[MAIN] Set environment variables or update main.cpp:" << std::endl;
+        std::cout << "[MAIN]   TWILIO_ACCOUNT_SID" << std::endl;
+        std::cout << "[MAIN]   TWILIO_AUTH_TOKEN" << std::endl;
+        std::cout << "[MAIN]   TWILIO_FROM_NUMBER" << std::endl;
+    }
+
+	twilioSvc.sendSMS("+17055628309", "GSBS Banking System initialized.");
+}
+
 // ==================== QT WINDOW INITIALIZATION ====================
 
-static void initializeQtWindow(int argc, char* argv[]) {
-    QApplication app(argc, argv);
-
+static void initializeQtWindow(PageManager& pageManager, QApplication& app) {
     // Set application style
     app.setStyle("Fusion");
     
@@ -32,17 +58,12 @@ static void initializeQtWindow(int argc, char* argv[]) {
     QFont appFont("Segoe UI", 10);
     app.setFont(appFont);
 
-    // Create page manager - MUST outlive mainWindow
-    PageManager pageManager;
+    // Create and show main window
+    MainWindow mainWindow(&pageManager);
+    mainWindow.show();
 
-    // Create and show main window - use scope or pointer to control lifetime
-    {
-        MainWindow mainWindow(&pageManager);
-        mainWindow.show();
-
-        // Run application event loop
-        app.exec();
-    } // mainWindow destructs here BEFORE pageManager
+    // Run application event loop
+    app.exec();
 }
 
 // ==================== CONSOLE-BASED BANKING APP (Legacy) ====================
@@ -164,6 +185,12 @@ static void runBankingApp() {
 // ==================== MAIN ENTRY POINT ====================
 
 int main(int argc, char *argv[]) {
+    // Create QApplication FIRST - Qt objects need this to exist
+    QApplication app(argc, argv);
+    
+    // NOW initialize Twilio service (which uses Qt Network)
+    initializeTwilio();
+    
     // Choose between Qt GUI or console mode
     cout << "=== GSBS Banking System ===" << endl;
     cout << "Select mode:" << endl;
@@ -176,15 +203,27 @@ int main(int argc, char *argv[]) {
     cin.ignore();
     
     if (modeChoice == 1) {
-        // Launch Qt GUI
-        initializeQtWindow(argc, argv);
+        // Set application style
+        app.setStyle("Fusion");
+        
+        // Set application-wide font
+        QFont appFont("Segoe UI", 10);
+        app.setFont(appFont);
+
+        // Create page manager - MUST outlive mainWindow
+        PageManager pageManager;
+
+        // Create and show main window
+        MainWindow mainWindow(&pageManager);
+        mainWindow.show();
+
+        // Run application event loop
+        return app.exec();
     } else {
         // Launch console app
-        QApplication app(argc, argv); 
         UIManager::displayWelcome();
         runBankingApp();
+        return 0;
     }
-    
-    return 0;
 }
 
