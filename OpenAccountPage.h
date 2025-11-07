@@ -31,26 +31,11 @@ private slots:
 
 private:
 	//UI Components
-	//QWidget* containerWidget_;
-	QScrollArea* scrollArea_;
-	QWidget* scrollContent_;
-	QVBoxLayout* contentLayout_;
-	
-	//Header section
-	QWidget* headerWidget_;
+	QWidget* containerWidget_;
 	QLabel* titleLabel_;
 
 	//Current user
 	User* currentUser_;
-
-	//Section
-	QWidget* newAccountSection_;
-	QVBoxLayout* newAccountLayout_;
-	QLabel* newSavingsLabel;
-
-
-	//helper method
-	QWidget* createSectionHeader(const QString& title);
 
 };
 
