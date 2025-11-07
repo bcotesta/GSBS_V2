@@ -11,11 +11,9 @@
 OpenAccountPage::OpenAccountPage()
     :Page("openaccount"),
 
-    scrollArea_(nullptr),
-    scrollContent_(nullptr),
-    contentLayout_(nullptr),
-    headerWidget_(nullptr),
+    containerWidget_(nullptr),
     titleLabel_(nullptr),
+    newAccountLabel_(nullptr),
     currentUser_(nullptr)
 {
 
@@ -63,11 +61,36 @@ void OpenAccountPage::buildUI() {
     containerLayout->addWidget(titleLabel_);
 
     //New Account button label
-    newAccountLabel_ = new QLabel("Select account:", containerWidget_);
+    newAccountLabel_ = new QLabel("Select new account:", containerWidget_);
     QFont newAccountFont("Segoe UI", 11, QFont::Bold);
     newAccountLabel_->setFont(newAccountFont);
     newAccountLabel_->setStyleSheet("QLabel { color: #2c3e50; }");
     containerLayout->addWidget(newAccountLabel_);
+
+    
+    //New savings account button
+    newSavingsButton_ = new QPushButton("Create New Savings Account",containerWidget_);
+    newSavingsButton_->setStyleSheet(
+        "QPushButton {"
+        "   background-color: #00cc00;"
+        "   color: white;"
+        "   border: none;"
+        "   padding: 14px;"
+        "   border-radius: 8px;"
+        "   font-size: 15px;"
+        "   font-weight: 600;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #029e02;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #029e02;"
+        "}"
+    );
+    newSavingsButton_->setCursor(Qt::PointingHandCursor);
+    containerLayout->addWidget(newSavingsButton_);
+
+    containerLayout->addSpacing(15);
 
 
 
