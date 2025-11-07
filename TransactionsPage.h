@@ -33,7 +33,12 @@ public:
     // Set the current user
     void setUser(User* user);
 
+    //table functions
     void transactiontablesetup();
+    void transactionTableRefresh(string acc);
+
+    //account type check
+    void accountDropSet();
 
 
 protected:
@@ -42,6 +47,8 @@ protected:
 private slots:
     //when drop down is changed this is what detects it
     void onAccountChanged(int index);
+
+    void miniPress();
 
 private:
     // UI Components
@@ -54,9 +61,15 @@ private:
     // dropdown for account selection
     QComboBox *accountsDrop_;
     QStringList *accounts_;
+    QString accountName_;
+    QString accountID_;
+
+    //mini statement button and label
+    QLabel* ministateLabel_;
+    QPushButton* miniStatement_;
 
     //table
-    QTableWidget* transTable_;
+    QTableWidget *transTable_;
 
 
 };
