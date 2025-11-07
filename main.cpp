@@ -24,28 +24,26 @@ using namespace std;
 // ==================== TWILIO INITIALIZATION ====================
 
 static void initializeTwilio() {
-    // Initialize Twilio service
     TwilioService& twilioSvc = TwilioService::getInstance();
+    DatabaseManager& dbManager = DatabaseManager::getInstance();
     
-	// These are dummy values to be replaced by environment variables or secure storage
-    std::string accountSid = "AC01c344a51d00980541f6b435af6d12a7";
-    std::string authToken = "b60ef1e8d62a81056be61b81115a8c86";
-    std::string fromNumber = "+17058065789"; // Your Twilio phone number
-   
+    // Pull credentials from database
+    std::string accountSid = dbManager.getSystemConfig("TWILIO_ACCOUNT_SID");
+    std::string authToken = dbManager.getSystemConfig("TWILIO_AUTH_TOKEN");
+    std::string fromNumber = dbManager.getSystemConfig("TWILIO_FROM_NUMBER");
     
-    // Configure Twilio
-    if (accountSid != "YOUR_TWILIO_ACCOUNT_SID") {
-        twilioSvc.configure(accountSid, authToken, fromNumber);
-        std::cout << "[MAIN] Twilio SMS service initialized" << std::endl;
-    } else {
-        std::cout << "[MAIN] WARNING: Twilio not configured. SMS will be simulated." << std::endl;
-        std::cout << "[MAIN] Set environment variables or update main.cpp:" << std::endl;
-        std::cout << "[MAIN]   TWILIO_ACCOUNT_SID" << std::endl;
-        std::cout << "[MAIN]   TWILIO_AUTH_TOKEN" << std::endl;
-        std::cout << "[MAIN]   TWILIO_FROM_NUMBER" << std::endl;
+    // Verify credentials were retrieved
+    if (accountSid.empty() || authToken.empty() || fromNumber.empty()) {
+        std::cout << "[MAIN] WARNING: Twilio credentials not found in database" << std::endl;
+        std::cout << "[MAIN] Please insert credentials into system_config table" << std::endl;
+        return;
     }
-
-	twilioSvc.sendSMS("+17055628309", "GSBS Banking System initialized.");
+    
+    twilioSvc.configure(accountSid, authToken, fromNumber);
+    std::cout << "[MAIN] Twilio SMS service initialized from database" << std::endl;
+    
+    //Send test SMS
+    twilioSvc.sendSMS("+17055628309", "GSBS Banking System initialized.");
 }
 
 // ==================== QT WINDOW INITIALIZATION ====================
