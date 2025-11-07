@@ -124,7 +124,7 @@ void TransactionsPage::buildUI() {
     miniStatement_ = new QPushButton("Download Statement");
     miniStatement_->setStyleSheet(
         "QPushButton {"
-        "   background-color: #3498db;"
+        "   background-color: #7f8c8d;"
         "   color: white;"
         "   border: none;"
         "   padding: 14px;"
@@ -133,10 +133,10 @@ void TransactionsPage::buildUI() {
         "   font-weight: 600;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #2980b9;"
+        "   background-color: #7f8c8d;"
         "}"
         "QPushButton:pressed {"
-        "   background-color: #21618c;"
+        "   background-color: #7f8c8d;"
         "}"
     );
     miniStatement_->setCursor(Qt::PointingHandCursor);
