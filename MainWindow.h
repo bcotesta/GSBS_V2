@@ -6,7 +6,6 @@
 #include "SettingsPage.h"
 #include "TransactionsPage.h"
 #include "UserPage.h"
-#include "OTPPage.h"
 
 #include <QMainWindow>
 #include <QPushButton>
@@ -37,10 +36,6 @@ private:
 	SettingsPage* settingsPage_;
     TransactionsPage* transactionsPage_;
     UserPage* userPage_;
-    OTPPage* otpPage_;
-    
-    // Temporary storage for user during OTP verification
-    User* pendingUser_; 
     
     // Navigation bar widgets
     QWidget* navBarWidget_;

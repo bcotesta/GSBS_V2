@@ -322,21 +322,6 @@ std::map<std::string, sql::SQLString> DatabaseManager::retMultipleColumns(
     return results;
 }
 
-std::string DatabaseManager::getSystemConfig(const std::string& configKey) {
-    ensureConnection();
-    
-    try {
-        std::string whereClause = "config_key = '" + configKey + "'";
-        sql::SQLString result = retStringW("config_value", "system_config", 
-                                           whereClause, "config_value");
-        return static_cast<std::string>(result);
-    }
-    catch (const std::exception& e) {
-        std::cerr << "[DB] Error retrieving system config: " << e.what() << std::endl;
-        return "";
-    }
-}
-
 // Destructor to clean up resources
 DatabaseManager::~DatabaseManager() {
     if (stmt) {

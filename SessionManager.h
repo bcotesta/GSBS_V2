@@ -18,9 +18,6 @@ public:
     User* getCurrentUser();
     const User* getCurrentUser() const;
     
-    // 2FA management
-    bool enable2FAForUser(const std::string& userID);
-    
 private:
     Authenticator& auth_;
     std::unique_ptr<User> currentUser_;
