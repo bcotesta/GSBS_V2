@@ -847,41 +847,75 @@ QWidget* SettingsPage::createSignOutPopUp() {
     layout->setSpacing(0);
 
     // Header
-    QWidget* header = createOverlayHeader("Get to Know the App", overlay);
+    QWidget* header = createOverlayHeader("Sign Out", overlay);
     layout->addWidget(header);
 
-    // Content area with scroll
-    QScrollArea* scrollArea = new QScrollArea(overlay);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-    scrollArea->setStyleSheet("QScrollArea { background-color: transparent; border: none; }");
-
+    // Content area
     QWidget* content = new QWidget();
     QVBoxLayout* contentLayout = new QVBoxLayout(content);
-    contentLayout->setContentsMargins(20, 10, 20, 20);
-    contentLayout->setSpacing(15);
+    contentLayout->setContentsMargins(20, 40, 20, 20);
+    contentLayout->setSpacing(20);
 
-    // Input styling
-    QString inputStyle =
-        "QLineEdit, QComboBox {"
-        "   padding: 12px 15px;"
-        "   border: 2px solid #e0e0e0;"
-        "   border-radius: 8px;"
-        "   font-size: 14px;"
-        "   color: #000000;"
+    // Message label
+    QLabel* confirmLabel = new QLabel("Are you sure you want to sign out?", content);
+    confirmLabel->setStyleSheet("font-size: 16px; font-weight: 600; color: black;");
+    confirmLabel->setAlignment(Qt::AlignCenter);
+    contentLayout->addWidget(confirmLabel);
+
+    // Buttons container
+    QHBoxLayout* btnRow = new QHBoxLayout();
+    btnRow->setSpacing(15);
+
+    // Cancel button (white with green border)
+    QPushButton* cancelBtn = new QPushButton("Cancel", content);
+    cancelBtn->setMinimumHeight(45);
+    cancelBtn->setStyleSheet(
+        "QPushButton {"
         "   background-color: white;"
-        "   min-height: 48px;"
-        "}"
-        "QLineEdit:focus, QComboBox:focus {"
+        "   color: #00cc00;"
         "   border: 2px solid #00cc00;"
-        "}";
+        "   border-radius: 8px;"
+        "   font-size: 16px;"
+        "   font-weight: bold;"
+        "}"
+        "QPushButton:hover { background-color: #f4fff4; }"
+        "QPushButton:pressed { background-color: #e8ffe8; }"
+    );
 
+    // Confirm button (red)
+    QPushButton* signOutBtn = new QPushButton("Sign Out", content);
+    signOutBtn->setMinimumHeight(45);
+    signOutBtn->setStyleSheet(
+        "QPushButton {"
+        "   background-color: #C73636;"
+        "   color: white;"
+        "   border-radius: 8px;"
+        "   font-size: 16px;"
+        "   font-weight: bold;"
+        "}"
+        "QPushButton:hover { background-color: #B12F2F; }"
+        "QPushButton:pressed { background-color: #992222; }"
+    );
 
+    btnRow->addWidget(cancelBtn);
+    btnRow->addWidget(signOutBtn);
+    contentLayout->addLayout(btnRow);
 
+    // Add content to layout
+    layout->addWidget(content);
+
+    // Button logic
+    connect(cancelBtn, &QPushButton::clicked, [this]() {
+        stackedWidget_->setCurrentIndex(MAIN_MENU);
+        });
+
+    connect(signOutBtn, &QPushButton::clicked, [this]() {
+        handleSignOut();   // Call your logout logic
+        });
 
     return overlay;
-
 }
+
 
 void SettingsPage::handleProfileSend() {
 
