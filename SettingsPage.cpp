@@ -230,7 +230,7 @@ void SettingsPage::buildUI()
         QPushButton* btn = new QPushButton("Sign Out", containerWidget_);
         btn->setMinimumHeight(45);
         btn->setStyleSheet(
-            "QPushButton { background-color: #C73636; color: black; border-radius: 8px; }"
+            "QPushButton { background-color: #C73636; color: black; border-radius: 8px;  font-size: 20px; font-weight: bold }"
             "QPushButton:hover { background-color: #B12F2F; }"
             "QPushButton:pressed { background-color: #992222; }"
         );
@@ -242,7 +242,7 @@ void SettingsPage::buildUI()
     QPushButton* appBtn = createArrowButton("Get to Know the App", "img/128x/star.png");
     QPushButton* contactBtn = createArrowButton("Contact Us", "img/128x/contact-mail.png");
     QPushButton* privacyBtn = createArrowButton("Privacy & Legal", "img/128x/information.png");
-    QPushButton* faqBtn = createArrowButton("FAQ", "img/128x/question.png"); // ADDED
+    QPushButton* faqBtn = createArrowButton("FAQ", "img/128x/help.png"); // ADDED
     QPushButton* signOutBtn = createSignOutButton();
 
     btnLayout->addWidget(profileBtn);
@@ -858,7 +858,7 @@ QWidget* SettingsPage::createSignOutPopUp() {
 
     // Message label
     QLabel* confirmLabel = new QLabel("Are you sure you want to sign out?", content);
-    confirmLabel->setStyleSheet("font-size: 16px; font-weight: 600; color: black;");
+    confirmLabel->setStyleSheet("font-size: 20px; font-weight: 600; color: black;");
     confirmLabel->setAlignment(Qt::AlignCenter);
     contentLayout->addWidget(confirmLabel);
 
@@ -888,9 +888,9 @@ QWidget* SettingsPage::createSignOutPopUp() {
     signOutBtn->setStyleSheet(
         "QPushButton {"
         "   background-color: #C73636;"
-        "   color: white;"
+        "   color: black;"
         "   border-radius: 8px;"
-        "   font-size: 16px;"
+        "   font-size: 20px;"
         "   font-weight: bold;"
         "}"
         "QPushButton:hover { background-color: #B12F2F; }"
