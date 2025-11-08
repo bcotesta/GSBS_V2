@@ -19,7 +19,6 @@ TransactionsPage::TransactionsPage()
     accountLabel_(nullptr),
     accountsDrop_(nullptr),
     transTable_(nullptr)
-
 {
 
 }

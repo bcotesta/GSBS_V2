@@ -114,7 +114,7 @@
     <ClInclude Include="PageManager.h" />
     <ClInclude Include="RegistrationPage.h" />
     <ClInclude Include="SessionManager.h" />
-    <ClInclude Include="SettingsPage.h" />
+    <QtMoc Include="SettingsPage.h" />
     <ClInclude Include="Transaction.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="UIManager.h" />

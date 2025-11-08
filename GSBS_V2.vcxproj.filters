@@ -92,6 +92,9 @@
     <ClCompile Include="OTPPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MoveMoneyPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h">
@@ -136,9 +139,6 @@
     <ClInclude Include="RegistrationPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SettingsPage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UserPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -160,6 +160,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="DashboardPage.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="MoveMoneyPage.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SettingsPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
