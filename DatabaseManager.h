@@ -27,7 +27,6 @@ public:
 	// These are used to create user-specific tables upon account creation
 	void createUserAccountsTable(std::string userID, std::string username);
 	void createUserTransactionsTable(std::string userID, std::string username);
-	
 	void addtoTable(std::string tab, std::string val);
 	void updateTable(std::string tab, std::string setv, std::string cond);
 

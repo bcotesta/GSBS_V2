@@ -239,6 +239,7 @@ sql::SQLString DatabaseManager::retString(std::string col, std::string tab, std:
     return tempstring;
 }
 
+
 sql::SQLString DatabaseManager::retStringW(std::string col, std::string tab, std::string val, std::string specval)
 {
     sql::SQLString tempstring;

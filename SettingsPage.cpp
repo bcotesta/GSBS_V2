@@ -4,12 +4,14 @@
 
 #include "SettingsPage.h" 
 #include "DatabaseManager.h"
+#include "MainWindow.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QScrollArea>
 #include <QtGui/QPixmap>
 #include <QtGui/QIcon>
+#include <QApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
 #include <QtCore/QCoreApplication>
@@ -919,9 +921,67 @@ QWidget* SettingsPage::createSignOutPopUp() {
 
 void SettingsPage::handleProfileSend() {
 
+    // 1. Get selected field key ("name", "email", "phone", "password")
+    QString selectedField = fieldSelect_->currentData().toString();
+
+    // 2. Get user input text
+    QString newValue = fieldInput_->text().trimmed();
+
+    // 3. Basic validation: ensure field not empty
+    if (newValue.isEmpty()) {
+        QMessageBox::warning(nullptr, "Input Error", "Please enter a value before saving.");
+        return;
+    }
+
+    // 4. Additional validation depending on field
+    if (selectedField == "email") {
+        QString email = fieldInput_->text().trimmed();
+
+        // Simple email validation — good enough for app input
+        if (!email.contains("@") || !email.contains(".") || email.length() < 5) {
+            QMessageBox::warning(this, "Invalid Email", "Please enter a valid email address.");
+            return;
+        }
+
+    }
+
+    if (selectedField == "phone") {
+        QRegularExpression phoneRegex("^\\d{10,15}$");
+        if (!phoneRegex.match(newValue).hasMatch()) {
+            QMessageBox::warning(nullptr, "Invalid Phone Number", "Enter only digits (10-15 digits).");
+            return;
+        }
+    }
+
+    if (selectedField == "password") {
+        if (newValue.length() < 6) {
+            QMessageBox::warning(nullptr, "Weak Password", "Password must be at least 6 characters.");
+            return;
+        }
+    }
+
+    // 5. Convert to std::string for DB or backend usage
+    std::string fieldKey = selectedField.toStdString();
+    std::string fieldValue = newValue.toStdString();
+
+    // Example debug print (you can remove later)
+    qDebug() << "Updating field:" << selectedField << "with value:" << newValue;
+
+    QMessageBox::information(nullptr, "Success",
+        "Your information update request has been received.");
+
+    // TODO: Add your DB update call here
+    // updateUserInfo(fieldKey, fieldValue);
+
+    // Clear input box after success
+    fieldInput_->clear();
 }
 
+
+
 void SettingsPage::handleSignOut() {
+	//couldn't figure this out, so just quitting the app for now
+    QApplication::quit();
 
 }
 
