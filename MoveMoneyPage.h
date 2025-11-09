@@ -52,6 +52,7 @@ private slots:
     void handleTransfer();
     void handleGenerateMiniStatement();
     void handleExportPdf();
+    void handleEDeposit();
 
 private:
     // Helper function to create action cards
@@ -92,9 +93,13 @@ private:
     
     // eTransfer input fields
     QComboBox* eTransferAccountSelect_;
+    QComboBox* eDepositAccountSelect_;
     QLineEdit* eTransferRecipientInput_;
     QLineEdit* eTransferAmountInput_;
     QLineEdit* eTransferMessageInput_;
+
+    //eDeposit
+    QLineEdit* eDepositAmountInput_;
     
     // Transfer input fields
     QComboBox* transferFromAccount_;

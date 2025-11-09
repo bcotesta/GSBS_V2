@@ -255,7 +255,87 @@ void MoveMoneyPage::buildUI() {
 }
 
 QWidget* MoveMoneyPage::createEDepositOverlay() {
-    QWidget* overlay = new QWidget(this);
+    QWidget* overlay = new QWidget();
+    overlay->setStyleSheet("QWidget { background-color: #f5f5f5; }");
+
+    QVBoxLayout* layout = new QVBoxLayout(overlay);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+
+    // Header
+    QWidget* header = createOverlayHeader("eDeposit", overlay);
+    layout->addWidget(header);
+
+    // Content area with scroll
+    QScrollArea* scrollArea = new QScrollArea(overlay);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setStyleSheet("QScrollArea { background-color: transparent; border: none; }");
+
+    QWidget* content = new QWidget();
+    QVBoxLayout* contentLayout = new QVBoxLayout(content);
+    contentLayout->setContentsMargins(20, 10, 20, 20);
+    contentLayout->setSpacing(15);
+
+    // Input styling
+    QString inputStyle =
+        "QLineEdit, QComboBox {"
+        "   padding: 12px 15px;"
+        "   border: 2px solid #e0e0e0;"
+        "   border-radius: 8px;"
+        "   font-size: 14px;"
+        "   color: #000000;"
+        "   background-color: white;"
+        "   min-height: 48px;"
+        "}"
+        "QLineEdit:focus, QComboBox:focus {"
+        "   border: 2px solid #00cc00;"
+        "}";
+
+    
+    QLabel* depositLabel = new QLabel("Deposit in", content);
+    depositLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; }");
+    contentLayout->addWidget(depositLabel);
+
+    eDepositAccountSelect_ = new QComboBox(content);
+    eDepositAccountSelect_->setStyleSheet(inputStyle);
+    contentLayout->addWidget(eDepositAccountSelect_);
+
+
+    QLabel* amountLabel = new QLabel("Amount", content);
+    amountLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; }");
+    contentLayout->addWidget(amountLabel);
+
+    eDepositAmountInput_ = new QLineEdit(content);
+    eDepositAmountInput_->setPlaceholderText("$0.00");
+    eDepositAmountInput_->setStyleSheet(inputStyle);
+    contentLayout->addWidget(eDepositAmountInput_);
+    // Send button
+    QPushButton* depositButton = new QPushButton("Deposit", content);
+    depositButton->setMinimumHeight(50);
+    depositButton->setCursor(Qt::PointingHandCursor);
+   depositButton->setStyleSheet(
+        "QPushButton {"
+        "   background-color: #00cc00;"
+        "   color: white;"
+        "   border: none;"
+        "   border-radius: 8px;"
+        "   font-size: 16px;"
+        "   font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #02a802;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #008f39;"
+        "}"
+    );
+    connect(depositButton, &QPushButton::clicked, this, &MoveMoneyPage::handleEDeposit);
+    contentLayout->addWidget(depositButton);
+
+    scrollArea->setWidget(content);
+    layout->addWidget(scrollArea);
+
     return overlay;
 }
 
@@ -721,6 +801,9 @@ QWidget* MoveMoneyPage::createMiniStatementOverlay() {
     layout->addWidget(scrollArea);
 
     return overlay;
+}
+void MoveMoneyPage::handleEDeposit() {
+
 }
 
 void MoveMoneyPage::handleETransferSend() {
