@@ -138,7 +138,7 @@ void MainWindow::setupPages() {
     // Create and add the registration page
     RegistrationPage* registrationPage = new RegistrationPage();
     
-    // CREATE OTP PAGE - ADD THIS
+    // CREATE OTP PAGE
     otpPage_ = new OTPPage();
     
     // Create and add the content pages
@@ -163,14 +163,13 @@ void MainWindow::setupPages() {
             // Get 2FA method
             std::string method = auth.getTwoFactorMethod(userID);
             
-            // Configure OTP page
+            // Configure OTP page BEFORE navigating to it
+            // This ensures the data is set before onShow() is called
             otpPage_->setUserID(userID);
             otpPage_->setDeliveryMethod(method);
             
-            // Navigate to OTP page
             pageManager_->openPage("otp");
             updateStackedWidget();
-            
             std::cout << "2FA required for user: " << user->email() << endl;
         } else {
             // No 2FA - prompt to enable it
@@ -277,7 +276,7 @@ void MainWindow::setupPages() {
         updateStackedWidget();
     });
     
-    // SET OTP PAGE CALLBACKS - ADD THIS
+    // SET OTP PAGE CALLBACKS
     otpPage_->setVerificationSuccessCallback([this]() {
         // OTP verified successfully - complete login
         if (pendingUser_) {
@@ -316,7 +315,7 @@ void MainWindow::setupPages() {
     // Add pages to page manager
     pageManager_->addPage("login", loginPage);
     pageManager_->addPage("register", registrationPage);
-    pageManager_->addPage("otp", otpPage_);  // ADD THIS
+    pageManager_->addPage("otp", otpPage_);
     pageManager_->addPage("dashboard", dashboardPage_);
     pageManager_->addPage("settings", settingsPage_);
     pageManager_->addPage("transactions", transactionsPage_);
@@ -331,7 +330,7 @@ void MainWindow::setupPages() {
     if (Page* page = pageManager_->getPage("register")) {
         stackedWidget_->addWidget(page->getWidget());
     }
-    if (Page* page = pageManager_->getPage("otp")) {  // ADD THIS
+    if (Page* page = pageManager_->getPage("otp")) {
         stackedWidget_->addWidget(page->getWidget());
     }
     if (Page* page = pageManager_->getPage("dashboard")) {

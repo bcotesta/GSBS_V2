@@ -202,12 +202,15 @@ void OTPPage::onShow() {
         statusLabel_->hide();
     }
     
-    // Send OTP when page is shown
-    sendOTP();
-    
-    // Start countdown timer
+    // Reset timer
     remainingSeconds_ = 300; // Reset to 5 minutes
-    startCountdown();
+    
+    // Defer sendOTP() and countdown to allow layout to settle
+    // This ensures the UI is fully built and positioned before starting
+    QTimer::singleShot(0, this, [this]() {
+        sendOTP();
+        startCountdown();
+    });
 }
 
 void OTPPage::setUserID(const std::string& userID) {
