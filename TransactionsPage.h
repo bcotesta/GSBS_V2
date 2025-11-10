@@ -48,8 +48,6 @@ private slots:
     //when drop down is changed this is what detects it
     void onAccountChanged(int index);
 
-    void miniPress();
-
 private:
     // UI Components
     QWidget* containerWidget_;
