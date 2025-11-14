@@ -10,22 +10,27 @@
 #include <chrono>
 using namespace std;
 
+// Constructor initializes account fields
 Account::Account(string accountNumber, AccountType accType)
 {
-    accountNumber_ = std::move(accountNumber);
-    accountType_ = accType;
-    balance_ = 0.0;
+    accountNumber_ = std::move(accountNumber); // Store unique account number
+    accountType_ = accType; // Store the account type
+    balance_ = 0.0; // New accounts start with 0 balance
 }
 
 // Getters
+// Getter for account number
 string Account::accountNumber() const { return accountNumber_; }
+// Getter for account type
 AccountType Account::accountType() const { return accountType_; }
+// Returns modifiable reference to transaction history
 list<Transaction>& Account::transactionHistory() { return transactionHistory_; }
+// Returns modifiable reference to transaction history
 const list<Transaction>& Account::transactionHistory() const { return transactionHistory_; }
 
-// Deposit into the account
+// Deposit funds into account
 void Account::deposit(double amount)
-{
+{   // Basic validation to check if the amount is positive
     if (amount <= 0) {
         cerr << "Deposit amount must be positive." << endl;
         return;
@@ -36,7 +41,7 @@ void Account::deposit(double amount)
     balance_ += amount;
 }
 
-// Withdraw from the account
+// Withdraw funds from the account
 void Account::withdraw(double amount)
 {
     if (amount <= 0) {
