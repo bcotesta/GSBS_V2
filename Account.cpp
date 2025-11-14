@@ -44,10 +44,12 @@ void Account::deposit(double amount)
 // Withdraw funds from the account
 void Account::withdraw(double amount)
 {
+    // Basic validation to check if the amount is positive
     if (amount <= 0) {
         cerr << "Withdrawal amount must be positive." << endl;
         return;
     }
+    // Basic validation to check if the amount isn't larger than total funds, this prevents overdrafts
     if (amount > balance_) {
         cerr << "Insufficient funds for withdrawal." << endl;
         return;
@@ -57,9 +59,9 @@ void Account::withdraw(double amount)
     // Transaction recording will be handled by AccountManager
     balance_ -= amount;
 }
-
+// Getter for account balance
 double Account::getBalance() const { return balance_; }
-
+// Save a newly created account to the database
 void Account::saveToDatabase(string uname) {
     DatabaseManager& db = DatabaseManager::getInstance();
     Authenticator& auth = Authenticator::getInstance();
@@ -114,7 +116,7 @@ void Account::saveToDatabase(string uname) {
 void Account::setBalance(double balance) {
     balance_ = balance;
 }
-
+// Update balance of an existing account in the database
 void Account::updateBalanceInDatabase(const std::string& tableName) {
     DatabaseManager& db = DatabaseManager::getInstance();
     
