@@ -9,7 +9,8 @@
 
 using namespace std;
 
-// Helper function to generate a random account number
+// Helper function to generate a random account number.  
+// This ensures each account created for a user is unique.
 static string generateAccountNumber() {
     random_device rd;
     mt19937 gen(rd());
@@ -39,6 +40,7 @@ static string sanitizeName(const string& name) {
 AccountManager::AccountManager(const User& user)
     : user_(user)
 {
+    // Build the correct table names for this user and ensure the tables exist.
     initializeTableNames();
     ensureTablesExist();
 }
@@ -52,7 +54,8 @@ void AccountManager::initializeTableNames() {
     transactionsTableName_ = userIdStr + "_" + cleanName + "_transactions";
 }
 
-// ensure user-specific tables exist, create if not
+// Ensures that user-specific account and transaction tables exist in MySQL.
+// If they do not exist, they are created automatically.
 void AccountManager::ensureTablesExist() {
     DatabaseManager& db = DatabaseManager::getInstance();
     Authenticator& auth = Authenticator::getInstance();
@@ -63,7 +66,7 @@ void AccountManager::ensureTablesExist() {
     // Check if table exists by querying information_schema
     string whereClause = "TABLE_SCHEMA = 'bankdatabase' AND TABLE_NAME = '" + accountsTableName_ + "'";
     auto tableCheck = db.retrieveTable("information_schema.TABLES", whereClause);
-    
+    // If the table does not exist, create both accounts and transactions tables.
     if (tableCheck.empty()) {
         cout << "Accounts table not found. Creating..." << endl;
         db.createUserAccountsTable(auth.getUserID(), user_.name());
@@ -74,14 +77,14 @@ void AccountManager::ensureTablesExist() {
     }
 }
 
-// load existing accounts from database
+// Loads all accounts belonging to the current user from the database and returns them as a vector of Account objects.
 vector<Account> AccountManager::loadUserAccounts() {
     DatabaseManager& db = DatabaseManager::getInstance();
     vector<Account> accounts;
     
     auto accResults = db.retrieveTable(accountsTableName_, "");
     cout << "Found " << accResults.size() << " existing account(s)." << endl;
-    
+    // Convert each database row into an Account object.
     if (!accResults.empty()) {
         cout << "\n=== Loading Existing Accounts ===" << endl;
         for (const auto& accountData : accResults) {
@@ -110,30 +113,30 @@ vector<Account> AccountManager::loadUserAccounts() {
     return accounts;
 }
 
-// create a new account and save to database
+// Create a new account and save to database.
 Account AccountManager::createAccount(AccountType type) {
     string accountNumber = generateAccountNumber();
     
     Account newAccount(accountNumber, type);
     cout << "Created account: " << accountNumber << endl;
     
-    // Save to database
+    // Save to database.
     newAccount.saveToDatabase(user_.name());
     
     return newAccount;
 }
 
-// display summary of accounts to console
+// Display summary of accounts to console.
 void AccountManager::displayAccountSummary(const vector<Account>& accounts) {
     DatabaseManager& db = DatabaseManager::getInstance();
     
     cout << "\n=== Account Summary ===" << endl;
     
-    // Get latest data from database
+    // Get latest data from database.
     auto accResults = db.retrieveTable(accountsTableName_, "");
     cout << "Total accounts in database: " << accResults.size() << endl;
     
-    // Display all accounts from database
+    // Display all accounts from database.
     for (const auto& account : accResults) {
         cout << "\nAccount Details:" << endl;
         cout << "  Account Number: " << static_cast<string>(account.at("accountNumber")) << endl;
@@ -142,7 +145,7 @@ void AccountManager::displayAccountSummary(const vector<Account>& accounts) {
         cout << "  Created Date: " << static_cast<string>(account.at("createdDate")) << endl;
     }
     
-    // Display in-memory account objects
+    // Display in-memory account objects.
     cout << "\n=== Account Objects in Memory ===" << endl;
     cout << "You have " << accounts.size() << " Account objects loaded." << endl;
     for (size_t i = 0; i < accounts.size(); ++i) {
@@ -151,8 +154,9 @@ void AccountManager::displayAccountSummary(const vector<Account>& accounts) {
     }
 }
 
-// perform deposit operation
+// Perform deposit operation.
 bool AccountManager::deposit(Account& account, double amount) {
+	// Validate deposit amount, to ensure it is positive.
     if (amount <= 0) {
         cerr << "Deposit amount must be positive." << endl;
         return false;
@@ -175,8 +179,9 @@ bool AccountManager::deposit(Account& account, double amount) {
     return true;
 }
 
-// perform withdrawal operation
+// Perform withdrawal operation.
 bool AccountManager::withdraw(Account& account, double amount) {
+	// Validate withdrawal amount, to ensure it is positive and within balance.
     if (amount <= 0) {
         cerr << "Withdrawal amount must be positive." << endl;
         return false;
@@ -205,8 +210,9 @@ bool AccountManager::withdraw(Account& account, double amount) {
     return true;
 }
 
-// perform transfer operation between two accounts
+// Perform transfer operation between two accounts/
 bool AccountManager::transfer(Account& fromAccount, Account& toAccount, double amount) {
+	// Validate transfer amount, to ensure it is positive and within the source account's balance.
     if (amount <= 0) {
         cerr << "Transfer amount must be positive." << endl;
         return false;
@@ -243,18 +249,18 @@ bool AccountManager::transfer(Account& fromAccount, Account& toAccount, double a
     return true;
 }
 
-// sync account balance to database
+// Sync account balance to database.
 void AccountManager::syncAccountToDatabase(Account& account) {
-    // Update the balance in the accounts table
+    // Update the balance in the accounts table.
     account.updateBalanceInDatabase(accountsTableName_);
 }
 
-// record a transaction in the transactions table
+// Record a transaction in the transactions table.
 void AccountManager::recordTransaction(const Account& account, double amount,
                                       TransactionType type, const std::string& description) {
     DatabaseManager& db = DatabaseManager::getInstance();
     
-    // Convert transaction type to string
+    // Convert transaction type to string.
     string typeStr;
     switch (type) {
         case TransactionType::DEPOSIT:
@@ -284,11 +290,11 @@ void AccountManager::recordTransaction(const Account& account, double amount,
     
     cout << "[INFO] Transaction recorded in database" << endl;
 }
-
+// Returns the name of the current user’s accounts table.
 string AccountManager::getAccountsTableName() const {
     return accountsTableName_;
 }
-
+// Returns the name of the current user’s transactions table.
 string AccountManager::getTransactionsTableName() const {
     return transactionsTableName_;
 }
