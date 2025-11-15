@@ -1,5 +1,4 @@
 // Brandon Cotesta | 10/27/2025 | 10:20 PM
-// MOOD: Exhausted - legit feels like 4am.
 
 #include "Authenticator.h"
 #include "DatabaseManager.h"
@@ -8,7 +7,7 @@
 
 // Constructor implementation
 Authenticator::Authenticator() {
-	// not needed yet
+	
 }
 
 // Singleton instance getter

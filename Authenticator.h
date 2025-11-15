@@ -1,6 +1,5 @@
 // Brandon Cotesta | 10/27/2025 | 10:00 PM
-// MOOD: Tired - long day, but i have much more night ahead of me.
-// Dodgers just scored to make it 4-3 jays.
+
 #pragma once
 #include <string>
 #include <iostream>
@@ -17,15 +16,22 @@ public:
     Authenticator& operator=(const Authenticator&) = delete;
 
     // Member functions
+    // Verifies username and password against the database.
     bool verifyCredentials(const std::string& username, const std::string& password);
+    // Stores validated login information.
     void setValidInfo(const std::string& username, const std::string& password);
+    // Registers a new user in the database.
     bool registerNewUser(const std::string& name, const std::string& email, 
                          const std::string& phone, const std::string& password);
     
     // 2FA methods
+    // Checks if a user has two-factor authentication enabled.
     bool isTwoFactorEnabled(const std::string& userID) const;
+    // Returns the user's preferred 2FA method ("email" or "phone").
     std::string getTwoFactorMethod(const std::string& userID) const;
+    // Sends the OTP code using the selected method.
     bool sendOTP(const std::string& userID, const std::string& method = "");
+    // Verifies the entered OTP.
     bool verifyOTP(const std::string& userID, const std::string& code);
     
     // Getters
@@ -37,7 +43,7 @@ public:
 private:
     Authenticator();
     ~Authenticator();
-
+    // Stored user information after successful login and authentication.
     string validUserID_;
     string validUsername_;
     string validPassword_;
