@@ -62,10 +62,6 @@ private:
     QString accountName_;
     QString accountID_;
 
-    //mini statement button and label
-    QLabel* ministateLabel_;
-    QPushButton* miniStatement_;
-
     //table
     QTableWidget *transTable_;
 
