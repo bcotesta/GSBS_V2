@@ -991,8 +991,8 @@ void MoveMoneyPage::handleTransfer() {
         accounts_[fromIndex] = fromAccount;
         accounts_[toIndex] = toAccount;
         
-        // Reload accounts to refresh UI with updated balances
-        loadUserAccounts();
+        // REMOVE THIS LINE - it causes the crash
+        // loadUserAccounts();
         
         // Clear input
         transferAmountInput_->clear();
