@@ -381,6 +381,30 @@ bool RegistrationPage::validateInputs() {
         showError("Please enter a valid email address");
         return false;
     }
+
+    //Check for existing account with email input
+    //just 'a' means email only is used
+    //'b' means only phone is already used
+    //'ab' means both
+    if (existingCheck(email, phone) == "a")
+    {
+        
+        showError("Email is already connected to an account");
+        return false;
+    }
+    else if (existingCheck(email, phone) == "b")
+    {
+        showError("Phone number is already connected to an account");
+        return false;
+    }
+    else if (existingCheck(email, phone) == "ab")
+    {
+        showError("Email and phone number are already being used");
+        return false;
+    } 
+
+    //check for existing account connect to the phone number input
+    
     
     // Check password length
     if (password.length() < 6) {
@@ -445,6 +469,42 @@ void RegistrationPage::handleRegister() {
         registerButton_->setEnabled(true);
         registerButton_->setText("Create Account");
     }
+}
+
+//check for an existing account with either the email or password
+string RegistrationPage::existingCheck(QString e, QString p)
+{
+    DatabaseManager& db = DatabaseManager::getInstance();
+    
+    string errorcount = "";
+
+    auto s = db.retrieveTable("userinfo","");
+    string tempemail = e.toStdString();
+    string tempphone = p.toStdString();
+    string em;
+    string ph;
+    if (!s.empty())
+    {
+        for (const auto& st : s)
+        {
+            em = static_cast<string>(st.at("email"));
+            ph = static_cast<string>(st.at("phone"));
+            if(em == (tempemail) && ph == (tempphone))
+            {
+                return "ab";
+            }
+            if (em == (tempemail))
+            {
+                return "a";
+            }
+            if (ph == (tempphone))
+            {
+                return "b";
+            }
+        }
+    }
+
+    return "";
 }
 
 void RegistrationPage::handleBackToLogin() {

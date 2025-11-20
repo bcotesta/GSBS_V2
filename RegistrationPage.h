@@ -21,6 +21,9 @@ public:
     // Callbacks for navigation
     void setRegistrationSuccessCallback(std::function<void(User*)> callback);
     void setBackToLoginCallback(std::function<void()> callback);
+
+    //Method to check for existing account with email or phone number
+    string existingCheck(QString e, QString p);
     
 protected:
     void buildUI() override;

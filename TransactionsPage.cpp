@@ -14,6 +14,7 @@ TransactionsPage::TransactionsPage()
     : Page("transactions"),
 
     containerWidget_(nullptr),
+    titleLabel_(nullptr),
     currentUser_(nullptr),
     accounts_(nullptr),
     accountLabel_(nullptr),
@@ -96,14 +97,24 @@ void TransactionsPage::buildUI() {
     transTable_->setFont(transTFont);
     transTable_->setStyleSheet(
         "QTableWidget {"
-        "[addint: 12px 15px;"
-        "background - color: #ecf0f1;"
-        "border: 2px solid #e0e0e0;"
-        "border-radius: 8px;"
+        "background - color:  #ffffff;"
+        "alternate-background-color: #eaf7ea;"
+        "gridline - color: #b6d8b6;"
+        "selection-background-color: #3fa645;"
+        "selection - color: white; "
+        "font - size: 14px; "
         "}"
         "QHeaderView::section {"
-        "background-color: #ecg0f1;"
+        "background-color: #dff0df;"
+        "padding: 6px;"
+        "border: 1px solid #b6d8b6;"
+        "font-weight: bold;"
+        "font - size: 14px; "
         "}"
+        "QTableView::item:hover {"
+        "   background-color: #d0ebd0;"            
+        "}"
+
     );
     containerLayout->addWidget(transTable_);
 
@@ -127,6 +138,7 @@ void TransactionsPage::buildUI() {
 void TransactionsPage::onShow() {
 	cout << "TransactionsPage::onShow called" << endl;
     accountDropSet();
+    //accountsDrop_->setCurrentIndex(-1);
 
 }
 
@@ -179,17 +191,17 @@ void TransactionsPage::transactiontablesetup()
 {
     cout << "in transaction table setup" << endl;
     if (!currentUser_) {
-         qDebug() << "Error: currentUser_ is null";
-         return;
+        qDebug() << "Error: currentUser_ is null";
+        return;
     }
-        AccountManager transac(*currentUser_);
-        //Creates columns and adds header labels to each column
-        transTable_->setColumnCount(5);
-        transTable_->setHorizontalHeaderLabels({ "Transaction Type", "Amount", "Transaction Date", "Description", "Balance After" });
 
-        string tempnum = accountID_.toStdString();
+    //Creates columns and adds header labels to each column
+    transTable_->setColumnCount(5);
+    transTable_->setHorizontalHeaderLabels({ "Transaction Type", "Amount", "Transaction Date", "Description", "Balance After" });
 
-        transactionTableRefresh(tempnum);
+    string tempnum = accountID_.toStdString();
+
+    //transactionTableRefresh(tempnum);
 
 }
 

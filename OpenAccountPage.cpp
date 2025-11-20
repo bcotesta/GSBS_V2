@@ -207,45 +207,67 @@ void OpenAccountPage::buildUI() {
 
 void OpenAccountPage::onNewSavingsPress()
 {
+    QMessageBox msgBox2(QApplication::activeWindow());
+    msgBox2.setWindowTitle("Account Created");
+    msgBox2.setText("Your new account has now been created");
+    msgBox2.setIcon(QMessageBox::Information);
+
     bool yn = doubleCheck();
     if (yn == true)
     {
         AccountManager accM(*currentUser_);
         AccountType s = AccountType::SAVINGS;
         accM.createAccount(s);
+        msgBox2.exec();
     }
 }
 
 void OpenAccountPage::onNewChequingPress()
 {
+    QMessageBox msgBox2(QApplication::activeWindow());
+    msgBox2.setWindowTitle("Account Created");
+    msgBox2.setText("Your new account has now been created");
+    msgBox2.setIcon(QMessageBox::Information);
+
     bool yn = doubleCheck();
     if (yn == true)
     {
         AccountManager accM(*currentUser_);
         AccountType s = AccountType::CHEQUING;
         accM.createAccount(s);
+        msgBox2.exec();
     }
 }
 
 void OpenAccountPage::onNewCreditPress()
 {
-    
+    QMessageBox msgBox2(QApplication::activeWindow());
+    msgBox2.setWindowTitle("Account Created");
+    msgBox2.setText("Your new account has now been created");
+    msgBox2.setIcon(QMessageBox::Information);
+
     if (doubleCheck() == true)
     {
+
         AccountManager accM(*currentUser_);
         AccountType s = AccountType::CREDIT;
         accM.createAccount(s);
+        msgBox2.exec();
     }
 }
 
 void OpenAccountPage::onNewLoanPress()
 {
-
+    QMessageBox msgBox2(QApplication::activeWindow());
+    msgBox2.setWindowTitle("Account Created");
+    msgBox2.setText("Your new account has now been created");
+    msgBox2.setIcon(QMessageBox::Information);
     if (doubleCheck() == true)
     {
         AccountManager accM(*currentUser_);
         AccountType s = AccountType::LOAN;
         accM.createAccount(s);
+        msgBox2.exec();
     }
 }
 
