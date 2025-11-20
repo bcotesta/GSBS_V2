@@ -41,7 +41,7 @@ private slots:
     void onETransferClicked();
     void onTransferFundsClicked();
     void onMiniStatementClicked();
-    void onEDepositClicked();
+    void onDepositWithdrawClicked();
     
     // Overlay navigation
     void showOverlay(int overlayIndex);
@@ -52,7 +52,7 @@ private slots:
     void handleTransfer();
     void handleGenerateMiniStatement();
     void handleExportPdf();
-    void handleEDeposit();
+    void handleDepositWithdraw();
 
 private:
     // Helper function to create action cards
@@ -62,7 +62,7 @@ private:
     QWidget* createETransferOverlay();
     QWidget* createTransferFundsOverlay();
     QWidget* createMiniStatementOverlay();
-    QWidget* createEDepositOverlay();
+    QWidget* createDepositWithdrawOverlay();
     
     // Helper for creating overlay header with back button
     QWidget* createOverlayHeader(const QString& title, QWidget* parent);
@@ -89,18 +89,14 @@ private:
     QWidget* eTransferOverlay_;
     QWidget* transferFundsOverlay_;
     QWidget* miniStatementOverlay_;
-    QWidget* eDepositOverlay_;
+    QWidget* depositWithdrawOverlay_;
     
     // eTransfer input fields
     QComboBox* eTransferAccountSelect_;
-    QComboBox* eDepositAccountSelect_;
     QLineEdit* eTransferRecipientInput_;
     QLineEdit* eTransferAmountInput_;
     QLineEdit* eTransferMessageInput_;
 
-    //eDeposit
-    QLineEdit* eDepositAmountInput_;
-    
     // Transfer input fields
     QComboBox* transferFromAccount_;
     QComboBox* transferToAccount_;
@@ -111,6 +107,11 @@ private:
     QTableWidget* miniStatementTable_;
     QPushButton* generateStatementButton_;
     QPushButton* exportPdfButton_;
+
+    // Deposit/Withdraw components
+    QComboBox* depositWithdrawTypeSelect_;
+    QComboBox* depositWithdrawAccountSelect_;
+    QLineEdit* depositWithdrawAmountInput_;
 
     // Current user and accounts (loaded from DB via AccountManager)
     User* currentUser_;
@@ -125,6 +126,6 @@ private:
         ETRANSFER = 1,
         TRANSFER_FUNDS = 2,
         MINI_STATEMENT = 3,
-        EDEPOSIT = 4
+        DEPOSIT_WITHDRAW = 4  // NEW
     };
 };

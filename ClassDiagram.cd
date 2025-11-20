@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Account">
+    <Position X="11.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAEAEAAgAAAAAAAICAAAAAAABAAAAAADAkAAAEg=</HashCode>
+      <FileName>Account.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AccountManager">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIACAAACAAAAAAAQEABQwCAAAABgiAAAg=</HashCode>
+      <FileName>AccountManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Authenticator">
+    <Position X="10" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAEAgBIAAQAABKAIAAgAgAAAQQgCgkIAAAgAA=</HashCode>
+      <FileName>Authenticator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BankingOperationsManager">
+    <Position X="8.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAABAAAAAAAAEKBIAAgAAACACQAAAAAAA=</HashCode>
+      <FileName>BankingOperationsManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DashboardPage" Collapsed="true">
+    <Position X="4.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAIBBAMQAAAABSAAAQIAAIAwMQAEAAAAAQCAAEAQZQ=</HashCode>
+      <FileName>DashboardPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DatabaseManager">
+    <Position X="17" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAEBQAAAAAAYBCRCAACCABiRAAEggAoQEASA=</HashCode>
+      <FileName>DatabaseManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LoginPage" Collapsed="true">
+    <Position X="2.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAEAABQIAABEQCAICAAAFoAQAAAEBABQABAAAAAA=</HashCode>
+      <FileName>LoginPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MainWindow">
+    <Position X="13.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEAQkIKAACAAEEKAAAQGBAACDMBAAAACAgAAAAAgAMU=</HashCode>
+      <FileName>MainWindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MoveMoneyPage" Collapsed="true">
+    <Position X="2.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAIIIQADAACDDCAyyQAACAACoQQEAAIKERQQBXEEQE=</HashCode>
+      <FileName>MoveMoneyPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenAccountPage" Collapsed="true">
+    <Position X="4.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACAgAAAAAAABCAOCAAAAAAQAQAAAAACAQBAAAEAwA=</HashCode>
+      <FileName>OpenAccountPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OTPManager">
+    <Position X="11.75" Y="4.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="OTPManager::OTPData">
+        <TypeIdentifier>
+          <NewMemberFileName>OTPManager.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAIACAACAAACEAAAAAAAAAQAAABgAAAAQAA=</HashCode>
+      <FileName>OTPManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OTPPage" Collapsed="true">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QKRAAAakAEAgARIAKCIAgCQEgASAAAABACQIAAABIQA=</HashCode>
+      <FileName>OTPPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Page">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CBAAAAAAQCAQAFAAAFIEABACAAQAAAAABAQQAQAAAAA=</HashCode>
+      <FileName>Page.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PageManager">
+    <Position X="15.25" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="PageManager::PageEntry" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>PageManager.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AQEAIAwAADgAAAIAAAEAAhKAAAAIAAAAAEABAAAAAAA=</HashCode>
+      <FileName>PageManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RegistrationPage" Collapsed="true">
+    <Position X="2.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACgAEFAgAAAAABAQCIJAAAAFoA4AQgABAAUAAAAAEAA=</HashCode>
+      <FileName>RegistrationPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SessionManager">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAEIACAgAIgAAAAAAACAAgAAAAAABAAEgA=</HashCode>
+      <FileName>SessionManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SettingsPage" Collapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAJACFAkBCCqSQAQAABAJQACUAMGwQZGAUggQE=</HashCode>
+      <FileName>SettingsPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Transaction">
+    <Position X="6.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAIACAAAAAAIAAAAgIQAAABgAAAAIAAAQAAAgA=</HashCode>
+      <FileName>Transaction.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TransactionsPage" Collapsed="true">
+    <Position X="2.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAABCgAABCACAAAAAAAAIQAEAABFgQAAIAEAQA=</HashCode>
+      <FileName>TransactionsPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TwilioService">
+    <Position X="2.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQQAACAAAAAAAAAAAQAQBAAQAKAAgAAgAAAA=</HashCode>
+      <FileName>TwilioService.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIManager">
+    <Position X="15.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAQAAAAAAAQEgAAAAAAAAAAFAwAgAAA=</HashCode>
+      <FileName>UIManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="User">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAQBgCBAIAAAAAAIGAAAgEAAAAAAAsAA=</HashCode>
+      <FileName>User.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserPage" Collapsed="true">
+    <Position X="4.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAABCACAEAAAAAAAQAAAAAAAQAAAAAAQA=</HashCode>
+      <FileName>UserPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="AccountType">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAEAABAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Types.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TransactionType">
+    <Position X="0.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAABAAAAAAAAIAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Types.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CardType">
+    <Position X="0.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Types.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -28,7 +28,6 @@ MoveMoneyPage::MoveMoneyPage()
     eTransferOverlay_(nullptr),
     transferFundsOverlay_(nullptr),
     miniStatementOverlay_(nullptr),
-    eDepositOverlay_(nullptr),
     eTransferAccountSelect_(nullptr),
     eTransferRecipientInput_(nullptr),
     eTransferAmountInput_(nullptr),
@@ -40,7 +39,11 @@ MoveMoneyPage::MoveMoneyPage()
     miniStatementAccountSelect_(nullptr),
     miniStatementTable_(nullptr),
     generateStatementButton_(nullptr),
-    exportPdfButton_(nullptr)
+    exportPdfButton_(nullptr),
+    depositWithdrawOverlay_(nullptr),
+    depositWithdrawTypeSelect_(nullptr),
+    depositWithdrawAccountSelect_(nullptr),
+    depositWithdrawAmountInput_(nullptr)
 {
 }
 
@@ -92,7 +95,7 @@ void MoveMoneyPage::loadUserAccounts() {
     
     cout << "[MoveMoneyPage] Loading accounts for user: " << currentUser_->email() << endl;
     
-    // Use AccountManager to load accounts from database
+    // User enhanced AccountManager to load accounts from database
     AccountManager accountMgr(*currentUser_);
     accounts_ = accountMgr.loadUserAccounts();
     
@@ -120,6 +123,14 @@ void MoveMoneyPage::loadUserAccounts() {
         miniStatementAccountSelect_->clear();
         for (const auto& acc : accounts_) {
             miniStatementAccountSelect_->addItem(formatAccountDisplay(acc));
+        }
+    }
+
+    // Add Deposit/Withdraw account dropdown population
+    if (depositWithdrawAccountSelect_) {
+        depositWithdrawAccountSelect_->clear();
+        for (const auto& acc : accounts_) {
+            depositWithdrawAccountSelect_->addItem(formatAccountDisplay(acc));
         }
     }
 }
@@ -214,19 +225,20 @@ void MoveMoneyPage::buildUI() {
         sectionWidget
     );
     connect(miniStatementCard, &QPushButton::clicked, this, &MoveMoneyPage::onMiniStatementClicked);
-    
-    QPushButton* eDepositCard = createActionCard(
-        "eDeposit",
+
+    // NEW:
+    QPushButton* depositWithdrawCard = createActionCard(
+        "Deposit/Withdraw",
         "img/128x/homeIcon.png",
         sectionWidget
     );
-    connect(eDepositCard, &QPushButton::clicked, this, &MoveMoneyPage::onEDepositClicked);
+    connect(depositWithdrawCard, &QPushButton::clicked, this, &MoveMoneyPage::onDepositWithdrawClicked);
 
     // Add cards to grid (2x2)
     gridLayout->addWidget(eTransferCard, 0, 0);
     gridLayout->addWidget(transferFundsCard, 0, 1);
     gridLayout->addWidget(miniStatementCard, 1, 0);
-    gridLayout->addWidget(eDepositCard, 1, 1);
+    gridLayout->addWidget(depositWithdrawCard, 1, 1);
 
     sectionLayout->addLayout(gridLayout);
     sectionLayout->addStretch();
@@ -244,100 +256,17 @@ void MoveMoneyPage::buildUI() {
     eTransferOverlay_ = createETransferOverlay();
     transferFundsOverlay_ = createTransferFundsOverlay();
     miniStatementOverlay_ = createMiniStatementOverlay();
-    eDepositOverlay_ = createEDepositOverlay();
+    depositWithdrawOverlay_ = createDepositWithdrawOverlay();
 
     stackedWidget_->addWidget(eTransferOverlay_);
     stackedWidget_->addWidget(transferFundsOverlay_);
     stackedWidget_->addWidget(miniStatementOverlay_);
-    stackedWidget_->addWidget(eDepositOverlay_);
+    stackedWidget_->addWidget(depositWithdrawOverlay_);
 
     stackedWidget_->setCurrentIndex(MAIN_MENU);
 }
 
-QWidget* MoveMoneyPage::createEDepositOverlay() {
-    QWidget* overlay = new QWidget();
-    overlay->setStyleSheet("QWidget { background-color: #f5f5f5; }");
 
-    QVBoxLayout* layout = new QVBoxLayout(overlay);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-
-    // Header
-    QWidget* header = createOverlayHeader("eDeposit", overlay);
-    layout->addWidget(header);
-
-    // Content area with scroll
-    QScrollArea* scrollArea = new QScrollArea(overlay);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-    scrollArea->setStyleSheet("QScrollArea { background-color: transparent; border: none; }");
-
-    QWidget* content = new QWidget();
-    QVBoxLayout* contentLayout = new QVBoxLayout(content);
-    contentLayout->setContentsMargins(20, 10, 20, 20);
-    contentLayout->setSpacing(15);
-
-    // Input styling
-    QString inputStyle =
-        "QLineEdit, QComboBox {"
-        "   padding: 12px 15px;"
-        "   border: 2px solid #e0e0e0;"
-        "   border-radius: 8px;"
-        "   font-size: 14px;"
-        "   color: #000000;"
-        "   background-color: white;"
-        "   min-height: 48px;"
-        "}"
-        "QLineEdit:focus, QComboBox:focus {"
-        "   border: 2px solid #00cc00;"
-        "}";
-
-    
-    QLabel* depositLabel = new QLabel("Deposit in", content);
-    depositLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; }");
-    contentLayout->addWidget(depositLabel);
-
-    eDepositAccountSelect_ = new QComboBox(content);
-    eDepositAccountSelect_->setStyleSheet(inputStyle);
-    contentLayout->addWidget(eDepositAccountSelect_);
-
-
-    QLabel* amountLabel = new QLabel("Amount", content);
-    amountLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; }");
-    contentLayout->addWidget(amountLabel);
-
-    eDepositAmountInput_ = new QLineEdit(content);
-    eDepositAmountInput_->setPlaceholderText("$0.00");
-    eDepositAmountInput_->setStyleSheet(inputStyle);
-    contentLayout->addWidget(eDepositAmountInput_);
-    // Send button
-    QPushButton* depositButton = new QPushButton("Deposit", content);
-    depositButton->setMinimumHeight(50);
-    depositButton->setCursor(Qt::PointingHandCursor);
-   depositButton->setStyleSheet(
-        "QPushButton {"
-        "   background-color: #00cc00;"
-        "   color: white;"
-        "   border: none;"
-        "   border-radius: 8px;"
-        "   font-size: 16px;"
-        "   font-weight: bold;"
-        "}"
-        "QPushButton:hover {"
-        "   background-color: #02a802;"
-        "}"
-        "QPushButton:pressed {"
-        "   background-color: #008f39;"
-        "}"
-    );
-    connect(depositButton, &QPushButton::clicked, this, &MoveMoneyPage::handleEDeposit);
-    contentLayout->addWidget(depositButton);
-
-    scrollArea->setWidget(content);
-    layout->addWidget(scrollArea);
-
-    return overlay;
-}
 
 QPushButton* MoveMoneyPage::createActionCard(const QString& title, const QString& iconPath, QWidget* parent) {
     QPushButton* card = new QPushButton(parent);
@@ -802,8 +731,103 @@ QWidget* MoveMoneyPage::createMiniStatementOverlay() {
 
     return overlay;
 }
-void MoveMoneyPage::handleEDeposit() {
+QWidget* MoveMoneyPage::createDepositWithdrawOverlay() {
+    QWidget* overlay = new QWidget();
+    overlay->setStyleSheet("QWidget { background-color: #f5f5f5; }");
 
+    QVBoxLayout* layout = new QVBoxLayout(overlay);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+
+    // Header
+    QWidget* header = createOverlayHeader("Deposit/Withdraw", overlay);
+    layout->addWidget(header);
+
+    // Content area with scroll
+    QScrollArea* scrollArea = new QScrollArea(overlay);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setStyleSheet("QScrollArea { background-color: transparent; border: none; }");
+
+    QWidget* content = new QWidget();
+    QVBoxLayout* contentLayout = new QVBoxLayout(content);
+    contentLayout->setContentsMargins(20, 10, 20, 20);
+    contentLayout->setSpacing(15);
+
+    // Input styling
+    QString inputStyle =
+        "QLineEdit, QComboBox {"
+        "   padding: 12px 15px;"
+        "   border: 2px solid #e0e0e0;"
+        "   border-radius: 8px;"
+        "   font-size: 14px;"
+        "   color: #000000;"
+        "   background-color: white;"
+        "   min-height: 48px;"
+        "}"
+        "QLineEdit:focus, QComboBox:focus {"
+        "   border: 2px solid #00cc00;"
+        "}";
+
+    // Transaction Type dropdown
+    QLabel* typeLabel = new QLabel("Transaction Type", content);
+    typeLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; }");
+    contentLayout->addWidget(typeLabel);
+
+    depositWithdrawTypeSelect_ = new QComboBox(content);
+    depositWithdrawTypeSelect_->addItem("Deposit");
+    depositWithdrawTypeSelect_->addItem("Withdraw");
+    depositWithdrawTypeSelect_->setStyleSheet(inputStyle);
+    contentLayout->addWidget(depositWithdrawTypeSelect_);
+
+    // Account selection
+    QLabel* accountLabel = new QLabel("Select Account", content);
+    accountLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; }");
+    contentLayout->addWidget(accountLabel);
+
+    depositWithdrawAccountSelect_ = new QComboBox(content);
+    depositWithdrawAccountSelect_->setStyleSheet(inputStyle);
+    contentLayout->addWidget(depositWithdrawAccountSelect_);
+
+    // Amount input
+    QLabel* amountLabel = new QLabel("Amount", content);
+    amountLabel->setStyleSheet("QLabel { color: #2c3e50; font-weight: 600; }");
+    contentLayout->addWidget(amountLabel);
+
+    depositWithdrawAmountInput_ = new QLineEdit(content);
+    depositWithdrawAmountInput_->setPlaceholderText("$0.00");
+    depositWithdrawAmountInput_->setStyleSheet(inputStyle);
+    contentLayout->addWidget(depositWithdrawAmountInput_);
+
+    contentLayout->addStretch();
+
+    // Submit button
+    QPushButton* submitButton = new QPushButton("Submit", content);
+    submitButton->setMinimumHeight(50);
+    submitButton->setCursor(Qt::PointingHandCursor);
+    submitButton->setStyleSheet(
+        "QPushButton {"
+        "   background-color: #00cc00;"
+        "   color: white;"
+        "   border: none;"
+        "   border-radius: 8px;"
+        "   font-size: 16px;"
+        "   font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #02a802;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #008f39;"
+        "}"
+    );
+    connect(submitButton, &QPushButton::clicked, this, &MoveMoneyPage::handleDepositWithdraw);
+    contentLayout->addWidget(submitButton);
+
+    scrollArea->setWidget(content);
+    layout->addWidget(scrollArea);
+
+    return overlay;
 }
 
 void MoveMoneyPage::handleETransferSend() {
@@ -1017,8 +1041,9 @@ void MoveMoneyPage::onMiniStatementClicked() {
     showOverlay(MINI_STATEMENT);
 }
 
-void MoveMoneyPage::onEDepositClicked() {
-    showOverlay(EDEPOSIT);
+void MoveMoneyPage::onDepositWithdrawClicked() {
+    loadUserAccounts();
+    showOverlay(DEPOSIT_WITHDRAW);
 }
 
 void MoveMoneyPage::onShow() {
@@ -1228,4 +1253,99 @@ void MoveMoneyPage::handleExportPdf() {
     
     QMessageBox::information(nullptr, "Export Successful", 
         QString("Mini statement has been exported to:\n%1").arg(fileName));
+}
+
+void MoveMoneyPage::handleDepositWithdraw() {
+    cout << "[MoveMoneyPage] Deposit/Withdraw initiated" << endl;
+    
+    if (!currentUser_ || accounts_.empty()) {
+        QMessageBox::warning(nullptr, "Error", "No accounts available.");
+        return;
+    }
+    
+    // Get selected account index
+    int accountIndex = depositWithdrawAccountSelect_->currentIndex();
+    if (accountIndex < 0 || accountIndex >= static_cast<int>(accounts_.size())) {
+        QMessageBox::warning(nullptr, "Error", "Please select an account.");
+        return;
+    }
+    
+    // Get transaction type
+    QString transactionType = depositWithdrawTypeSelect_->currentText();
+    bool isDeposit = (transactionType == "Deposit");
+    
+    // Parse and validate amount
+    QString amountText = depositWithdrawAmountInput_->text().trimmed();
+    amountText.replace("$", "");
+    bool ok;
+    double amount = amountText.toDouble(&ok);
+    
+    if (!ok || amount <= 0) {
+        QMessageBox::warning(nullptr, "Error", "Please enter a valid amount.");
+        return;
+    }
+    
+    // Get the account reference
+    Account& account = accounts_[accountIndex];
+    
+    cout << "[MoveMoneyPage] Account selected: " << account.accountNumber() 
+         << " | Current balance: $" << account.getBalance() << endl;
+    
+    // Create AccountManager
+    AccountManager accountMgr(*currentUser_);
+    
+    if (isDeposit) {
+        // Handle Deposit
+        cout << "[MoveMoneyPage] Initiating deposit of $" << amount << endl;
+        
+        if (accountMgr.deposit(account, amount)) {
+            cout << "[MoveMoneyPage] Deposit successful! New balance: $" 
+                 << account.getBalance() << endl;
+            
+            accounts_[accountIndex] = account;
+            loadUserAccounts();
+            depositWithdrawAmountInput_->clear();
+            
+            QMessageBox::information(nullptr, "Success", 
+                QString("Deposit of $%1 completed successfully!\nNew balance: $%2")
+                .arg(amount, 0, 'f', 2)
+                .arg(account.getBalance(), 0, 'f', 2));
+            
+            notifyTransactionComplete();
+            hideOverlay();
+        } else {
+            cout << "[MoveMoneyPage] ERROR: Deposit failed" << endl;
+            QMessageBox::critical(nullptr, "Error", "Deposit failed. Please try again.");
+        }
+    } else {
+        // Handle Withdraw
+        cout << "[MoveMoneyPage] Initiating withdrawal of $" << amount << endl;
+        
+        if (amount > account.getBalance()) {
+            QMessageBox::warning(nullptr, "Insufficient Funds", 
+                QString("Insufficient funds. Current balance: $%1")
+                .arg(account.getBalance(), 0, 'f', 2));
+            return;
+        }
+        
+        if (accountMgr.withdraw(account, amount)) {
+            cout << "[MoveMoneyPage] Withdrawal successful! New balance: $" 
+                 << account.getBalance() << endl;
+            
+            accounts_[accountIndex] = account;
+            loadUserAccounts();
+            depositWithdrawAmountInput_->clear();
+            
+            QMessageBox::information(nullptr, "Success", 
+                QString("Withdrawal of $%1 completed successfully!\nNew balance: $%2")
+                .arg(amount, 0, 'f', 2)
+                .arg(account.getBalance(), 0, 'f', 2));
+            
+            notifyTransactionComplete();
+            hideOverlay();
+        } else {
+            cout << "[MoveMoneyPage] ERROR: Withdrawal failed" << endl;
+            QMessageBox::critical(nullptr, "Error", "Withdrawal failed. Please try again.");
+        }
+    }
 }
