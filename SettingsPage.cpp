@@ -1,6 +1,5 @@
 // Brandon Cotesta || 10/28/2025 | 3:00 PM
 // Sahara Rahimani || 11/04/2025 | 8:00 AM
-// Dashboard page for displaying user and account information
 
 #include "SettingsPage.h" 
 #include "DatabaseManager.h"
@@ -38,13 +37,13 @@ SettingsPage::SettingsPage()
     AppOverlay_(nullptr),
     ContactOverlay_(nullptr),
     PrivacyOverlay_(nullptr),
-    FAQOverlay_(nullptr),        // ADDED
+    FAQOverlay_(nullptr),        
     SignOutOverlay_(nullptr),
     productsButton_(nullptr),
     learnAppButton_(nullptr),
     contactButton_(nullptr),
     privacyButton_(nullptr),
-    faqButton_(nullptr),         // ADDED
+    faqButton_(nullptr),         
     signOutButton_(nullptr),
     pageManager_(nullptr),
     changeLabel(nullptr),
@@ -244,7 +243,7 @@ void SettingsPage::buildUI()
     QPushButton* appBtn = createArrowButton("Get to Know the App", "img/128x/star.png");
     QPushButton* contactBtn = createArrowButton("Contact Us", "img/128x/contact-mail.png");
     QPushButton* privacyBtn = createArrowButton("Privacy & Legal", "img/128x/information.png");
-    QPushButton* faqBtn = createArrowButton("FAQ", "img/128x/help.png"); // ADDED
+    QPushButton* faqBtn = createArrowButton("FAQ", "img/128x/help.png"); 
     QPushButton* signOutBtn = createSignOutButton();
 
     btnLayout->addWidget(profileBtn);
@@ -252,7 +251,7 @@ void SettingsPage::buildUI()
     btnLayout->addWidget(appBtn);
     btnLayout->addWidget(contactBtn);
     btnLayout->addWidget(privacyBtn);
-    btnLayout->addWidget(faqBtn); // ADDED
+    btnLayout->addWidget(faqBtn); 
     btnLayout->addWidget(signOutBtn);
     containerLayout->addLayout(btnLayout);
 
@@ -261,7 +260,7 @@ void SettingsPage::buildUI()
     AppOverlay_ = createAppOverlay();
     ContactOverlay_ = createContactOverlay();
     PrivacyOverlay_ = createPrivacyOverlay();
-    FAQOverlay_ = createFAQOverlay(); // ADDED
+    FAQOverlay_ = createFAQOverlay(); 
     SignOutOverlay_ = createSignOutPopUp();
 
     stackedWidget_->addWidget(mainMenuWidget_);
@@ -270,7 +269,7 @@ void SettingsPage::buildUI()
     stackedWidget_->addWidget(AppOverlay_);
     stackedWidget_->addWidget(ContactOverlay_);
     stackedWidget_->addWidget(PrivacyOverlay_);
-    stackedWidget_->addWidget(FAQOverlay_); // ADDED
+    stackedWidget_->addWidget(FAQOverlay_); 
     stackedWidget_->addWidget(SignOutOverlay_);
 
     connect(profileBtn, &QPushButton::clicked, [this]() { stackedWidget_->setCurrentWidget(ProfileOverlay_); });
@@ -347,7 +346,7 @@ QWidget* SettingsPage::createProfileOverlay() {
 
     return overlay;
 }
-// --- FAQ OVERLAY (UPDATED WITH MORE QUESTIONS) ---
+
 QWidget* SettingsPage::createFAQOverlay() {
     QWidget* overlay = new QWidget();
     overlay->setStyleSheet("QWidget { background-color: #f5f5f5; }");
@@ -466,7 +465,6 @@ QWidget* SettingsPage::createProductsOverlay() {
         return label;
         };
 
-    // ---------------- CHEQUING ----------------
     contentLayout->addWidget(createTitle("Chequing Accounts"));
 
     contentLayout->addWidget(createBody(
@@ -508,7 +506,7 @@ QWidget* SettingsPage::createProductsOverlay() {
         "With round-up savings options, automatic transfers, and insights into your spending habits, "
         "our savings accounts support long-term financial growth in a manageable and convenient way."
     ));
-    // ---------------- DEBIT CARDS ----------------
+ 
     contentLayout->addWidget(createTitle("Debit Cards"));
 
     contentLayout->addWidget(createBody(
@@ -531,7 +529,7 @@ QWidget* SettingsPage::createProductsOverlay() {
         "safe, and aligned with your lifestyle."
     ));
 
-    // ---------------- CREDIT CARDS ----------------
+    
     contentLayout->addWidget(createTitle("Credit Cards"));
 
     contentLayout->addWidget(createBody(
@@ -551,7 +549,7 @@ QWidget* SettingsPage::createProductsOverlay() {
         "empower you to build financial confidence while enjoying premium features and protections."
     ));
 
-    // ---------------- LOANS ----------------
+    
     contentLayout->addWidget(createTitle("Loans"));
 
     contentLayout->addWidget(createBody(
@@ -617,7 +615,7 @@ QWidget* SettingsPage::createAppOverlay() {
         return l;
         };
 
-    // ? DASHBOARD
+    
     contentLayout->addWidget(title("Dashboard"));
     contentLayout->addWidget(text(
         "The dashboard provides a quick, real-time overview of your financial profile. "
@@ -629,7 +627,7 @@ QWidget* SettingsPage::createAppOverlay() {
         "as soon as you log in."
     ));
 
-    // ? TRANSACTIONS PAGE
+    
     contentLayout->addWidget(title("Transactions"));
     contentLayout->addWidget(text(
         "The Transactions page provides a chronological list of your recent activity, including deposits, withdrawals, "
@@ -640,7 +638,7 @@ QWidget* SettingsPage::createAppOverlay() {
         "Whether you're reviewing purchases or confirming deposits, this section keeps your financial history organized and accessible."
     ));
 
-    // ? BANKING OPERATIONS PAGE
+   
     contentLayout->addWidget(title("Banking Operations"));
     contentLayout->addWidget(text(
         "The Banking Operations page includes all transactional tools you need to manage your accounts. "
@@ -653,7 +651,7 @@ QWidget* SettingsPage::createAppOverlay() {
         "and secure, ensuring smooth financial management on the go."
     ));
 
-    // ? SETTINGS PAGE
+    
     contentLayout->addWidget(title("Settings"));
     contentLayout->addWidget(text(
         "In the Settings page, you can personalize your banking experience by updating your profile information "
@@ -867,8 +865,7 @@ QWidget* SettingsPage::createSignOutPopUp() {
     // Buttons container
     QHBoxLayout* btnRow = new QHBoxLayout();
     btnRow->setSpacing(15);
-
-    // Cancel button (white with green border)
+white with green border)
     QPushButton* cancelBtn = new QPushButton("Cancel", content);
     cancelBtn->setMinimumHeight(45);
     cancelBtn->setStyleSheet(
@@ -884,7 +881,7 @@ QWidget* SettingsPage::createSignOutPopUp() {
         "QPushButton:pressed { background-color: #e8ffe8; }"
     );
 
-    // Confirm button (red)
+    // Confirm button 
     QPushButton* signOutBtn = new QPushButton("Sign Out", content);
     signOutBtn->setMinimumHeight(45);
     signOutBtn->setStyleSheet(
@@ -906,13 +903,13 @@ QWidget* SettingsPage::createSignOutPopUp() {
     // Add content to layout
     layout->addWidget(content);
 
-    // Button logic
+
     connect(cancelBtn, &QPushButton::clicked, [this]() {
         stackedWidget_->setCurrentIndex(MAIN_MENU);
         });
 
     connect(signOutBtn, &QPushButton::clicked, [this]() {
-        handleSignOut();   // Call your logout logic
+        handleSignOut();  
         });
 
     return overlay;
@@ -970,8 +967,7 @@ void SettingsPage::handleProfileSend() {
     QMessageBox::information(nullptr, "Success",
         "Your information update request has been received.");
 
-    // TODO: Add your DB update call here
-    // updateUserInfo(fieldKey, fieldValue);
+ 
 
     // Clear input box after success
     fieldInput_->clear();
@@ -980,7 +976,6 @@ void SettingsPage::handleProfileSend() {
 
 
 void SettingsPage::handleSignOut() {
-	//couldn't figure this out, so just quitting the app for now
     QApplication::quit();
 
 }

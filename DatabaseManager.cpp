@@ -1,6 +1,6 @@
 // Brandon Cotesta | 10/27/2025 | 9:26 PM
 // Original Script - Everest Ashley
-// MOOD: Happy - Blue Jays just went up 4-2 in the 4th.
+
 
 #include "DatabaseManager.h"
 #include <string>
