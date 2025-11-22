@@ -28,6 +28,27 @@ public:
     
     // Callback for when an account card is clicked
     void setAccountClickCallback(std::function<void(const Account&)> callback);
+    QWidget* creditCardsSection_;
+    QVBoxLayout* creditCardsLayout_;
+    QLabel* creditCardsLabel_;
+
+    // Account cards storage
+    std::vector<QPushButton*> accountCards_;
+    std::vector<Account> accounts_;
+
+    // Current user
+    User* currentUser_;
+
+    // Callback
+    std::function<void(const Account&)> onAccountClick_;
+
+    // Helper methods
+    void refreshAccountsDisplay();
+    void clearAccountCards();
+    QPushButton* createAccountCard(const Account& account, bool isDeposit);
+    QString accountTypeToString(AccountType type) const;
+    QString formatCurrency(double amount) const;
+    QWidget* createSectionHeader(const QString& title);
     
 protected:
     void buildUI() override;
@@ -50,27 +71,4 @@ private:
     QVBoxLayout* depositAccountsLayout_;
     QLabel* depositAccountsLabel_;
     QLabel* depositTotalLabel_;
-    
-public:
-    QWidget* creditCardsSection_;
-    QVBoxLayout* creditCardsLayout_;
-    QLabel* creditCardsLabel_;
-    
-    // Account cards storage
-    std::vector<QPushButton*> accountCards_;
-    std::vector<Account> accounts_;
-    
-    // Current user
-    User* currentUser_;
-    
-    // Callback
-    std::function<void(const Account&)> onAccountClick_;
-    
-    // Helper methods
-    void refreshAccountsDisplay();
-    void clearAccountCards();
-    QPushButton* createAccountCard(const Account& account, bool isDeposit);
-    QString accountTypeToString(AccountType type) const;
-    QString formatCurrency(double amount) const;
-    QWidget* createSectionHeader(const QString& title);
 };

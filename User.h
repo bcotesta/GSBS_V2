@@ -19,10 +19,6 @@ public:
 	bool login(string u, string p) const;
 	void logout() const;
 
-	/// <param name="name"></param>
-	/// <param name="email"></param>
-	/// <param name="password"></param>
-	/// <param name="phone number"></param>
 	void updateProfile(string id, string n, string e, string p, string ph);
 private:
 	int userId_;
