@@ -865,7 +865,6 @@ QWidget* SettingsPage::createSignOutPopUp() {
     // Buttons container
     QHBoxLayout* btnRow = new QHBoxLayout();
     btnRow->setSpacing(15);
-white with green border)
     QPushButton* cancelBtn = new QPushButton("Cancel", content);
     cancelBtn->setMinimumHeight(45);
     cancelBtn->setStyleSheet(
