@@ -943,12 +943,23 @@ void SettingsPage::handleProfileSend() {
             return;
         }
 
+        if (infoCheck("email",email)== false)
+        {
+            QMessageBox::warning(this, "Invalid Email", "Email address is already being used.");
+            return;
+        }
+
     }
 
     if (selectedField == "phone") {
         QRegularExpression phoneRegex("^\\d{10,15}$");
         if (!phoneRegex.match(newValue).hasMatch()) {
             QMessageBox::warning(nullptr, "Invalid Phone Number", "Enter only digits (10-15 digits).");
+            return;
+        }
+        if (infoCheck("phone", newValue) == false)
+        {
+            QMessageBox::warning(nullptr, "Invalid Phone Number", "Phone Number already being used.");
             return;
         }
     }
@@ -975,6 +986,35 @@ void SettingsPage::handleProfileSend() {
 
     // Clear input box after success
     fieldInput_->clear();
+}
+
+bool SettingsPage::infoCheck(string type, QString s)
+{
+    DatabaseManager& db = DatabaseManager::getInstance();
+
+    auto search = db.retrieveTable("userinfo", "");
+    string tempval = s.toStdString();
+    string em;
+    if (!search.empty())
+    {
+        for (const auto& st : search)
+        {
+            if (type == "email")
+            {
+                em = static_cast<string>(st.at("email"));
+            }
+            if (type == "phone")
+            {
+                em = static_cast<string>(st.at("phone"));
+            }
+
+            if (em == tempval)
+            {
+                return false;
+            }
+        }
+    }
+    
 }
 
 

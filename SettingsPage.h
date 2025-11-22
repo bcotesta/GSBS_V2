@@ -29,6 +29,9 @@ public:
 
     // Set the current user
     void setUser(User* user);
+
+    //Check for existing info
+    bool infoCheck(string type, QString s);
     
 
 protected:
